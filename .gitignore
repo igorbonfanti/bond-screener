@@ -1,0 +1,5 @@
+# helper di sviluppo locali (non parte dell'app)
+_serve.js
+node_modules/
+.DS_Store
+Thumbs.db
