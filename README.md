@@ -1,4 +1,4 @@
-# Bond Screener — Antigravity
+# Bond Screener — Antigravity · v1.0.0
 
 App web per analizzare obbligazioni governative/sovranazionali e costruire **bond ladder**,
 evoluzione del notebook Colab "bond screener".
