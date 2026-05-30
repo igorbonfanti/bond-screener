@@ -447,12 +447,19 @@
     const byIsin = new Map(S.allBonds.map(b => [b.isincode, b]));
     const now = new Date();
 
-    // Appaia i bond salvati con i dati correnti
+    // Appaia i bond salvati con i dati correnti.
+    // NB: nei ladder salvati su Firebase le date sono stringhe ISO -> riconverto in Date.
+    const toDate = (v) => v instanceof Date ? v : (v ? new Date(v) : null);
     const pairs = (l.slots || []).filter(s => s.bond).map(s => {
-      const saved = s.bond, cur = byIsin.get(saved.isincode) || null;
-      return { step: s.step, target: s.target, saved, cur };
+      const saved = { ...s.bond, redemptiondate: toDate(s.bond.redemptiondate) };
+      const cur = byIsin.get(saved.isincode) || null;
+      return { step: s.step, target: toDate(s.target), saved, cur };
     });
     const present = pairs.filter(p => p.cur);
+    const card0 = $('compareCard'); card0.classList.remove('hidden');
+    $('compareTitle').textContent = `Confronto nel tempo · ${l.name}`;
+    if (!pairs.length) { $('compareBody').innerHTML = '<div class="muted">Questo ladder non contiene bond da confrontare.</div>'; return; }
+    if (!present.length) { $('compareBody').innerHTML = '<div class="warn-item">Nessuno dei bond salvati è presente nei dati correnti (probabile scadenza o file diverso). Carica i dati del periodo giusto al passo 1.</div>'; return; }
 
     // Medie aggregate (solo bond ancora presenti, confronto omogeneo)
     const avg = (arr, pick) => arr.length ? arr.reduce((a, p) => a + (pick(p) || 0), 0) / arr.length : NaN;
