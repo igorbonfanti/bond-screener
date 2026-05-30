@@ -141,6 +141,19 @@
         </div>
         <div class="metrics" id="ladderMetrics"></div>
         <div id="divWarnings" class="warnings"></div>
+
+        <div class="invest-bar">
+          <div class="fld"><label>Importo totale da investire (€)</label><input id="investAmount" type="number" min="0" step="1000" placeholder="es. 60000" class="input-standard"></div>
+          <div class="fld"><label>Frequenza cedole</label>
+            <select id="couponFreq" class="input-standard">
+              <option value="auto">Auto (IT/US/UK semestrali, resto annuali)</option>
+              <option value="1">Tutte annuali</option>
+              <option value="2">Tutte semestrali</option>
+            </select>
+          </div>
+          <span id="investInfo" class="muted-inline"></span>
+        </div>
+
         <div class="table-wrap"><table id="ladderTable"></table></div>
 
         <div class="charts-grid">

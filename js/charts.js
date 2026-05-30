@@ -27,11 +27,17 @@ const BSCharts = (() => {
     ...extra
   });
 
-  // cedola: normalizza a percentuale (alcuni file la danno in frazione: 0.02 = 2%)
-  function couponPct(b) {
+  // cedola annua per 100 nominale (%). scale = fattore dataset (1 o 100), vedi BSData.couponScale
+  function couponPct(b, scale) {
     const c = b.currentcouponrate;
     if (!isFinite(c)) return 0;
-    return c > 0 && c <= 1 ? c * 100 : c;
+    return c * (scale || 1);
+  }
+  // fallback se non viene passata una scala esplicita
+  function couponScaleLocal(bonds) {
+    let mx = 0, seen = false;
+    bonds.forEach(b => { const c = Math.abs(b.currentcouponrate); if (isFinite(c) && c > 0) { seen = true; if (c > mx) mx = c; } });
+    return seen && mx < 0.5 ? 100 : 1;
   }
 
   /* Distribuzione rendimenti (istogramma) dell'universo filtrato */
@@ -76,16 +82,17 @@ const BSCharts = (() => {
   }
 
   /* Flussi cedolari + rimborsi per anno (nominale 100 per bond) */
-  function cashflow(id, slots) {
+  function cashflow(id, slots, scale) {
     destroy(id);
     const bonds = slots.map(s => s.bond).filter(Boolean);
     if (!bonds.length) { return; }
+    scale = scale || couponScaleLocal(bonds);
     const byYearCoupon = {}, byYearRedeem = {};
     const thisYear = new Date().getFullYear();
     bonds.forEach(b => {
       if (!(b.redemptiondate instanceof Date)) return;
       const endY = b.redemptiondate.getFullYear();
-      const cpn = couponPct(b);
+      const cpn = couponPct(b, scale);
       for (let y = thisYear; y <= endY; y++) byYearCoupon[y] = (byYearCoupon[y] || 0) + cpn;
       byYearRedeem[endY] = (byYearRedeem[endY] || 0) + 100;
     });
@@ -124,36 +131,56 @@ const BSCharts = (() => {
   }
 
   /* Cedole mensili su 1 anno in regime perpetuo (bond reinvestiti identici).
-     Cedola annuale incassata nel mese di scadenza/anniversario. Niente rimborsi capitale. */
+     - opts.amount: importo totale investito (€), ripartito equamente sui gradini.
+       Se 0 -> cedole "per 100 nominale".
+     - opts.freqMode: 'auto' (IT/US/UK semestrali), '1' (annuali), '2' (semestrali).
+     Le cedole semestrali sono divise nei due mesi effettivi (scadenza e scadenza-6m).
+     Niente rimborsi di capitale. */
   const MESI = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
-  function monthlyCoupons(id, slots) {
+  const SEMI = new Set(['IT', 'US', 'GB', 'UK']); // emittenti tipicamente a cedola semestrale
+  function freqFor(country, mode) { return mode === '1' ? 1 : mode === '2' ? 2 : (SEMI.has(country) ? 2 : 1); }
+
+  function monthlyCoupons(id, slots, opts) {
     destroy(id);
+    opts = opts || {};
+    const amount = +opts.amount > 0 ? +opts.amount : 0;
+    const mode = opts.freqMode || 'auto';
     const bonds = slots.map(s => s.bond).filter(Boolean);
+    const scale = opts.scale || couponScaleLocal(bonds);
+    const perRung = amount > 0 && bonds.length ? amount / bonds.length : 0;
     const months = new Array(12).fill(0);
     const detail = Array.from({ length: 12 }, () => []);
+
     bonds.forEach(b => {
-      const cpn = couponPct(b);
+      const cpn = couponPct(b, scale);                   // cedola annua per 100 nominale (%)
       if (!cpn || !(b.redemptiondate instanceof Date)) return;
+      const price = isFinite(b.price) && b.price > 0 ? b.price : 100;
+      // cedola annua: in € se ho l'importo, altrimenti per 100 nominale
+      const annual = perRung > 0 ? perRung * cpn / price : cpn;
+      const f = freqFor(b._country, mode);
+      const pay = annual / f;
       const m = b.redemptiondate.getMonth();
-      months[m] += cpn;
-      detail[m].push(`${b.description || b.isincode}: ${cpn.toFixed(2)}`);
+      const payMonths = f === 2 ? [m, (m + 6) % 12] : [m];
+      payMonths.forEach(pm => { months[pm] += pay; detail[pm].push(`${b.description || b.isincode} (${f === 2 ? 'sem' : 'ann'}): ${pay.toFixed(2)}`); });
     });
-    const annuo = months.reduce((a, v) => a + v, 0);
+
+    const annualTot = months.reduce((a, v) => a + v, 0);
+    const unit = perRung > 0 ? '€' : 'per 100 nom.';
     reg[id] = new Chart(ctx(id), {
       type: 'bar',
-      data: { labels: MESI, datasets: [{ label: 'Cedole / mese (per 100 nom.)', data: months.map(v => +v.toFixed(2)), backgroundColor: C.green, borderRadius: 3 }] },
+      data: { labels: MESI, datasets: [{ label: `Cedole / mese (${unit})`, data: months.map(v => +v.toFixed(2)), backgroundColor: C.green, borderRadius: 3 }] },
       options: baseOpts({
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: {
-            label: (it) => `${it.parsed.y.toFixed(2)} per 100 nominale`,
-            afterBody: (items) => detail[items[0].dataIndex].slice(0, 8)
+            label: (it) => `${it.parsed.y.toFixed(2)} ${unit === '€' ? '€' : 'per 100 nom.'}`,
+            afterBody: (items) => detail[items[0].dataIndex].slice(0, 10)
           } },
-          title: { display: true, text: `Totale annuo: ${annuo.toFixed(2)} per 100 nom.`, color: C.text, font: { size: 11, family: 'JetBrains Mono' } }
+          title: { display: true, text: `Totale annuo: ${annualTot.toFixed(unit === '€' ? 0 : 2)} ${unit}`, color: C.text, font: { size: 11, family: 'JetBrains Mono' } }
         }
       })
     });
-    return annuo;
+    return { annual: annualTot, perRung, unit, count: bonds.length };
   }
 
   /* Confronto: rendimento salvato vs attuale, barre affiancate per gradino */

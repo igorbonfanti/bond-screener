@@ -8,7 +8,7 @@
   const S = {
     allBonds: [], columns: [], referenceDate: null,
     filtered: [], currentFile: null, snapshotId: null, snapshotName: null,
-    facets: null, perStep: [], slots: [], ladderType: null,
+    facets: null, perStep: [], slots: [], ladderType: null, couponScale: 1,
     sort: { key: 'grossytm', dir: -1 }
   };
 
@@ -66,6 +66,8 @@
     // Ladder
     $('buildGreedyBtn').addEventListener('click', () => buildLadder('greedy'));
     $('buildOptBtn').addEventListener('click', () => buildLadder('ottimizzato'));
+    $('investAmount').addEventListener('input', updateCashflow);
+    $('couponFreq').addEventListener('change', updateCashflow);
     $('saveLadderBtn').addEventListener('click', saveLadder);
     $('exportLadderBtn').addEventListener('click', () => {
       if (!S.slots.length) return toast('Nessun ladder', 'err');
@@ -100,6 +102,7 @@
       if (!bonds.length) return toast('Nessun bond valido trovato nel file', 'err');
       S.allBonds = bonds; S.columns = columns; S.referenceDate = referenceDate;
       S.currentFile = file; S.snapshotId = null; S.snapshotName = file.name;
+      S.couponScale = BSData.couponScale(bonds);
       S.facets = BSFilters.facets(bonds);
       populateFilterFacets();
       renderUploadSummary(rowCount, rawCount, referenceDate, file.name, true);
@@ -324,9 +327,9 @@
       metricCard('Cedola media', fmtNum(m.avgCoupon), '')
     ].join('');
     renderWarnings(m);
-    BSCharts.monthlyCoupons('chartMonthly', S.slots);
+    updateCashflow();
     BSCharts.ladderTimeline('chartTimeline', S.slots);
-    BSCharts.cashflow('chartCashflow', S.slots);
+    BSCharts.cashflow('chartCashflow', S.slots, S.couponScale);
     const expo = BSLadder.exposure(S.slots);
     BSCharts.exposurePie('chartCountry', expo.byCountry);
     BSCharts.exposurePie('chartIssuer', expo.byIssuer);
@@ -334,6 +337,20 @@
 
   function metricCard(label, value, cls) {
     return `<div class="metric ${cls}"><div class="m-label">${label}</div><div class="m-value">${value}</div></div>`;
+  }
+
+  // Ricalcola il grafico cedole mensili in base a importo investito e frequenza
+  function updateCashflow() {
+    if (!S.slots.length) return;
+    const amount = parseFloat($('investAmount').value) || 0;
+    const freqMode = $('couponFreq').value;
+    const r = BSCharts.monthlyCoupons('chartMonthly', S.slots, { amount, freqMode, scale: S.couponScale });
+    const info = $('investInfo');
+    if (amount > 0 && r.count) {
+      info.textContent = `≈ €${fmtNum(r.perRung, 0)}/gradino · cedole annue ≈ €${fmtNum(r.annual, 0)} · media €${fmtNum(r.annual / 12, 0)}/mese`;
+    } else {
+      info.textContent = 'Inserisci l’importo per vedere le cedole in euro (ora: per 100 nominale).';
+    }
   }
 
   function renderWarnings(m) {
@@ -402,6 +419,7 @@
           const { bonds, columns } = await BSStore.loadSnapshotBonds(s);
           S.allBonds = bonds; S.columns = columns; S.referenceDate = s.referenceDate;
           S.currentFile = null; S.snapshotId = s.id; S.snapshotName = s.name;
+          S.couponScale = BSData.couponScale(bonds);
           S.facets = BSFilters.facets(bonds);
           populateFilterFacets(); updateTopbar();
           renderUploadSummary(bonds.length, bonds.length, s.referenceDate, s.name, false);

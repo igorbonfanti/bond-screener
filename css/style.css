@@ -131,6 +131,12 @@ select.input-standard[multiple] option:checked { background: var(--accent) linea
 .savail.zero { border-color: var(--red-border); background: var(--red-bg); color: var(--red); }
 .savail b { color: var(--accent); }
 
+/* ---------- Invest bar (cedole) ---------- */
+.invest-bar { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); }
+.invest-bar .fld { min-width: 180px; }
+.invest-bar .input-standard { font-family: 'JetBrains Mono', monospace; }
+.invest-bar #investInfo { font-family: 'JetBrains Mono', monospace; color: var(--green); margin-left: 0; padding-bottom: 9px; }
+
 /* ---------- Metrics ---------- */
 .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px; }
 .metric { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }

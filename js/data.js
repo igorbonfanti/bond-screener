@@ -157,6 +157,17 @@ const BSData = (() => {
     return { bonds, columns, referenceDate };
   }
 
+  // Rileva la convenzione delle cedole sull'intero dataset:
+  // 100 se sono frazioni (es. 0,02 = 2%), 1 se sono già in percentuale (es. 2,2 = 2,2%).
+  function couponScale(bonds) {
+    let mx = 0, seen = false;
+    for (const b of bonds || []) {
+      const c = Math.abs(b.currentcouponrate);
+      if (isFinite(c) && c > 0) { seen = true; if (c > mx) mx = c; }
+    }
+    return seen && mx < 0.5 ? 100 : 1;
+  }
+
   // Pipeline completa: file -> {bonds, columns, referenceDate, rowCount}
   async function load(file) {
     const rawRows = await readFile(file);
@@ -186,7 +197,7 @@ const BSData = (() => {
 
   return {
     NUMERIC_COLS, DATE_COLS, RATING_MAP, RATING_ORDER,
-    toNum, toDate, countryFromIssuer,
+    toNum, toDate, countryFromIssuer, couponScale,
     load, normalizeRows, reviveBonds, serializeBonds
   };
 })();
