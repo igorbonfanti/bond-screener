@@ -7,7 +7,7 @@ const BSExport = (() => {
   const fmtDate = (d) => d instanceof Date ? d.toLocaleDateString('it-IT') :
     (d ? new Date(d).toLocaleDateString('it-IT') : '');
 
-  function ladderRows(slots) {
+  function ladderRows(slots, scale) {
     return slots.map(s => ({
       Step: s.step,
       'Scadenza target': fmtDate(s.target),
@@ -18,22 +18,23 @@ const BSExport = (() => {
       Paese: s.bond ? s.bond._country : '',
       'Yield %': s.bond ? round(s.bond.grossytm) : '',
       Duration: s.bond ? round(s.bond.grossduration) : '',
-      'Cedola': s.bond ? round(s.bond.currentcouponrate) : '',
+      'Cedola %': s.bond ? round(s.bond.currentcouponrate * scale) : '',
       Rating: s.bond ? s.bond.ratingsp : '',
       Prezzo: s.bond ? round(s.bond.price) : ''
     }));
   }
   const round = (n) => isFinite(n) ? Math.round(n * 10000) / 10000 : '';
 
-  function ladder(slots, metrics, params, name) {
+  function ladder(slots, metrics, params, name, scale) {
+    scale = scale || 1;
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ladderRows(slots)), 'Bond Ladder');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ladderRows(slots, scale)), 'Bond Ladder');
 
     const metr = [
       { Metrica: 'Bond inseriti', Valore: `${metrics.count} / ${metrics.total}` },
       { Metrica: 'Yield medio %', Valore: round(metrics.avgYield) },
       { Metrica: 'Duration media', Valore: round(metrics.avgDuration) },
-      { Metrica: 'Cedola media', Valore: round(metrics.avgCoupon) }
+      { Metrica: 'Cedola media %', Valore: round(metrics.avgCoupon * scale) }
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(metr), 'Metriche');
 
@@ -44,12 +45,14 @@ const BSExport = (() => {
     XLSX.writeFile(wb, `${safe}.xlsx`);
   }
 
-  function universe(bonds, cols) {
+  function universe(bonds, cols, scale) {
+    scale = scale || 1;
     const columns = cols && cols.length ? cols : Object.keys(bonds[0] || {}).filter(c => !c.startsWith('_'));
     const rows = bonds.map(b => {
       const r = {};
       columns.forEach(c => {
-        r[c] = b[c] instanceof Date ? fmtDate(b[c]) : b[c];
+        if (c === 'currentcouponrate') r[c] = isFinite(b[c]) ? Math.round(b[c] * scale * 10000) / 10000 : b[c];
+        else r[c] = b[c] instanceof Date ? fmtDate(b[c]) : b[c];
       });
       r.Paese = b._country;
       return r;

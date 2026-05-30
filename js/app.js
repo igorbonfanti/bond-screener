@@ -59,7 +59,7 @@
     $('fSearch').addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
     $('exportUniverseBtn').addEventListener('click', () => {
       if (!S.filtered.length) return toast('Nessun bond da esportare', 'err');
-      BSExport.universe(S.filtered, S.columns);
+      BSExport.universe(S.filtered, S.columns, S.couponScale);
     });
     $('goLadderBtn').addEventListener('click', () => switchTab('ladder'));
 
@@ -71,7 +71,7 @@
     $('saveLadderBtn').addEventListener('click', saveLadder);
     $('exportLadderBtn').addEventListener('click', () => {
       if (!S.slots.length) return toast('Nessun ladder', 'err');
-      BSExport.ladder(S.slots, BSLadder.metrics(S.slots), readParams(), $('ladderName').value || 'bond_ladder');
+      BSExport.ladder(S.slots, BSLadder.metrics(S.slots), readParams(), $('ladderName').value || 'bond_ladder', S.couponScale);
     });
 
     // History
@@ -157,7 +157,8 @@
       yieldMin: $('fYieldMin').value, yieldMax: $('fYieldMax').value,
       couponMin: $('fCpnMin').value, couponMax: $('fCpnMax').value,
       volumeMin: $('fVolMin').value, volumeMax: $('fVolMax').value,
-      ratingMin: $('fRating').value, search: $('fSearch').value
+      ratingMin: $('fRating').value, search: $('fSearch').value,
+      couponScale: S.couponScale
     };
   }
 
@@ -229,6 +230,8 @@
 
   function cell(b, c) {
     const v = b[c.k];
+    // la cedola è mostrata in percentuale (scala dataset), coerente col filtro
+    if (c.k === 'currentcouponrate') return `<td class="num">${fmtNum((v || 0) * S.couponScale)}</td>`;
     if (c.t === 'num') return `<td class="num">${fmtNum(v)}</td>`;
     if (c.t === 'date') return `<td class="mono">${fmtDate(v)}</td>`;
     if (c.t === 'rating') return `<td><span class="rating-badge ${ratingClass(b._ratingScore)}">${esc(v || '—')}</span></td>`;
@@ -324,7 +327,7 @@
       metricCard('Step riempiti', `${m.count}/${m.total}`, m.complete ? 'ok' : 'warn'),
       metricCard('Yield medio', fmtNum(m.avgYield) + '%', ''),
       metricCard('Duration media', fmtNum(m.avgDuration), ''),
-      metricCard('Cedola media', fmtNum(m.avgCoupon), '')
+      metricCard('Cedola media', fmtNum(m.avgCoupon * S.couponScale) + '%', '')
     ].join('');
     renderWarnings(m);
     updateCashflow();

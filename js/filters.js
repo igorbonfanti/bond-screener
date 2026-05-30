@@ -72,9 +72,12 @@ const BSFilters = (() => {
     const yMax = num(f.yieldMax);
     if (yMax != null) { cur = cur.filter(b => isFinite(b.grossytm) && b.grossytm <= yMax); push('Yield max'); }
 
+    // La cedola si filtra in percentuale (es. 2 = 2%) confrontandola con il valore
+    // del dataset riportato alla stessa scala (frazione 0,02 -> 2%).
+    const cScale = f.couponScale || 1;
     const cMin = num(f.couponMin), cMax = num(f.couponMax);
-    if (cMin != null) { cur = cur.filter(b => isFinite(b.currentcouponrate) && b.currentcouponrate >= cMin); push('Cedola min'); }
-    if (cMax != null) { cur = cur.filter(b => isFinite(b.currentcouponrate) && b.currentcouponrate <= cMax); push('Cedola max'); }
+    if (cMin != null) { cur = cur.filter(b => isFinite(b.currentcouponrate) && b.currentcouponrate * cScale >= cMin); push('Cedola min'); }
+    if (cMax != null) { cur = cur.filter(b => isFinite(b.currentcouponrate) && b.currentcouponrate * cScale <= cMax); push('Cedola max'); }
 
     const vMin = num(f.volumeMin), vMax = num(f.volumeMax);
     if (vMin != null) { cur = cur.filter(b => isFinite(b.volumevalue) && b.volumevalue >= vMin); push('Volume min'); }

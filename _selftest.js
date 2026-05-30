@@ -43,6 +43,13 @@ const { result } = BSFilters.apply(bonds, { issuers: [], currencies: ['EUR'], yi
 ok(result.every(b => b.grossytm >= 2.5), 'filtro yieldMin');
 ok(result[0].grossytm >= result[result.length - 1].grossytm, 'ordinamento yield desc');
 
+/* --- filtro cedola con scala dataset (cedole in frazione 0.03 = 3%) --- */
+ok(BSData.couponScale(bonds) === 100, 'couponScale rileva frazioni (0.03 -> scala 100)');
+ok(BSFilters.apply(bonds, { couponMin: '2', couponScale: 100 }).result.length === bonds.length, 'cedola min 2% passa tutti (3%)');
+ok(BSFilters.apply(bonds, { couponMin: '4', couponScale: 100 }).result.length === 0, 'cedola min 4% esclude tutto (3%)');
+ok(BSFilters.apply(bonds, { couponMax: '2', couponScale: 100 }).result.length === 0, 'cedola max 2% esclude tutto (3%)');
+ok(BSFilters.apply(bonds, { couponMin: '2', couponMax: '4', couponScale: 100 }).result.length === bonds.length, 'cedola 2-4% include 3%');
+
 const params = { numeroStep: 6, intervalloMesi: 12, primaScadenza: '5/2027', maxBondPerEmittente: 1, maxBondPerPaese: 99, giorniTolleranza: 120, ratingMin: 'BBB+' };
 
 /* --- target dates --- */
