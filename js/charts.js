@@ -123,6 +123,39 @@ const BSCharts = (() => {
     });
   }
 
+  /* Cedole mensili su 1 anno in regime perpetuo (bond reinvestiti identici).
+     Cedola annuale incassata nel mese di scadenza/anniversario. Niente rimborsi capitale. */
+  const MESI = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+  function monthlyCoupons(id, slots) {
+    destroy(id);
+    const bonds = slots.map(s => s.bond).filter(Boolean);
+    const months = new Array(12).fill(0);
+    const detail = Array.from({ length: 12 }, () => []);
+    bonds.forEach(b => {
+      const cpn = couponPct(b);
+      if (!cpn || !(b.redemptiondate instanceof Date)) return;
+      const m = b.redemptiondate.getMonth();
+      months[m] += cpn;
+      detail[m].push(`${b.description || b.isincode}: ${cpn.toFixed(2)}`);
+    });
+    const annuo = months.reduce((a, v) => a + v, 0);
+    reg[id] = new Chart(ctx(id), {
+      type: 'bar',
+      data: { labels: MESI, datasets: [{ label: 'Cedole / mese (per 100 nom.)', data: months.map(v => +v.toFixed(2)), backgroundColor: C.green, borderRadius: 3 }] },
+      options: baseOpts({
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (it) => `${it.parsed.y.toFixed(2)} per 100 nominale`,
+            afterBody: (items) => detail[items[0].dataIndex].slice(0, 8)
+          } },
+          title: { display: true, text: `Totale annuo: ${annuo.toFixed(2)} per 100 nom.`, color: C.text, font: { size: 11, family: 'JetBrains Mono' } }
+        }
+      })
+    });
+    return annuo;
+  }
+
   /* Confronto: rendimento salvato vs attuale, barre affiancate per gradino */
   function compareBars(id, rungs) {
     destroy(id);
@@ -142,5 +175,5 @@ const BSCharts = (() => {
 
   function destroyAll() { Object.keys(reg).forEach(destroy); }
 
-  return { yieldDistribution, ladderTimeline, cashflow, exposurePie, compareBars, destroyAll, couponPct };
+  return { yieldDistribution, ladderTimeline, cashflow, monthlyCoupons, exposurePie, compareBars, destroyAll, couponPct };
 })();

@@ -324,6 +324,7 @@
       metricCard('Cedola media', fmtNum(m.avgCoupon), '')
     ].join('');
     renderWarnings(m);
+    BSCharts.monthlyCoupons('chartMonthly', S.slots);
     BSCharts.ladderTimeline('chartTimeline', S.slots);
     BSCharts.cashflow('chartCashflow', S.slots);
     const expo = BSLadder.exposure(S.slots);
