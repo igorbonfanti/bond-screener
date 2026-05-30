@@ -123,7 +123,24 @@ const BSCharts = (() => {
     });
   }
 
+  /* Confronto: rendimento salvato vs attuale, barre affiancate per gradino */
+  function compareBars(id, rungs) {
+    destroy(id);
+    if (!rungs || !rungs.length) return;
+    reg[id] = new Chart(ctx(id), {
+      type: 'bar',
+      data: {
+        labels: rungs.map(r => r.label),
+        datasets: [
+          { label: 'Yield salvato %', data: rungs.map(r => r.yThen), backgroundColor: C.text3, borderRadius: 3 },
+          { label: 'Yield oggi %', data: rungs.map(r => isFinite(r.yNow) ? r.yNow : null), backgroundColor: C.accent, borderRadius: 3 }
+        ]
+      },
+      options: baseOpts()
+    });
+  }
+
   function destroyAll() { Object.keys(reg).forEach(destroy); }
 
-  return { yieldDistribution, ladderTimeline, cashflow, exposurePie, destroyAll, couponPct };
+  return { yieldDistribution, ladderTimeline, cashflow, exposurePie, compareBars, destroyAll, couponPct };
 })();

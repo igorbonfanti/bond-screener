@@ -445,34 +445,92 @@
   function compareLadder(l) {
     if (!S.allBonds.length) return toast('Carica/seleziona prima i dati correnti (passo 1)', 'err');
     const byIsin = new Map(S.allBonds.map(b => [b.isincode, b]));
-    const rows = (l.slots || []).filter(s => s.bond).map(s => {
-      const saved = s.bond, cur = byIsin.get(saved.isincode);
-      return { saved, cur };
+    const now = new Date();
+
+    // Appaia i bond salvati con i dati correnti
+    const pairs = (l.slots || []).filter(s => s.bond).map(s => {
+      const saved = s.bond, cur = byIsin.get(saved.isincode) || null;
+      return { step: s.step, target: s.target, saved, cur };
     });
+    const present = pairs.filter(p => p.cur);
+
+    // Medie aggregate (solo bond ancora presenti, confronto omogeneo)
+    const avg = (arr, pick) => arr.length ? arr.reduce((a, p) => a + (pick(p) || 0), 0) / arr.length : NaN;
+    const yThen = avg(present, p => p.saved.grossytm), yNow = avg(present, p => p.cur.grossytm);
+    const dThen = avg(present, p => p.saved.grossduration), dNow = avg(present, p => p.cur.grossduration);
+    const pThen = avg(present, p => p.saved.price), pNow = avg(present, p => p.cur.price);
+    const dY = yNow - yThen, dD = dNow - dThen, dP = pNow - pThen;
+    const plPct = isFinite(pThen) && pThen ? (dP / pThen) * 100 : NaN;
+
     const card = $('compareCard'); card.classList.remove('hidden');
-    $('compareTitle').textContent = `Confronto: ${l.name}`;
-    const delta = (a, b) => {
-      if (!isFinite(a) || !isFinite(b)) return '<td class="num">—</td>';
-      const d = a - b, cls = d > 0 ? 'delta-up' : d < 0 ? 'delta-down' : '';
-      return `<td class="num ${cls}">${d > 0 ? '+' : ''}${fmtNum(d)}</td>`;
-    };
-    const body = `<div class="hi-meta" style="margin-bottom:10px">Valori salvati (rif ${fmtDate(l.referenceDate)}) vs dati correnti (rif ${fmtDate(S.referenceDate)})</div>
-      <div class="table-wrap"><table><thead><tr>
-      <th>ISIN</th><th>Descrizione</th>
-      <th class="num">Yield salvato</th><th class="num">Yield ora</th><th class="num">Δ</th>
-      <th class="num">Dur salvata</th><th class="num">Dur ora</th><th class="num">Δ</th>
-      <th class="num">Prezzo salv.</th><th class="num">Prezzo ora</th><th class="num">Δ</th>
-      </tr></thead><tbody>` +
-      rows.map(r => {
-        const c = r.cur;
-        return `<tr><td class="mono">${esc(r.saved.isincode)}</td><td>${esc(r.saved.description)}</td>` +
-          `<td class="num">${fmtNum(r.saved.grossytm)}</td><td class="num">${c ? fmtNum(c.grossytm) : '—'}</td>${c ? delta(c.grossytm, r.saved.grossytm) : '<td class="num">n/d</td>'}` +
-          `<td class="num">${fmtNum(r.saved.grossduration)}</td><td class="num">${c ? fmtNum(c.grossduration) : '—'}</td>${c ? delta(c.grossduration, r.saved.grossduration) : '<td class="num">n/d</td>'}` +
-          `<td class="num">${fmtNum(r.saved.price)}</td><td class="num">${c ? fmtNum(c.price) : '—'}</td>${c ? delta(c.price, r.saved.price) : '<td class="num">n/d</td>'}</tr>`;
-      }).join('') +
-      `</tbody></table></div>`;
-    $('compareBody').innerHTML = body;
+    $('compareTitle').textContent = `Confronto nel tempo · ${l.name}`;
+
+    // --- 1. KPI di sintesi con delta ---
+    const kpi = [
+      deltaCard('Yield medio', yNow, '%', yThen, dY, 'pp', 'neutral'),
+      deltaCard('Duration media', dNow, '', dThen, dD, '', 'neutral'),
+      deltaCard('Prezzo medio (mark-to-market)', pNow, '', pThen, dP, ` pt · ${plPct >= 0 ? '+' : ''}${fmtNum(plPct)}%`, 'price'),
+      `<div class="metric"><div class="m-label">Bond ancora presenti</div><div class="m-value">${present.length}/${pairs.length}</div>` +
+        `<div class="m-delta flat">${pairs.length - present.length} non più nei dati</div></div>`
+    ].join('');
+
+    // --- 2. Interpretazione automatica ---
+    const interp = [];
+    if (dY > 0.05) interp.push(`I rendimenti di mercato sono <b>saliti</b> (${dY >= 0 ? '+' : ''}${fmtNum(dY)} pp): il valore di mercato del ladder è <b>sceso</b> (${fmtNum(dP)} pt, ${fmtNum(plPct)}%) — minusvalenza latente se lo possiedi, ma ricostruendolo oggi otterresti rendimenti più alti.`);
+    else if (dY < -0.05) interp.push(`I rendimenti di mercato sono <b>scesi</b> (${fmtNum(dY)} pp): il valore di mercato del ladder è <b>salito</b> (+${fmtNum(dP)} pt, +${fmtNum(plPct)}%) — plusvalenza latente, ma nuovi acquisti oggi rendono meno.`);
+    else interp.push(`Rendimenti sostanzialmente <b>stabili</b> (${dY >= 0 ? '+' : ''}${fmtNum(dY)} pp): valore di mercato pressoché invariato (${fmtNum(dP)} pt).`);
+    if (isFinite(dD) && dD < -0.02) interp.push(`Duration media in calo da ${fmtNum(dThen)} a ${fmtNum(dNow)}: è il <b>roll-down</b>, le scadenze si avvicinano.`);
+
+    // --- 3. dati per grafico barre ---
+    const rungs = pairs.map(p => ({
+      label: p.target.toLocaleDateString('it-IT', { month: 'short', year: '2-digit' }),
+      yThen: p.saved.grossytm, yNow: p.cur ? p.cur.grossytm : null
+    }));
+
+    // --- 4. righe per gradino, compatte ---
+    const rungRows = pairs.map(p => rungRow(p, now)).join('');
+
+    $('compareBody').innerHTML =
+      `<div class="hi-meta" style="margin-bottom:12px">Salvato il ${fmtDate(l.referenceDate)} → dati correnti ${fmtDate(S.referenceDate)} · confronto sui ${present.length} bond ancora quotati</div>` +
+      `<div class="metrics">${kpi}</div>` +
+      interp.map(t => `<div class="warn-item ${dY > 0.05 ? '' : 'ok'}" style="margin-bottom:6px">${t}</div>`).join('') +
+      `<div class="cmp-legend"><span><i class="lg-box" style="background:var(--text3)"></i> salvato</span><span><i class="lg-box" style="background:var(--accent)"></i> oggi</span><span class="lg-sep">·</span><span class="delta-up">▲ prezzo su = plusvalenza</span><span class="delta-down">▼ prezzo giù = minusvalenza</span></div>` +
+      `<div class="chart-box" style="margin:8px 0 16px"><canvas id="chartCompare"></canvas></div>` +
+      `<div class="cmp-rungs">${rungRows}</div>`;
+
+    BSCharts.compareBars('chartCompare', rungs);
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Card KPI con valore attuale, valore precedente e delta
+  function deltaCard(label, now, unit, then, d, dUnit, mode) {
+    const dir = !isFinite(d) ? 'flat' : d > 0.001 ? 'up' : d < -0.001 ? 'down' : 'flat';
+    // per il prezzo coloriamo verde=su / rosso=giù; per il resto neutro (solo freccia)
+    const cls = mode === 'price' ? (dir === 'up' ? 'gain' : dir === 'down' ? 'loss' : 'flat') : dir;
+    const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '▬';
+    const dTxt = isFinite(d) ? `${arrow} ${d >= 0 ? '+' : ''}${fmtNum(d)}${dUnit}` : '—';
+    return `<div class="metric"><div class="m-label">${label}</div>` +
+      `<div class="m-value">${fmtNum(now)}${unit}</div>` +
+      `<div class="m-delta ${cls}">da ${fmtNum(then)}${unit} · ${dTxt}</div></div>`;
+  }
+
+  function rungRow(p, now) {
+    const s = p.saved, c = p.cur;
+    const head = `<div class="cr-head"><span class="cr-step">Step ${p.step} · ${p.target.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' })}</span>` +
+      `<span class="cr-name mono">${esc(s.isincode)} · ${esc(s.description)} · ${esc(s._country || '')}</span></div>`;
+    if (!c) {
+      const matured = s.redemptiondate && new Date(s.redemptiondate) < now;
+      return `<div class="cmp-rung missing">${head}<div class="cr-note">${matured ? '✓ Scaduto: capitale rimborsato (non più quotato)' : '— Non presente nei dati di oggi'}</div></div>`;
+    }
+    const dy = c.grossytm - s.grossytm, dp = c.price - s.price, dd = c.grossduration - s.grossduration;
+    const yArr = dy > 0.001 ? '▲' : dy < -0.001 ? '▼' : '▬';
+    const pCls = dp > 0.001 ? 'delta-up' : dp < -0.001 ? 'delta-down' : '';
+    const pArr = dp > 0.001 ? '▲' : dp < -0.001 ? '▼' : '▬';
+    return `<div class="cmp-rung">${head}<div class="cr-metrics">` +
+      `<span class="cr-m">Yield <b>${fmtNum(s.grossytm)} → ${fmtNum(c.grossytm)}</b> <span class="cr-tag">${yArr} ${dy >= 0 ? '+' : ''}${fmtNum(dy)}</span></span>` +
+      `<span class="cr-m">Prezzo <b>${fmtNum(s.price)} → ${fmtNum(c.price)}</b> <span class="cr-tag ${pCls}">${pArr} ${dp >= 0 ? '+' : ''}${fmtNum(dp)}</span></span>` +
+      `<span class="cr-m">Duration <b>${fmtNum(s.grossduration)} → ${fmtNum(c.grossduration)}</b> <span class="cr-tag">${dd >= 0 ? '+' : ''}${fmtNum(dd)}</span></span>` +
+      `</div></div>`;
   }
 
   /* ---------------- avvio ---------------- */
