@@ -8,7 +8,7 @@
   const S = {
     allBonds: [], columns: [], referenceDate: null,
     filtered: [], currentFile: null, snapshotId: null, snapshotName: null,
-    facets: null, perStep: [], slots: [], ladderType: null, objective: 'yield', couponScale: 1,
+    facets: null, perStep: [], slots: [], ladderType: null, couponScale: 1,
     sort: { key: 'grossytm', dir: -1 }
   };
 
@@ -248,10 +248,7 @@
       maxBondPerEmittente: parseInt($('pMaxIssuer').value) || Infinity,
       maxBondPerPaese: parseInt($('pMaxCountry').value) || Infinity,
       giorniTolleranza: parseInt($('pTolerance').value) || 0,
-      ratingMin: $('pRating').value,
-      objective: $('pObjective').value,
-      durationMax: $('pDurMax').value === '' ? null : (parseFloat($('pDurMax').value) || null),
-      couponScale: S.couponScale
+      ratingMin: $('pRating').value
     };
   }
 
@@ -262,23 +259,15 @@
 
     const res = type === 'greedy' ? BSLadder.buildGreedy(S.filtered, params) : BSLadder.buildOptimized(S.filtered, params);
     S.perStep = res.perStep; S.slots = res.slots; S.ladderType = type;
-    S.objective = params.objective;
     renderStepAvail(res.perStep);
     $('ladderResultCard').classList.remove('hidden');
-    const objLabel = params.objective === 'cedole' ? 'Cedole nette' : 'Yield';
-    $('ladderTitle').textContent = `Bond Ladder — ${type === 'greedy' ? 'Greedy' : 'Ottimizzato'} · ${objLabel}`;
-    if (!$('ladderName').value) $('ladderName').value = `Ladder ${type} ${objLabel} ${fmtDate(S.referenceDate || new Date())}`;
+    $('ladderTitle').textContent = 'Bond Ladder — ' + (type === 'greedy' ? 'Greedy' : 'Ottimizzato');
+    if (!$('ladderName').value) $('ladderName').value = `Ladder ${type} ${fmtDate(S.referenceDate || new Date())}`;
     renderLadderTable();
     renderLadderAnalytics();
     const m = BSLadder.metrics(S.slots);
-    // hint: equipeso + esposizione massima per emittente + note su duration/troncamento
-    const maxIssExp = isFinite(params.maxBondPerEmittente) ? `≤${fmtNum(params.maxBondPerEmittente / params.numeroStep * 100, 0)}%/emittente` : 'nessun cap emittente';
-    const hints = [`Equipesato: ${fmtNum(100 / params.numeroStep, 1)}%/gradino · ${maxIssExp}`];
-    if (type === 'greedy' && params.durationMax) hints.push('⚠ il vincolo duration vale solo per l\'Ottimizzato');
-    if (params.durationMax && m.avgDuration > params.durationMax + 1e-6) hints.push(`⚠ duration media ${fmtNum(m.avgDuration)} > max ${params.durationMax}: vincolo non rispettabile coi dati`);
-    if (res.exhausted) hints.push('ottimizzazione troncata: risultato near-ottimo');
-    $('ladderHint').textContent = hints.join(' · ');
-    toast(`Ladder ${type} (${objLabel}): ${m.count}/${m.total} step`, m.complete ? 'ok' : '');
+    $('ladderHint').textContent = res.exhausted ? 'Ottimizzazione troncata (spazio molto grande): risultato near-ottimo.' : '';
+    toast(`Ladder ${type}: ${m.count}/${m.total} step riempiti`, m.complete ? 'ok' : '');
     $('ladderResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -334,13 +323,10 @@
 
   function renderLadderAnalytics() {
     const m = BSLadder.metrics(S.slots);
-    const durMax = $('pDurMax').value === '' ? null : parseFloat($('pDurMax').value);
-    const durCls = (durMax && m.avgDuration > durMax + 1e-6) ? 'warn' : '';
     $('ladderMetrics').innerHTML = [
       metricCard('Step riempiti', `${m.count}/${m.total}`, m.complete ? 'ok' : 'warn'),
-      metricCard('Yield lordo medio', fmtNum(m.avgYield) + '%', ''),
-      metricCard('Yield netto medio', fmtNum(m.avgNetYield) + '%', ''),
-      metricCard('Duration portafoglio', fmtNum(m.avgDuration) + (durMax ? ` / ${durMax}` : ''), durCls),
+      metricCard('Yield medio', fmtNum(m.avgYield) + '%', ''),
+      metricCard('Duration media', fmtNum(m.avgDuration), ''),
       metricCard('Cedola media', fmtNum(m.avgCoupon * S.couponScale) + '%', '')
     ].join('');
     renderWarnings(m);
@@ -366,29 +352,7 @@
     if (amount > 0 && r.count) {
       info.textContent = `≈ €${fmtNum(r.perRung, 0)}/gradino · cedole annue ≈ €${fmtNum(r.annual, 0)} · media €${fmtNum(r.annual / 12, 0)}/mese`;
     } else {
-      info.textContent = 'Inserisci l’importo per vedere le cedole nette in euro (ora: per 100 nominale).';
-    }
-    renderCouponReport(amount);
-  }
-
-  // Report cedolare netto: lordo / imposta / netto (€ se c'è budget) + rendimento cedolare
-  function renderCouponReport(amount) {
-    const el = $('couponReport');
-    if (!S.slots.length) { el.innerHTML = ''; return; }
-    const rep = BSLadder.couponReport(S.slots, { budget: amount, couponScale: S.couponScale });
-    if (amount > 0) {
-      el.innerHTML = [
-        metricCard('Cedola lorda annua', '€' + fmtNum(rep.grossCoupon, 0), ''),
-        metricCard('Imposta annua', '−€' + fmtNum(rep.tax, 0), 'warn'),
-        metricCard('Cedola netta annua', '€' + fmtNum(rep.netCoupon, 0), 'ok'),
-        metricCard('Rendita netta / mese', '€' + fmtNum(rep.netCoupon / 12, 0), ''),
-        metricCard('Rend. cedolare netto', fmtNum(rep.netCurrentYield) + '%', '')
-      ].join('');
-    } else {
-      el.innerHTML = [
-        metricCard('Rend. cedolare lordo', fmtNum(rep.grossCurrentYield) + '%', ''),
-        metricCard('Rend. cedolare netto', fmtNum(rep.netCurrentYield) + '%', 'ok')
-      ].join('');
+      info.textContent = 'Inserisci l’importo per vedere le cedole in euro (ora: per 100 nominale).';
     }
   }
 
@@ -396,12 +360,9 @@
     const w = [];
     if (!m.complete) w.push({ t: `${m.total - m.count} step senza bond: amplia tolleranza o allenta i filtri.`, ok: false });
     const expo = BSLadder.exposure(S.slots);
-    expo.byCountry.forEach(e => { if (e.share > 0.4 && expo.n > 2) w.push({ t: `Concentrazione paese ${e.key}: ${Math.round(e.share * 100)}% del portafoglio (${e.count} bond).`, ok: false }); });
-    expo.byIssuer.forEach(e => { if (e.count > 1) w.push({ t: `Emittente ${e.key}: ${e.count} bond = ${Math.round(e.share * 100)}% del portafoglio.`, ok: false }); });
-    if (!w.length && m.complete) {
-      const maxIss = expo.byIssuer[0], maxC = expo.byCountry[0];
-      w.push({ t: `Ladder completo e diversificato · max emittente ${maxIss ? Math.round(maxIss.share * 100) : 0}% · max paese ${maxC ? Math.round(maxC.share * 100) : 0}%.`, ok: true });
-    }
+    expo.byCountry.forEach(e => { if (e.share > 0.4 && expo.n > 2) w.push({ t: `Concentrazione paese ${e.key}: ${Math.round(e.share * 100)}% del ladder.`, ok: false }); });
+    expo.byIssuer.forEach(e => { if (e.count > 1) w.push({ t: `Emittente ${e.key}: ${e.count} bond nel ladder.`, ok: false }); });
+    if (!w.length && m.complete) w.push({ t: 'Ladder completo e ben diversificato.', ok: true });
     $('divWarnings').innerHTML = w.map(x => `<div class="warn-item ${x.ok ? 'ok' : ''}">${esc(x.t)}</div>`).join('');
   }
 

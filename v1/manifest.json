@@ -1,7 +1,7 @@
 {
   "name": "Bond Screener — Antigravity",
   "short_name": "Bond Screener",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Screener obbligazioni governative e costruttore di bond ladder",
   "start_url": "./",
   "scope": "./",

@@ -1,18 +1,7 @@
-# Bond Screener — Antigravity · v2.0.0
+# Bond Screener — Antigravity · v1.0.0
 
 App web per analizzare obbligazioni governative/sovranazionali e costruire **bond ladder**,
 evoluzione del notebook Colab "bond screener".
-
-> La versione **v1.0.0** congelata resta disponibile nella sottocartella [`/v1/`](./v1/) (e nel tag git `v1.0.0`).
-
-## Novità v2.0.0
-- **Obiettivo selezionabile** nel ladder: *Massimizza Yield totale* oppure *Massimizza Cedole nette*
-  (ottimizzazione lessicografica: a parità di cedola netta sceglie lo yield più alto).
-- **Vincolo di duration media di portafoglio** (≤ X anni) nell'ottimizzatore (branch & bound).
-- **Cedola netta** calcolata per bond: 12,5% per titoli di Stato/sovranazionali whitelist, 26% altrimenti;
-  report con lordo · imposta · netto in € e rendita mensile.
-- **Esposizione in %** per emittente/paese (con l'equipeso, max bond/emittente = cap di esposizione).
-- Sempre **equipesato** per gradino (distribuzione del rischio robusta).
 
 ## Cosa fa
 1. **Dati & Filtri** — carichi il file bond aggiornato (CSV `;` o Excel), l'app pulisce i dati

@@ -56,5 +56,18 @@ ok(isinDupO.size === om.count, 'optimized nessun ISIN duplicato');
 const issC = {}; o.slots.forEach(s => { if (s.bond) issC[s.bond.issuercode] = (issC[s.bond.issuercode] || 0) + 1; });
 ok(Object.values(issC).every(v => v <= 1), 'optimized rispetta max 1/emittente');
 
+/* --- v2: obiettivo cedole vs yield + vincolo duration su dati reali --- */
+const oYield = BSLadder.buildOptimized(result, { ...params, objective: 'yield', couponScale: 1 });
+const oCed = BSLadder.buildOptimized(result, { ...params, objective: 'cedole', couponScale: 1 });
+const repC = BSLadder.couponReport(oCed.slots, { budget: 120000, couponScale: 1 });
+const repY = BSLadder.couponReport(oYield.slots, { budget: 120000, couponScale: 1 });
+console.log(`\nCedole nette annue (120k) — obiettivo CEDOLE: €${repC.netCoupon.toFixed(0)} · obiettivo YIELD: €${repY.netCoupon.toFixed(0)}`);
+ok(repC.netCoupon >= repY.netCoupon - 1e-6, 'obiettivo cedole >= cedole nette dell\'obiettivo yield');
+
+const oCap = BSLadder.buildOptimized(result, { ...params, objective: 'cedole', durationMax: 3, couponScale: 1 });
+const mCap = BSLadder.metrics(oCap.slots);
+console.log(`Con durationMax 3: duration media ${mCap.avgDuration.toFixed(2)}, step riempiti ${mCap.count}`);
+ok(mCap.count === 0 || mCap.avgDuration <= 3 + 1e-6, 'vincolo duration media <= 3 rispettato');
+
 console.log(`\n${fail ? 'FAIL ' + fail : 'TUTTO OK'}`);
 process.exit(fail ? 1 : 0);

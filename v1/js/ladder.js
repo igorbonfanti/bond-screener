@@ -1,17 +1,11 @@
 /* ============================================================
-   ladder.js — Costruzione bond ladder (v2)
-   Metodi: Greedy, Ottimizzato (branch & bound), Manuale.
-   Obiettivo selezionabile:
-     - 'yield'  : massimizza il rendimento totale a scadenza (grossytm)
-     - 'cedole' : massimizza la cedola NETTA, e a parità massimizza lo yield
-                  (ottimizzazione lessicografica)
-   Vincolo opzionale: duration MEDIA di portafoglio <= durationMax.
-   Sempre equipesato (capitale uguale per gradino).
+   ladder.js — Costruzione bond ladder
+   Metodi: Greedy (come notebook), Ottimizzato (branch & bound),
+   Manuale. + metriche e analisi di diversificazione.
    ============================================================ */
 const BSLadder = (() => {
 
   const DAY = 86400 * 1000;
-  const W = 1e9; // peso lessicografico: cedola netta primaria, yield secondario
 
   function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0); }
   function addMonths(d, n) { return new Date(d.getFullYear(), d.getMonth() + n, d.getDate()); }
@@ -28,6 +22,7 @@ const BSLadder = (() => {
     return d ? endOfMonth(d) : null;
   }
 
+  // Date di scadenza target del ladder
   function targetDates(params) {
     const first = parseFirstMaturity(params.primaScadenza);
     if (!first) return [];
@@ -36,11 +31,13 @@ const BSLadder = (() => {
     return out;
   }
 
+  // Bond eleggibili (filtro rating S&P minimo)
   function eligibleByRating(bonds, ratingMin) {
     const min = ratingMin ? (BSData.RATING_MAP[ratingMin] || 0) : 0;
     return bonds.filter(b => b._ratingScore >= min);
   }
 
+  // Per ogni target, i bond entro la finestra ±tolleranza (ordinati per yield desc)
   function bondsPerStep(eligible, targets, giorniTolleranza) {
     const tol = giorniTolleranza * DAY;
     return targets.map((t, i) => {
@@ -52,32 +49,10 @@ const BSLadder = (() => {
     });
   }
 
-  /* ---------------- fiscalità e cedole ---------------- */
-
-  // Aliquota: 12,5% per titoli di Stato / sovranazionali whitelist, 26% altrimenti
-  function taxRate(b) { return /^(GOV|SOV)[_\-]/i.test(b.issuercode || '') ? 0.125 : 0.26; }
-
-  // Rendimento cedolare corrente LORDO (%) = cedola annua / prezzo
-  function grossCurrentYield(b, couponScale) {
-    const price = isFinite(b.price) && b.price > 0 ? b.price : 100;
-    const cpn = (isFinite(b.currentcouponrate) ? b.currentcouponrate : 0) * (couponScale || 1); // % per 100 nom.
-    return cpn / price * 100;
-  }
-  // Punteggio cedolare NETTO per bond (proporzionale al reddito netto a parità di capitale)
-  function netCouponScore(b, couponScale) { return grossCurrentYield(b, couponScale) * (1 - taxRate(b)); }
-
-  // Valore di un bond secondo l'obiettivo (con tie-break lessicografico per le cedole)
-  function valueOf(b, objective, couponScale) {
-    if (objective === 'cedole') return netCouponScore(b, couponScale) * W + (b.grossytm || 0);
-    return (b.grossytm || 0);
-  }
-
   /* ---------------- GREEDY ---------------- */
-  // Sceglie per ogni gradino il bond "migliore" secondo l'obiettivo (miope).
-  // NB: non garantisce il vincolo di duration di portafoglio (usa l'Ottimizzato per quello).
+  // Ritorna array di slot {step, target, bond|null}. A differenza del notebook
+  // non azzera tutto se uno step fallisce: mostra gli slot vuoti.
   function buildGreedy(bonds, params) {
-    const obj = params.objective || 'yield';
-    const cs = params.couponScale || 1;
     const eligible = eligibleByRating(bonds, params.ratingMin);
     const targets = targetDates(params);
     const perStep = bondsPerStep(eligible, targets, params.giorniTolleranza);
@@ -87,13 +62,12 @@ const BSLadder = (() => {
     const maxCnt = params.maxBondPerPaese || Infinity;
 
     const slots = perStep.map(s => {
-      const ordered = s.bonds.slice().sort((a, b) => valueOf(b, obj, cs) - valueOf(a, obj, cs));
       let pick = null;
-      for (const b of ordered) {
+      for (const b of s.bonds) {
         if (usedIsin.has(b.isincode)) continue;
         if ((issuerCount[b.issuercode] || 0) >= maxIss) continue;
         if ((countryCount[b._country] || 0) >= maxCnt) continue;
-        pick = b; break;
+        pick = b; break; // già ordinati per yield desc -> il primo valido è il migliore
       }
       if (pick) {
         usedIsin.add(pick.isincode);
@@ -106,49 +80,41 @@ const BSLadder = (() => {
   }
 
   /* ---------------- OTTIMIZZATO (branch & bound) ---------------- */
-  // Massimizza Σ valueOf scegliendo 1 bond per gradino (o nessuno), ISIN unico,
-  // rispettando cap per emittente/paese e (opz.) duration media <= durationMax.
+  // Massimizza la somma dei rendimenti scegliendo 1 bond per step (o nessuno),
+  // ogni ISIN una sola volta, rispettando i limiti per emittente e per paese.
   function buildOptimized(bonds, params) {
-    const obj = params.objective || 'yield';
-    const cs = params.couponScale || 1;
     const eligible = eligibleByRating(bonds, params.ratingMin);
     const targets = targetDates(params);
     const perStep = bondsPerStep(eligible, targets, params.giorniTolleranza);
     const maxIss = params.maxBondPerEmittente || Infinity;
     const maxCnt = params.maxBondPerPaese || Infinity;
-    const durMax = (params.durationMax != null && isFinite(params.durationMax)) ? +params.durationMax : Infinity;
-    const CAP = 25;
+    const CAP = 25;            // candidati massimi per step
     const NODE_BUDGET = 300000;
-    const N = perStep.length;
 
     // Ordina gli step dal più vincolato (meno candidati) per potare prima
     const order = perStep.map((s, i) => i).sort((a, b) => perStep[a].bonds.length - perStep[b].bonds.length);
-    // Candidati per step ordinati per valore obiettivo desc, troncati a CAP
-    const cand = order.map(i => perStep[i].bonds.slice().sort((a, b) => valueOf(b, obj, cs) - valueOf(a, obj, cs)).slice(0, CAP));
-    // Bound ammissibile: miglior valore residuo
-    const suffixBest = new Array(N + 1).fill(0);
-    for (let k = N - 1; k >= 0; k--) {
-      const top = cand[k].length ? Math.max(0, valueOf(cand[k][0], obj, cs)) : 0;
+    const cand = order.map(i => perStep[i].bonds.slice(0, CAP));
+    // Miglior yield residuo per pruning (bound ammissibile)
+    const suffixBest = new Array(order.length + 1).fill(0);
+    for (let k = order.length - 1; k >= 0; k--) {
+      const top = cand[k].length ? Math.max(0, cand[k][0].grossytm || 0) : 0;
       suffixBest[k] = suffixBest[k + 1] + top;
     }
 
-    let best = { value: -Infinity, choice: null };
+    let best = { sum: -1, choice: null };
     let nodes = 0;
     const issuerCount = {}, countryCount = {};
     const usedIsin = new Set();
-    const choice = new Array(N).fill(null);
+    const choice = new Array(order.length).fill(null);
 
-    function dfs(k, sum, curDur, curCount) {
-      if (++nodes > NODE_BUDGET) return;
-      if (sum + suffixBest[k] <= best.value) return;          // pruning obiettivo
-      if (durMax !== Infinity && curDur > durMax * N) return; // pruning duration (infattibile)
-      if (k === N) {
-        // ammissibile se almeno un bond e duration media <= durMax
-        if (curCount > 0 && (durMax === Infinity || curDur <= durMax * curCount) && sum > best.value) {
-          best = { value: sum, choice: choice.slice() };
-        }
+    function dfs(k, sum) {
+      if (++nodes > NODE_BUDGET) return;            // budget di sicurezza
+      if (sum + suffixBest[k] <= best.sum) return;  // pruning
+      if (k === order.length) {
+        if (sum > best.sum) best = { sum, choice: choice.slice() };
         return;
       }
+      // Opzione: scegli un candidato valido
       for (const b of cand[k]) {
         if (usedIsin.has(b.isincode)) continue;
         if ((issuerCount[b.issuercode] || 0) >= maxIss) continue;
@@ -157,26 +123,28 @@ const BSLadder = (() => {
         issuerCount[b.issuercode] = (issuerCount[b.issuercode] || 0) + 1;
         countryCount[b._country] = (countryCount[b._country] || 0) + 1;
         choice[k] = b;
-        dfs(k + 1, sum + valueOf(b, obj, cs), curDur + (isFinite(b.grossduration) ? b.grossduration : 0), curCount + 1);
+        dfs(k + 1, sum + (b.grossytm || 0));
         choice[k] = null;
         usedIsin.delete(b.isincode);
         issuerCount[b.issuercode]--;
         countryCount[b._country]--;
         if (nodes > NODE_BUDGET) return;
       }
-      // Opzione: gradino vuoto
+      // Opzione: lascia lo step vuoto (necessaria se nessun candidato è collocabile)
       choice[k] = null;
-      dfs(k + 1, sum, curDur, curCount);
+      dfs(k + 1, sum);
     }
-    dfs(0, 0, 0, 0);
+    dfs(0, 0);
 
-    const byOrig = new Array(N).fill(null);
+    // Rimappa le scelte all'ordine originale degli step
+    const byOrig = new Array(perStep.length).fill(null);
     if (best.choice) best.choice.forEach((b, k) => { byOrig[order[k]] = b; });
     const slots = perStep.map((s, i) => ({ step: s.step, target: s.target, bond: byOrig[i], candidates: s.bonds.length }));
-    return { slots, targets, perStep, exhausted: nodes > NODE_BUDGET, feasible: !!best.choice };
+    return { slots, targets, perStep, exhausted: nodes > NODE_BUDGET };
   }
 
   /* ---------------- MANUALE ---------------- */
+  // selections: array di ISIN (o '') per step. perStep dal calcolo corrente.
   function buildManual(selections, perStep) {
     return perStep.map((s, i) => {
       const isin = selections[i];
@@ -194,44 +162,10 @@ const BSLadder = (() => {
       count: n,
       total: slots.length,
       avgYield: mean('grossytm'),
-      avgNetYield: mean('netytm'),
       avgDuration: mean('grossduration'),
       avgCoupon: mean('currentcouponrate'),
       totalYield: bonds.reduce((a, b) => a + (b.grossytm || 0), 0),
       complete: n === slots.length && slots.length > 0
-    };
-  }
-
-  // Report cedolare (lordo/imposta/netto) — in € se passi budget, sempre in % di portafoglio
-  function couponReport(slots, opts) {
-    opts = opts || {};
-    const cs = opts.couponScale || 1;
-    const budget = +opts.budget > 0 ? +opts.budget : 0;
-    const bonds = slots.map(s => s.bond).filter(Boolean);
-    const n = bonds.length;
-    const perRung = budget && n ? budget / n : 0;
-    let grossCY = 0, netCY = 0, grossEur = 0, taxEur = 0, netEur = 0;
-    const perBond = [];
-    bonds.forEach(b => {
-      const gcy = grossCurrentYield(b, cs);          // % cedola lorda / prezzo
-      const tr = taxRate(b);
-      grossCY += gcy; netCY += gcy * (1 - tr);
-      let gE = 0, tE = 0, nE = 0;
-      if (perRung > 0) {
-        const price = isFinite(b.price) && b.price > 0 ? b.price : 100;
-        const nominal = perRung / price * 100;
-        gE = nominal * ((isFinite(b.currentcouponrate) ? b.currentcouponrate : 0) * cs) / 100;
-        tE = gE * tr; nE = gE - tE;
-        grossEur += gE; taxEur += tE; netEur += nE;
-      }
-      perBond.push({ isin: b.isincode, taxRate: tr, grossCurrentYield: gcy, grossEur: gE, taxEur: tE, netEur: nE });
-    });
-    return {
-      n, budget, perRung,
-      grossCurrentYield: n ? grossCY / n : 0,        // % media (= reddito cedolare lordo / capitale)
-      netCurrentYield: n ? netCY / n : 0,
-      grossCoupon: grossEur, tax: taxEur, netCoupon: netEur,   // € annui
-      perBond
     };
   }
 
@@ -249,7 +183,6 @@ const BSLadder = (() => {
 
   return {
     targetDates, eligibleByRating, bondsPerStep, parseFirstMaturity,
-    buildGreedy, buildOptimized, buildManual, metrics, couponReport, exposure, endOfMonth,
-    taxRate, grossCurrentYield, netCouponScore, valueOf
+    buildGreedy, buildOptimized, buildManual, metrics, exposure, endOfMonth
   };
 })();
