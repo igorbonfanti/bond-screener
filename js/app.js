@@ -9,6 +9,7 @@
     allBonds: [], columns: [], referenceDate: null,
     filtered: [], currentFile: null, snapshotId: null, snapshotName: null,
     facets: null, perStep: [], slots: [], ladderType: null, objective: 'yield', couponScale: 1,
+    mode: 'ladder', unmatched: [],
     sort: { key: 'grossytm', dir: -1 }
   };
 
@@ -68,6 +69,7 @@
     $('buildOptBtn').addEventListener('click', () => buildLadder('ottimizzato'));
     $('investAmount').addEventListener('input', updateCashflow);
     $('couponFreq').addEventListener('change', updateCashflow);
+    $('analyzeExistingBtn').addEventListener('click', analyzeExisting);
     $('saveLadderBtn').addEventListener('click', saveLadder);
     $('exportLadderBtn').addEventListener('click', () => {
       if (!S.slots.length) return toast('Nessun ladder', 'err');
@@ -262,7 +264,9 @@
 
     const res = type === 'greedy' ? BSLadder.buildGreedy(S.filtered, params) : BSLadder.buildOptimized(S.filtered, params);
     S.perStep = res.perStep; S.slots = res.slots; S.ladderType = type;
-    S.objective = params.objective;
+    S.objective = params.objective; S.mode = 'ladder'; S.unmatched = [];
+    $('existingUnmatched').innerHTML = '';
+    $('investAmountField').classList.remove('hidden');
     renderStepAvail(res.perStep);
     $('ladderResultCard').classList.remove('hidden');
     const objLabel = params.objective === 'cedole' ? 'Cedole nette' : 'Yield';
@@ -280,6 +284,89 @@
     $('ladderHint').textContent = hints.join(' · ');
     toast(`Ladder ${type} (${objLabel}): ${m.count}/${m.total} step`, m.complete ? 'ok' : '');
     $('ladderResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ---------------- LADDER ESISTENTE ---------------- */
+  function analyzeExisting() {
+    if (!S.allBonds.length) return toast('Carica prima i dati del giorno (passo 1)', 'err');
+    const text = $('existingInput').value;
+    if (!text.trim()) return toast('Incolla i tuoi bond (ISIN o ISIN;nominale)', 'err');
+    const def = parseFloat($('existingDefault').value) || 10000;
+    const { holdings, unmatched } = BSLadder.matchHoldings(text, S.allBonds, def);
+    if (!holdings.length) {
+      $('existingUnmatched').innerHTML = `<div class="warn-item">Nessuno degli ISIN inseriti è presente nei dati correnti.${unmatched.length ? ' Non trovati: ' + esc(unmatched.join(', ')) : ''}</div>`;
+      return toast('Nessun ISIN trovato nei dati', 'err');
+    }
+    S.slots = BSLadder.portfolioSlots(holdings);
+    S.perStep = S.slots.map(s => ({ step: s.step, target: s.target, bonds: [s.bond] }));
+    S.ladderType = 'esistente'; S.mode = 'portfolio'; S.objective = null; S.unmatched = unmatched;
+
+    $('existingUnmatched').innerHTML = unmatched.length
+      ? `<div class="warn-item">⚠ Non trovati nei dati correnti (esclusi): ${esc(unmatched.join(', '))}</div>` : '';
+    $('ladderResultCard').classList.remove('hidden');
+    $('investAmountField').classList.add('hidden');
+    $('ladderTitle').textContent = 'Ladder esistente — valori attuali';
+    if (!$('ladderName').value) $('ladderName').value = `Portafoglio ${fmtDate(S.referenceDate || new Date())}`;
+    $('stepAvail').innerHTML = '';
+    $('ladderHint').textContent = `${holdings.length} bond agganciati${unmatched.length ? ` · ${unmatched.length} non trovati` : ''}`;
+    renderPortfolioTable();
+    renderLadderAnalytics();
+    toast(`Portafoglio: ${holdings.length} bond analizzati`, 'ok');
+    $('ladderResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const PF_COLS = [
+    { k: 'redemptiondate', l: 'Scadenza', t: 'date' },
+    { k: 'isincode', l: 'ISIN', t: 'mono' },
+    { k: 'description', l: 'Descrizione', t: 'text' },
+    { k: '_country', l: 'Paese', t: 'mono' },
+    { k: 'nominal', l: 'Nominale €', t: 'eur' },
+    { k: 'price', l: 'Prezzo', t: 'num' },
+    { k: 'value', l: 'Valore €', t: 'eur' },
+    { k: 'grossytm', l: 'Yield %', t: 'num' },
+    { k: 'grossduration', l: 'Dur', t: 'num' },
+    { k: 'currentcouponrate', l: 'Cedola %', t: 'coupon' },
+    { k: 'ratingsp', l: 'Rating', t: 'rating' }
+  ];
+
+  function renderPortfolioTable() {
+    const tbl = $('ladderTable');
+    const head = '<thead><tr>' + PF_COLS.map(c => `<th class="${(c.t === 'num' || c.t === 'eur') ? 'num' : ''}">${c.l}</th>`).join('') + '</tr></thead>';
+    const body = S.slots.map(s => {
+      const b = s.bond, value = (s.nominal || 0) * (isFinite(b.price) ? b.price : 100) / 100;
+      return '<tr>' + PF_COLS.map(c => {
+        if (c.k === 'nominal') return `<td class="num">${fmtNum(s.nominal, 0)}</td>`;
+        if (c.k === 'value') return `<td class="num">${fmtNum(value, 0)}</td>`;
+        if (c.t === 'coupon') return `<td class="num">${fmtNum((b.currentcouponrate || 0) * S.couponScale)}</td>`;
+        return cell(b, c);
+      }).join('') + '</tr>';
+    }).join('');
+    tbl.innerHTML = head + '<tbody>' + body + '</tbody>';
+  }
+
+  function renderPortfolioAnalytics() {
+    const rep = BSLadder.portfolioReport(S.slots, S.couponScale);
+    $('ladderMetrics').innerHTML = [
+      metricCard('Bond', String(rep.n), ''),
+      metricCard('Valore di mercato', '€' + fmtNum(rep.marketValue, 0), ''),
+      metricCard('Yield lordo (pond.)', fmtNum(rep.avgYield) + '%', ''),
+      metricCard('Yield netto (pond.)', fmtNum(rep.avgNetYield) + '%', ''),
+      metricCard('Duration portafoglio', fmtNum(rep.avgDuration), ''),
+      metricCard('Cedola netta annua', '€' + fmtNum(rep.netCoupon, 0), 'ok')
+    ].join('');
+    // avvisi: non trovati + concentrazione per valore
+    const w = [];
+    if (S.unmatched && S.unmatched.length) w.push({ t: `Non trovati nei dati (esclusi): ${S.unmatched.join(', ')}`, ok: false });
+    rep.byCountry.forEach(e => { if (e.share > 0.4 && rep.n > 2) w.push({ t: `Paese ${e.key}: ${Math.round(e.share * 100)}% del valore.`, ok: false }); });
+    rep.byIssuer.forEach(e => { if (e.share > 0.3 && rep.n > 2) w.push({ t: `Emittente ${e.key}: ${Math.round(e.share * 100)}% del valore.`, ok: false }); });
+    if (!w.length) w.push({ t: 'Portafoglio agganciato ai valori correnti, ben distribuito.', ok: true });
+    $('divWarnings').innerHTML = w.map(x => `<div class="warn-item ${x.ok ? 'ok' : ''}">${esc(x.t)}</div>`).join('');
+
+    updateCashflow();
+    BSCharts.ladderTimeline('chartTimeline', S.slots);
+    BSCharts.cashflow('chartCashflow', S.slots, S.couponScale);
+    BSCharts.exposurePie('chartCountry', rep.byCountry);
+    BSCharts.exposurePie('chartIssuer', rep.byIssuer);
   }
 
   function renderStepAvail(perStep) {
@@ -333,6 +420,7 @@
   }
 
   function renderLadderAnalytics() {
+    if (S.mode === 'portfolio') return renderPortfolioAnalytics();
     const m = BSLadder.metrics(S.slots);
     const durMax = $('pDurMax').value === '' ? null : parseFloat($('pDurMax').value);
     const durCls = (durMax && m.avgDuration > durMax + 1e-6) ? 'warn' : '';
@@ -359,8 +447,22 @@
   // Ricalcola il grafico cedole mensili in base a importo investito e frequenza
   function updateCashflow() {
     if (!S.slots.length) return;
-    const amount = parseFloat($('investAmount').value) || 0;
     const freqMode = $('couponFreq').value;
+    // Modalità portafoglio: cedole € dai nominali reali, report ponderato
+    if (S.mode === 'portfolio') {
+      BSCharts.monthlyCoupons('chartMonthly', S.slots, { freqMode, scale: S.couponScale });
+      const rep = BSLadder.portfolioReport(S.slots, S.couponScale);
+      $('investInfo').textContent = `Valore €${fmtNum(rep.marketValue, 0)} · cedole nette annue €${fmtNum(rep.netCoupon, 0)} · €${fmtNum(rep.netCoupon / 12, 0)}/mese`;
+      $('couponReport').innerHTML = [
+        metricCard('Cedola lorda annua', '€' + fmtNum(rep.grossCoupon, 0), ''),
+        metricCard('Imposta annua', '−€' + fmtNum(rep.tax, 0), 'warn'),
+        metricCard('Cedola netta annua', '€' + fmtNum(rep.netCoupon, 0), 'ok'),
+        metricCard('Rendita netta / mese', '€' + fmtNum(rep.netCoupon / 12, 0), ''),
+        metricCard('Rend. cedolare netto', fmtNum(rep.netCouponYield) + '%', '')
+      ].join('');
+      return;
+    }
+    const amount = parseFloat($('investAmount').value) || 0;
     const r = BSCharts.monthlyCoupons('chartMonthly', S.slots, { amount, freqMode, scale: S.couponScale });
     const info = $('investInfo');
     if (amount > 0 && r.count) {
@@ -425,11 +527,14 @@
     if (!FIREBASE_OK) return toast('Cloud non disponibile', 'err');
     toast('Salvataggio ladder…');
     try {
+      const metrics = S.mode === 'portfolio'
+        ? (() => { const r = BSLadder.portfolioReport(S.slots, S.couponScale); return { count: r.n, total: r.n, avgYield: r.avgYield, avgNetYield: r.avgNetYield, avgDuration: r.avgDuration, netCoupon: r.netCoupon, marketValue: r.marketValue }; })()
+        : BSLadder.metrics(S.slots);
       await BSStore.saveLadder({
         name: $('ladderName').value || `Ladder ${fmtDate(new Date())}`,
         type: S.ladderType || 'manuale', snapshotId: S.snapshotId, referenceDate: S.referenceDate,
-        params: readParams(), filters: readFilters(),
-        slots: S.slots, metrics: BSLadder.metrics(S.slots)
+        params: S.mode === 'portfolio' ? { mode: 'portfolio' } : readParams(), filters: readFilters(),
+        slots: S.slots, metrics
       });
       toast('Bond ladder salvato ✓', 'ok');
     } catch (e) { console.error(e); toast('Errore: ' + e.message, 'err'); }

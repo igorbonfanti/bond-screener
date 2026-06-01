@@ -148,15 +148,18 @@ const BSCharts = (() => {
     const bonds = slots.map(s => s.bond).filter(Boolean);
     const scale = opts.scale || couponScaleLocal(bonds);
     const perRung = amount > 0 && bonds.length ? amount / bonds.length : 0;
+    const hasNominal = slots.some(s => s.bond && s.nominal > 0);
     const months = new Array(12).fill(0);
     const detail = Array.from({ length: 12 }, () => []);
 
-    bonds.forEach(b => {
+    slots.forEach(s => {
+      const b = s.bond; if (!b) return;
       const cpn = couponPct(b, scale);                   // cedola annua per 100 nominale (%)
       if (!cpn || !(b.redemptiondate instanceof Date)) return;
       const price = isFinite(b.price) && b.price > 0 ? b.price : 100;
-      // cedola annua: in € se ho l'importo, altrimenti per 100 nominale
-      const annual = perRung > 0 ? perRung * cpn / price : cpn;
+      // cedola annua: da nominale reale (€), da importo equipesato (€) o per 100 nominale
+      const annual = (s.nominal > 0) ? s.nominal * cpn / 100
+        : (perRung > 0 ? perRung * cpn / price : cpn);
       const f = freqFor(b._country, mode);
       const pay = annual / f;
       const m = b.redemptiondate.getMonth();
@@ -165,7 +168,7 @@ const BSCharts = (() => {
     });
 
     const annualTot = months.reduce((a, v) => a + v, 0);
-    const unit = perRung > 0 ? '€' : 'per 100 nom.';
+    const unit = (perRung > 0 || hasNominal) ? '€' : 'per 100 nom.';
     reg[id] = new Chart(ctx(id), {
       type: 'bar',
       data: { labels: MESI, datasets: [{ label: `Cedole / mese (${unit})`, data: months.map(v => +v.toFixed(2)), backgroundColor: C.green, borderRadius: 3 }] },

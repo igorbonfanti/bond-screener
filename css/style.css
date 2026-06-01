@@ -191,6 +191,8 @@ td.mono { font-family: 'JetBrains Mono', monospace; }
 .tag-greedy { background: var(--accent-bg); color: var(--accent); }
 .tag-ottimizzato { background: var(--green-bg); color: var(--green); }
 .tag-manuale { background: rgba(59,130,246,.1); color: var(--blue); }
+.tag-esistente { background: rgba(168,85,247,.12); color: #a855f7; }
+textarea.input-standard { resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; }
 
 /* ---------- Compare ---------- */
 .delta-up { color: var(--green); }

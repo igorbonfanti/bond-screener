@@ -58,5 +58,25 @@ ok(Math.abs(rep.grossCoupon - expGross) < 0.01, `cedola lorda € (atteso ${expG
 ok(Math.abs(rep.netCoupon - expGross * 0.875) < 0.01, `cedola netta = lorda*0.875 (ottenuto ${rep.netCoupon.toFixed(2)})`);
 ok(Math.abs(rep.tax - expGross * 0.125) < 0.01, 'imposta = lorda*0.125');
 
+/* --- ladder esistente: match + report ponderato --- */
+const universe = bonds.concat(tie);
+const mh = BSLadder.matchHoldings('A;20000\nC\nZZZ_NOPE;5000\n', universe, 10000);
+ok(mh.holdings.length === 2, `matchHoldings trova 2 (ottenuto ${mh.holdings.length})`);
+ok(mh.unmatched.length === 1 && mh.unmatched[0] === 'ZZZ_NOPE', 'segnala 1 ISIN non trovato');
+ok(mh.holdings.find(h => h.bond.isincode === 'A').nominal === 20000, 'nominale esplicito 20000');
+ok(mh.holdings.find(h => h.bond.isincode === 'C').nominal === 10000, 'nominale default 10000');
+
+const pslots = BSLadder.portfolioSlots(mh.holdings);
+ok(pslots[0].bond.redemptiondate <= pslots[1].bond.redemptiondate, 'portfolioSlots ordina per scadenza');
+
+const prep = BSLadder.portfolioReport(pslots, 1);
+const mvExp = 20000 * 102 / 100 + 10000 * 103 / 100; // 30700
+ok(Math.abs(prep.marketValue - mvExp) < 0.01, `valore di mercato ${prep.marketValue.toFixed(0)} (atteso ${mvExp})`);
+ok(Math.abs(prep.grossCoupon - (20000 * 4 / 100 + 10000 * 5 / 100)) < 0.01, 'cedola lorda € (800+500=1300)');
+ok(Math.abs(prep.netCoupon - 1300 * 0.875) < 0.01, 'cedola netta € (12,5%)');
+const wytm = (20400 * 2.0 + 10300 * 2.2) / 30700;
+ok(Math.abs(prep.avgYield - wytm) < 1e-6, 'yield ponderato per valore di mercato');
+ok(prep.byCountry.length === 2 && prep.byCountry[0].share > 0.5, 'esposizione paese per valore (IT > 50%)');
+
 console.log(`\nRisultato v2: ${pass} pass, ${fail} fail`);
 process.exit(fail ? 1 : 0);

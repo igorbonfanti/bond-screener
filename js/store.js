@@ -84,6 +84,7 @@ const BSStore = (() => {
     return slots.map(s => ({
       step: s.step,
       target: s.target instanceof Date ? s.target.toISOString() : s.target,
+      nominal: s.nominal != null ? s.nominal : null,
       bond: s.bond ? {
         isincode: s.bond.isincode, description: s.bond.description,
         redemptiondate: s.bond.redemptiondate instanceof Date ? s.bond.redemptiondate.toISOString() : s.bond.redemptiondate,

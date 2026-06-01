@@ -235,6 +235,69 @@ const BSLadder = (() => {
     };
   }
 
+  /* ---------------- LADDER ESISTENTE (portafoglio reale) ---------------- */
+  // Aggancia una lista di ISIN posseduti ai dati correnti.
+  // text: righe "ISIN" oppure "ISIN;nominale" (anche separato da , o tab).
+  function matchHoldings(text, allBonds, defaultNominal) {
+    const def = +defaultNominal > 0 ? +defaultNominal : 10000;
+    const byIsin = new Map(allBonds.map(b => [String(b.isincode).toUpperCase(), b]));
+    const holdings = [], unmatched = [];
+    String(text || '').split(/\r?\n/).forEach(line => {
+      const s = line.trim(); if (!s) return;
+      const parts = s.split(/[;,\t]+/).map(x => x.trim());
+      const isin = (parts[0] || '').toUpperCase();
+      if (!isin) return;
+      const nRaw = parts[1] != null && parts[1] !== '' ? BSData.toNum(parts[1]) : def;
+      const nominal = isFinite(nRaw) && nRaw > 0 ? nRaw : def;
+      const bond = byIsin.get(isin);
+      if (bond) holdings.push({ bond, nominal });
+      else unmatched.push(parts[0]);
+    });
+    return { holdings, unmatched };
+  }
+
+  // Costruisce gli "slot" del portafoglio (ordinati per scadenza), con nominale per bond
+  function portfolioSlots(holdings) {
+    return holdings.slice()
+      .sort((a, b) => {
+        const da = a.bond.redemptiondate instanceof Date ? a.bond.redemptiondate.getTime() : 0;
+        const db = b.bond.redemptiondate instanceof Date ? b.bond.redemptiondate.getTime() : 0;
+        return da - db;
+      })
+      .map((h, i) => ({ step: i + 1, target: h.bond.redemptiondate instanceof Date ? h.bond.redemptiondate : new Date(), bond: h.bond, nominal: h.nominal, candidates: 1 }));
+  }
+
+  // Analisi ponderata per valore di mercato del portafoglio esistente
+  function portfolioReport(slots, couponScale) {
+    const cs = couponScale || 1;
+    let mv = 0, face = 0, wYtm = 0, wNet = 0, wDur = 0, grossC = 0, taxC = 0, netC = 0;
+    const byIssuer = {}, byCountry = {};
+    slots.forEach(s => {
+      const b = s.bond; if (!b) return;
+      const N = isFinite(s.nominal) && s.nominal > 0 ? s.nominal : 0;
+      const price = isFinite(b.price) && b.price > 0 ? b.price : 100;
+      const value = N * price / 100;
+      mv += value; face += N;
+      wYtm += value * (b.grossytm || 0);
+      wNet += value * (isFinite(b.netytm) ? b.netytm : (b.grossytm || 0));
+      wDur += value * (isFinite(b.grossduration) ? b.grossduration : 0);
+      const cpnPct = (isFinite(b.currentcouponrate) ? b.currentcouponrate : 0) * cs; // % per 100 nom.
+      const gC = N * cpnPct / 100, tr = taxRate(b);
+      grossC += gC; taxC += gC * tr; netC += gC * (1 - tr);
+      byIssuer[b.issuercode] = (byIssuer[b.issuercode] || 0) + value;
+      byCountry[b._country] = (byCountry[b._country] || 0) + value;
+    });
+    const toArr = (o) => Object.entries(o).map(([k, v]) => ({ key: k, count: v, value: v, share: mv ? v / mv : 0 }))
+      .sort((a, b) => b.value - a.value);
+    return {
+      n: slots.length, marketValue: mv, face,
+      avgYield: mv ? wYtm / mv : 0, avgNetYield: mv ? wNet / mv : 0, avgDuration: mv ? wDur / mv : 0,
+      grossCoupon: grossC, tax: taxC, netCoupon: netC,
+      grossCouponYield: mv ? grossC / mv * 100 : 0, netCouponYield: mv ? netC / mv * 100 : 0,
+      byIssuer: toArr(byIssuer), byCountry: toArr(byCountry)
+    };
+  }
+
   function exposure(slots) {
     const bonds = slots.map(s => s.bond).filter(Boolean);
     const byIssuer = {}, byCountry = {};
@@ -250,6 +313,7 @@ const BSLadder = (() => {
   return {
     targetDates, eligibleByRating, bondsPerStep, parseFirstMaturity,
     buildGreedy, buildOptimized, buildManual, metrics, couponReport, exposure, endOfMonth,
-    taxRate, grossCurrentYield, netCouponScore, valueOf
+    taxRate, grossCurrentYield, netCouponScore, valueOf,
+    matchHoldings, portfolioSlots, portfolioReport
   };
 })();

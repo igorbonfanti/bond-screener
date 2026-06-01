@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="topbar-status">
-      <span class="pill pill-muted" title="Versione app">v2.0.0</span>
+      <span class="pill pill-muted" title="Versione app">v2.1.0</span>
       <span id="refDate" class="pill pill-muted" title="Data di riferimento dati">Nessun dato</span>
       <span id="bondCount" class="pill pill-muted">0 bond</span>
       <span id="fbStatus" class="pill pill-muted" title="Stato Firebase">Cloud…</span>
@@ -113,7 +113,22 @@
     <!-- ============================================================ -->
     <section class="panel" id="tab-ladder">
       <div class="card">
-        <div class="card-head"><h2>Parametri del Ladder</h2></div>
+        <div class="card-head">
+          <h2>Analizza un ladder esistente</h2>
+          <span class="muted">i bond che già possiedi, ai valori del giorno caricato</span>
+        </div>
+        <p class="muted" style="margin-bottom:10px">Incolla i tuoi bond, uno per riga: <b>ISIN</b> oppure <b>ISIN;nominale€</b> (es. <code>IT0005215246;20000</code>). Vengono agganciati ai dati correnti e analizzati ponderando per importo.</p>
+        <div class="invest-bar" style="margin-bottom:10px">
+          <div class="fld" style="flex:1 1 280px"><label>Bond posseduti (ISIN o ISIN;nominale)</label>
+            <textarea id="existingInput" class="input-standard" rows="5" placeholder="IT0005215246;20000&#10;DE0001102481;15000&#10;FR0013451507;25000"></textarea></div>
+          <div class="fld"><label>Nominale default (€)</label><input id="existingDefault" type="number" min="0" step="1000" value="10000" class="input-standard"></div>
+          <button class="btn btn-primary" id="analyzeExistingBtn">Analizza ai valori attuali</button>
+        </div>
+        <div id="existingUnmatched" class="warnings"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Costruisci un nuovo Ladder</h2></div>
         <div class="params-grid">
           <div class="fld"><label>Obiettivo</label>
             <select id="pObjective" class="input-standard">
@@ -151,7 +166,7 @@
         <div id="divWarnings" class="warnings"></div>
 
         <div class="invest-bar">
-          <div class="fld"><label>Importo totale da investire (€)</label><input id="investAmount" type="number" min="0" step="1000" placeholder="es. 60000" class="input-standard"></div>
+          <div class="fld" id="investAmountField"><label>Importo totale da investire (€)</label><input id="investAmount" type="number" min="0" step="1000" placeholder="es. 60000" class="input-standard"></div>
           <div class="fld"><label>Frequenza cedole</label>
             <select id="couponFreq" class="input-standard">
               <option value="auto">Auto (IT/US/UK semestrali, resto annuali)</option>
