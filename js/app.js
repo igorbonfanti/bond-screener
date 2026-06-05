@@ -31,8 +31,30 @@
   }
   function ratingClass(score) { return score >= 15 ? 'r-high' : score >= 12 ? 'r-mid' : 'r-low'; }
 
+  /* ---------------- tema chiaro/scuro ---------------- */
+  function setTheme(t) {
+    const light = t === 'light';
+    if (light) document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    const btn = $('themeToggle');
+    if (btn) { btn.textContent = light ? '☾' : '☀'; btn.title = light ? 'Passa al tema scuro' : 'Passa al tema chiaro'; }
+    try { localStorage.setItem('bs-theme', t); } catch (e) {}
+    rerenderCharts();
+  }
+  function rerenderCharts() {
+    if (S.filtered && S.filtered.length) BSCharts.yieldDistribution('chartYield', S.filtered);
+    if (S.slots && S.slots.length) renderLadderAnalytics();
+  }
+
   /* ---------------- init ---------------- */
   function init() {
+    // Tema (default scuro)
+    let savedTheme = 'dark';
+    try { savedTheme = localStorage.getItem('bs-theme') || 'dark'; } catch (e) {}
+    setTheme(savedTheme);
+    $('themeToggle').addEventListener('click', () =>
+      setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
+
     // Firebase status
     const fb = $('fbStatus');
     if (FIREBASE_OK) { fb.textContent = 'Cloud ✓'; fb.className = 'pill pill-ok'; }

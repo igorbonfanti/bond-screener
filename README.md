@@ -1,9 +1,13 @@
-# Bond Screener — Antigravity · v2.1.0
+# Bond Screener — Antigravity · v2.2.0
 
 App web per analizzare obbligazioni governative/sovranazionali e costruire **bond ladder**,
 evoluzione del notebook Colab "bond screener".
 
 > La versione **v1.0.0** congelata resta disponibile nella sottocartella [`/v1/`](./v1/) (e nel tag git `v1.0.0`).
+
+## Novità v2.2.0
+- **Tema chiaro/scuro**: interruttore (☀/☾) nell'header, scelta salvata nel browser.
+  I grafici seguono il tema (colori letti dalle variabili CSS). Default: scuro.
 
 ## Novità v2.1.0
 - **Analizza un ladder esistente**: incolli i bond che già possiedi (`ISIN` o `ISIN;nominale€`),

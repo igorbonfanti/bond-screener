@@ -8,12 +8,23 @@
 const BSCharts = (() => {
 
   const reg = {};                 // canvasId -> Chart (per distruzione)
-  const C = {
-    grid: 'rgba(51,56,80,0.4)', text: '#9fa4b8', accent: '#f59e0b',
-    accent2: '#fbbf24', green: '#22c55e', blue: '#3b82f6', red: '#ef4444',
+  // Colori dinamici: letti dalle variabili CSS così seguono il tema (scuro/chiaro)
+  let C = {
+    grid: '#333850', text: '#9fa4b8', accent: '#f59e0b', accent2: '#fbbf24',
+    green: '#22c55e', blue: '#3b82f6', red: '#ef4444', surface: '#1a1d27',
     palette: ['#f59e0b', '#3b82f6', '#22c55e', '#a855f7', '#ef4444', '#14b8a6',
               '#fbbf24', '#6366f1', '#ec4899', '#84cc16', '#f97316', '#06b6d4']
   };
+  function refreshC() {
+    try {
+      const cs = getComputedStyle(document.documentElement);
+      const g = (n, fb) => { const v = cs.getPropertyValue(n).trim(); return v || fb; };
+      C.text = g('--text2', C.text); C.grid = g('--border', C.grid);
+      C.accent = g('--accent', C.accent); C.accent2 = g('--accent2', C.accent2);
+      C.green = g('--green', C.green); C.blue = g('--blue', C.blue);
+      C.red = g('--red', C.red); C.surface = g('--surface', C.surface);
+    } catch (e) {}
+  }
 
   function destroy(id) { if (reg[id]) { reg[id].destroy(); delete reg[id]; } }
   function ctx(id) { const el = document.getElementById(id); return el ? el.getContext('2d') : null; }
@@ -42,7 +53,7 @@ const BSCharts = (() => {
 
   /* Distribuzione rendimenti (istogramma) dell'universo filtrato */
   function yieldDistribution(id, bonds) {
-    destroy(id);
+    destroy(id); refreshC();
     const ys = bonds.map(b => b.grossytm).filter(isFinite);
     if (!ys.length) return;
     const min = Math.floor(Math.min(...ys)), max = Math.ceil(Math.max(...ys));
@@ -62,7 +73,7 @@ const BSCharts = (() => {
 
   /* Timeline scadenze del ladder: una barra per slot (x = data target, y = yield) */
   function ladderTimeline(id, slots) {
-    destroy(id);
+    destroy(id); refreshC();
     const labels = slots.map(s => s.target.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' }));
     const data = slots.map(s => s.bond ? s.bond.grossytm : 0);
     const colors = slots.map(s => s.bond ? C.accent : C.red);
@@ -83,7 +94,7 @@ const BSCharts = (() => {
 
   /* Flussi cedolari + rimborsi per anno (nominale 100 per bond) */
   function cashflow(id, slots, scale) {
-    destroy(id);
+    destroy(id); refreshC();
     const bonds = slots.map(s => s.bond).filter(Boolean);
     if (!bonds.length) { return; }
     scale = scale || couponScaleLocal(bonds);
@@ -112,13 +123,13 @@ const BSCharts = (() => {
 
   /* Esposizione per paese (doughnut) */
   function exposurePie(id, expoArr, title) {
-    destroy(id);
+    destroy(id); refreshC();
     if (!expoArr || !expoArr.length) return;
     reg[id] = new Chart(ctx(id), {
       type: 'doughnut',
       data: {
         labels: expoArr.map(e => e.key),
-        datasets: [{ data: expoArr.map(e => e.count), backgroundColor: C.palette, borderColor: '#1a1d27', borderWidth: 2 }]
+        datasets: [{ data: expoArr.map(e => e.count), backgroundColor: C.palette, borderColor: C.surface, borderWidth: 2 }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
@@ -141,7 +152,7 @@ const BSCharts = (() => {
   function freqFor(country, mode) { return mode === '1' ? 1 : mode === '2' ? 2 : (SEMI.has(country) ? 2 : 1); }
 
   function monthlyCoupons(id, slots, opts) {
-    destroy(id);
+    destroy(id); refreshC();
     opts = opts || {};
     const amount = +opts.amount > 0 ? +opts.amount : 0;
     const mode = opts.freqMode || 'auto';
@@ -188,7 +199,7 @@ const BSCharts = (() => {
 
   /* Confronto: rendimento salvato vs attuale, barre affiancate per gradino */
   function compareBars(id, rungs) {
-    destroy(id);
+    destroy(id); refreshC();
     if (!rungs || !rungs.length) return;
     reg[id] = new Chart(ctx(id), {
       type: 'bar',
