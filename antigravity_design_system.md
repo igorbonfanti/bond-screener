@@ -275,3 +275,42 @@ Nelle app desktop-like, nascondere le classiche scrollbar del browser rimpiazzan
 5. **Border Radius**: Mai ad angolo retto (0px). Gli input, bottoni e label usano `--radius-sm` (8px). I blocchi più grandi come le box, le carrellate o le modali usano `--radius` (12px) o 16px.
 
 Se un nuovo progetto Antigravity segue alla lettera questo foglio stile base, sembrerà istantaneamente parte del medesimo ecosistema software a livello visivo e di interaction design.
+
+---
+
+## Tema chiaro / scuro (STANDARD)
+
+Tutte le app usano lo **stesso interruttore** e la **stessa palette chiara**. Riferimento: `coma-screener` / `bond-screener`.
+
+**Interruttore**
+- Bottone in alto a destra nell'header. Icona emoji = tema ATTUALE: **🌙** in scuro, **☀️** in chiaro.
+- Click → alterna. Stato salvato in `localStorage`, chiave condivisa d'ecosistema **`antigravity-theme`** (valori `'dark'` | `'light'`).
+- L'attributo `data-theme` su `<html>` è impostato SEMPRE (`"dark"` o `"light"`).
+- `<meta name="theme-color">` aggiornato al cambio: `#0f1117` (scuro) / `#f5f7fa` (chiaro).
+- **Anti-flash**: inserire nel `<head>`, PRIMA del CSS:
+  ```html
+  <script>(function(){try{var t=localStorage.getItem('antigravity-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  ```
+
+**Palette tema chiaro** — override delle variabili sotto `html[data-theme="light"]`:
+
+| Ruolo | bond-screener (var) | coma-screener (var) | Valore |
+|---|---|---|---|
+| Sfondo app | `--bg` | `--bg` | `#f5f7fa` |
+| Superficie / card | `--surface` | `--bg2` | `#ffffff` |
+| Superficie 2 | `--surface2` | `--bg3` | `#eef1f6` |
+| Superficie 3 | `--surface3` | — | `#e6eaf1` |
+| Bordi | `--border` | `--line` | `#e3e7ee` |
+| Testo | `--text` | `--tx` | `#1a1f29` |
+| Testo 2 | `--text2` | `--tx2` | `#586072` |
+| Testo 3 | `--text3` | `--tx3` | `#8b94a5` |
+| Accent | `--accent` | `--amber` | `#d97706` |
+| Accent 2 | `--accent2` | `--amber2` | `#b45309` |
+| Green / Red / Blue | | | `#059669` / `#dc2626` / `#2563eb` |
+
+- Bottoni primari (ambra): testo scuro `#1a1205` in entrambi i temi.
+- Card/KPI in chiaro: `box-shadow: 0 1px 3px rgba(16,24,40,.06)`.
+
+**Grafici (Chart.js)**: leggere i colori dalle variabili CSS a ogni render (`getComputedStyle`), così seguono il tema; **ridisegnare** i grafici al cambio tema.
+
+Il **tema scuro** resta la palette ufficiale della sezione 1 di questo documento.

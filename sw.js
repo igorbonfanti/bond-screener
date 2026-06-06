@@ -1,5 +1,5 @@
 // Service worker minimale — cache app shell (offline capability)
-const CACHE = 'bond-screener-v11';
+const CACHE = 'bond-screener-v12';
 const ASSETS = [
   './',
   './index.html',

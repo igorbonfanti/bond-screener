@@ -13,18 +13,19 @@
   --radius: 12px; --radius-sm: 8px; --radius-full: 9999px;
 }
 
-/* ===== Tema chiaro (white) ===== */
+/* ===== Tema chiaro (white) — STANDARD Antigravity (allineato a coma-screener) ===== */
 html[data-theme="light"] {
-  --bg: #f6f7f9; --surface: #ffffff; --surface2: #eef1f5; --surface3: #e3e7ee;
-  --border: #d7dce5;
-  --text: #1a1d27; --text2: #4b5168; --text3: #828aa3;
-  --accent: #d97706; --accent2: #f59e0b; --accent-bg: rgba(217, 119, 6, 0.10);
-  --green: #16a34a; --green-bg: rgba(22, 163, 74, .10); --green-border: rgba(22, 163, 74, .25);
+  --bg: #f5f7fa; --surface: #ffffff; --surface2: #eef1f6; --surface3: #e6eaf1;
+  --border: #e3e7ee;
+  --text: #1a1f29; --text2: #586072; --text3: #8b94a5;
+  --accent: #d97706; --accent2: #b45309; --accent-bg: rgba(217, 119, 6, 0.10);
+  --green: #059669; --green-bg: rgba(5, 150, 105, .10); --green-border: rgba(5, 150, 105, .25);
   --red: #dc2626; --red-bg: rgba(220, 38, 38, .07); --red-border: rgba(220, 38, 38, .25);
   --orange: #ea580c; --orange-bg: rgba(234, 88, 12, .10);
   --blue: #2563eb;
 }
-html[data-theme="light"] .btn-primary { color: #fff; }
+html[data-theme="light"] .btn-primary { color: #1a1205; }
+html[data-theme="light"] .card, html[data-theme="light"] .metric { box-shadow: 0 1px 3px rgba(16, 24, 40, .06); }
 html[data-theme="light"] tbody tr { border-bottom-color: rgba(0, 0, 0, .06); }
 html[data-theme="light"] .overlay { background: rgba(0, 0, 0, .4); }
 html[data-theme="light"] .toast { box-shadow: 0 12px 40px rgba(0, 0, 0, .18); }

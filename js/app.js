@@ -31,14 +31,15 @@
   }
   function ratingClass(score) { return score >= 15 ? 'r-high' : score >= 12 ? 'r-mid' : 'r-low'; }
 
-  /* ---------------- tema chiaro/scuro ---------------- */
+  /* ---------------- tema chiaro/scuro (standard Antigravity) ---------------- */
   function setTheme(t) {
     const light = t === 'light';
-    if (light) document.documentElement.setAttribute('data-theme', 'light');
-    else document.documentElement.removeAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
     const btn = $('themeToggle');
-    if (btn) { btn.textContent = light ? '☾' : '☀'; btn.title = light ? 'Passa al tema scuro' : 'Passa al tema chiaro'; }
-    try { localStorage.setItem('bs-theme', t); } catch (e) {}
+    if (btn) btn.textContent = light ? '☀️' : '🌙';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', light ? '#f5f7fa' : '#0f1117');
+    try { localStorage.setItem('antigravity-theme', t); } catch (e) {}
     rerenderCharts();
   }
   function rerenderCharts() {
@@ -48,9 +49,9 @@
 
   /* ---------------- init ---------------- */
   function init() {
-    // Tema (default scuro)
+    // Tema (default scuro) — chiave condivisa d'ecosistema
     let savedTheme = 'dark';
-    try { savedTheme = localStorage.getItem('bs-theme') || 'dark'; } catch (e) {}
+    try { savedTheme = localStorage.getItem('antigravity-theme') || 'dark'; } catch (e) {}
     setTheme(savedTheme);
     $('themeToggle').addEventListener('click', () =>
       setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
