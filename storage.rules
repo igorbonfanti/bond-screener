@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// REGOLE STORAGE — bucket igorbonfanti-screener.firebasestorage.app
+//
+// Stesso modello del Firestore di questo progetto: lettura a tutti, scrittura
+// solo a utente autenticato.
+//
+// Nel progetto aziendale questo percorso aveva "allow write: if true", cioe'
+// chiunque poteva caricare o sovrascrivere file arbitrari nel bucket: costi di
+// traffico a carico del proprietario e file ospitati su un dominio Google.
+// Qui non si ripete.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // === bond_screener/ — snapshot dei dati bond (JSON + file grezzo) ===
+    match /bond_screener/{allPaths=**} {
+      allow read: if true;
+      // Limite 50 MB: gli snapshot sono JSON e CSV, non file pesanti.
+      allow write: if request.auth != null
+                   && request.resource.size < 50 * 1024 * 1024;
+      allow delete: if request.auth != null;
+    }
+
+    // === Default: chiuso ===
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

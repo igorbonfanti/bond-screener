@@ -1,10 +1,15 @@
 // Service worker minimale — cache app shell (offline capability)
-const CACHE = 'bond-screener-v12';
+// v13: progetto Firebase separato (igorbonfanti-screener) e accesso opzionale.
+// Alzare SEMPRE la versione quando cambia un file in ASSETS: la cache viene
+// servita per prima, quindi senza un nome nuovo i client gia' installati
+// resterebbero puntati al vecchio progetto.
+const CACHE = 'bond-screener-v13';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/firebase_config.js',
+  './auth-opzionale.js',
   './js/data.js',
   './js/filters.js',
   './js/ladder.js',

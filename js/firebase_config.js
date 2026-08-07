@@ -1,16 +1,24 @@
-// Firebase config — progetto condiviso magazzino-edile-pos (SDK compat 8.10.1)
+// Firebase config — progetto igorbonfanti-screener (SDK 8.10.1)
+//
+// Progetto dedicato agli screener, separato da magazzino-edile-pos: li' stavano
+// insieme ai dati aziendali (anagrafica clienti, preventivi, solleciti) e ogni
+// permesso concesso a queste app finiva per allargare la superficie di quelli.
+// Qui non c'e' nulla di aziendale, quindi la lettura puo' restare pubblica.
+//
+// Lettura libera per tutti, scrittura solo a utente autenticato: vedi
+// firestore.rules e storage.rules nella radice del repository.
 const firebaseConfig = {
-  apiKey: "AIzaSyCLdOfp4z3FUJX2xt-xBZciyjxJZWeoh7A",
-  authDomain: "magazzino-edile-pos.firebaseapp.com",
-  projectId: "magazzino-edile-pos",
-  storageBucket: "magazzino-edile-pos.firebasestorage.app",
-  messagingSenderId: "696561179056",
-  appId: "1:696561179056:web:fc6b1db62ed256fd3fde75"
+  apiKey: "AIzaSyCJK3ewMh6T8GHWbJx_WB39JYIYYifoyl8",
+  authDomain: "igorbonfanti-screener.firebaseapp.com",
+  projectId: "igorbonfanti-screener",
+  storageBucket: "igorbonfanti-screener.firebasestorage.app",
+  messagingSenderId: "1015526355462",
+  appId: "1:1015526355462:web:e8c2c95edacac1c48b4987"
 };
 
 let db = null, storage = null, FIREBASE_OK = false;
 try {
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
   storage = firebase.storage();
   // Persistenza offline (best effort)

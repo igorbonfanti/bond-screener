@@ -1,0 +1,55 @@
+rules_version = '2';
+
+// REGOLE FIRESTORE — progetto igorbonfanti-screener
+//
+// Progetto separato da magazzino-edile-pos: qui NON ci sono dati aziendali.
+// Contiene solo gli screener finanziari, pensati per essere condivisi.
+// Le stesse regole valgono per bond-screener e coma-screener.
+//
+// Modello: chiunque puo' LEGGERE, solo un utente autenticato puo' SCRIVERE.
+// Chi ricevi il link consulta i dati; il caricamento resta a te.
+//
+// Nota sul funzionamento: le regole sono additive in OR. Un "allow: if false"
+// non nega, semplicemente non concede: per questo il catch-all finale non
+// toglie nulla ai blocchi sopra.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Chi puo' modificare i dati. Con la registrazione self-service
+    // disattivata, "autenticato" equivale a "uno degli account che ho creato
+    // io in console". Se un domani volessi essere piu' stretto, qui si mette
+    // l'elenco degli UID:
+    //   return request.auth != null && request.auth.uid in ['UID1', 'UID2'];
+    function puoScrivere() {
+      return request.auth != null;
+    }
+
+    // === bond_snapshots (Bond Screener: metadati caricamenti) ===
+    match /bond_snapshots/{docId} {
+      allow read: if true;
+      allow create, update: if puoScrivere() && request.resource.data.rowCount is number;
+      allow delete: if puoScrivere();
+    }
+
+    // === bond_ladders (Bond Screener: ladder salvati) ===
+    match /bond_ladders/{docId} {
+      allow read: if true;
+      allow create: if puoScrivere() && request.resource.data.slots is list;
+      allow update: if false;
+      allow delete: if puoScrivere();
+    }
+
+    // === coma_snapshots (Coma Screener: portafogli e analisi) ===
+    match /coma_snapshots/{docId} {
+      allow read: if true;
+      allow create, update: if puoScrivere() && request.resource.data.picks is list;
+      allow delete: if puoScrivere();
+    }
+
+    // Tutto il resto: nega. Una collection nuova va aggiunta qui sopra.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

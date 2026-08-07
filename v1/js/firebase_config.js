@@ -1,11 +1,14 @@
 // Firebase config — progetto condiviso magazzino-edile-pos (SDK compat 8.10.1)
+// Versione archiviata. Puntata al progetto igorbonfanti-screener come la v2:
+// il progetto aziendale non ospita piu' i dati degli screener. Qui non c'e'
+// l'accesso opzionale, quindi questa copia e' di sola consultazione.
 const firebaseConfig = {
-  apiKey: "AIzaSyCLdOfp4z3FUJX2xt-xBZciyjxJZWeoh7A",
-  authDomain: "magazzino-edile-pos.firebaseapp.com",
-  projectId: "magazzino-edile-pos",
-  storageBucket: "magazzino-edile-pos.firebasestorage.app",
-  messagingSenderId: "696561179056",
-  appId: "1:696561179056:web:fc6b1db62ed256fd3fde75"
+  apiKey: "AIzaSyCJK3ewMh6T8GHWbJx_WB39JYIYYifoyl8",
+  authDomain: "igorbonfanti-screener.firebaseapp.com",
+  projectId: "igorbonfanti-screener",
+  storageBucket: "igorbonfanti-screener.firebasestorage.app",
+  messagingSenderId: "1015526355462",
+  appId: "1:1015526355462:web:e8c2c95edacac1c48b4987"
 };
 
 let db = null, storage = null, FIREBASE_OK = false;
