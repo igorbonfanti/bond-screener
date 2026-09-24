@@ -1,9 +1,9 @@
 /* Bond Ladder v3 — avvio, dati, calcolo nel worker, navigazione, dialoghi. */
-import { h, $, logo, icon, toast, debounce, fmtEur, fmtPct, fmtNum, copyText } from './ui/dom.js';
+import { h, $, logo, icon, toast, debounce, fmtEur, fmtPct, fmtNum, copyText, downloadFile } from './ui/dom.js';
 import { loadSettings, saveSettings } from './state.js';
 import { loadText } from './data/stfi.js';
 import { enrich } from './core/basket.js';
-import { loadLatest, loadDemo, writeCache, STFI_PAGE } from './data/source.js';
+import { loadLatest, loadDemo, readCache, writeCache, clearCache, remoteInfo, STFI_PAGE } from './data/source.js';
 import { compute } from './engine.js';
 import { mountSettings, renderSettings, goalCard } from './ui/settings.js';
 import { renderResults } from './ui/results.js';
@@ -13,8 +13,8 @@ import { openHelp } from './ui/help.js';
 import { saveLadder, cloudReady } from './cloud.js';
 import { fmt, iso, today, parseDay } from './core/dates.js';
 
-const VERSION = '3.0.0';
-const app = { ds: null, meta: null, st: null, result: null, worker: null, workerReady: false, req: 0, pending: new Map(), lastSaved: null };
+const VERSION = '3.1.0';
+const app = { ds: null, meta: null, text: null, st: null, result: null, worker: null, workerReady: false, req: 0, pending: new Map(), lastSaved: null };
 
 /* ---------------- Tema (standard Antigravity) ---------------- */
 function setTheme(t) {
@@ -30,29 +30,51 @@ function dataAge() {
   if (!app.ds) return null;
   return today() - app.ds.refDate;
 }
+/** Da dove vengono i dati in uso, in parole: {label, sub, tag (breve, per l'indicatore)}. */
+function origin(m) {
+  if (!m) return { label: 'Nessun dato', sub: '' };
+  if (m.source === 'demo') return { label: 'Dati di esempio', sub: 'titoli inventati, solo per provare l\'app' };
+  if (m.source === 'manual') { const t = when(m.loadedAt || m.fetchedAt); return { label: 'File caricato da te', sub: [m.fileName, t && 'caricato ' + t].filter(Boolean).join(' · '), tag: 'manuale' }; }
+  if (m.from === 'cache') return { label: 'Copia salvata nel browser', sub: `del file automatico${m.loadedAt ? ', scaricato ' + when(m.loadedAt) : ''}`, tag: 'copia locale' };
+  return { label: 'File automatico', sub: `scaricato ${when(m.loadedAt)}` };
+}
+
 function renderDataPill() {
   const pill = $('#dataPill');
   pill.replaceChildren();
-  const age = dataAge();
-  pill.className = 'data-pill ' + (!app.ds ? 'none' : app.meta && app.meta.source === 'demo' ? 'stale' : age <= 4 ? 'ok' : 'stale');
-  pill.append(h('span', { class: 'dot' }),
-    !app.ds ? h('span', { text: 'Nessun dato' }) : app.meta.source === 'demo' ? h('span', { text: 'Dati di esempio' })
-      : h('span', null, h('span', { class: 'hide-sm', text: 'Dati ' }), fmt(app.ds.refDate)),
-    app.ds ? h('span', { class: 'txt-long faint', text: `· ${app.ds.bonds.length} titoli` }) : null);
+  const age = dataAge(), demo = app.meta && app.meta.source === 'demo', o = origin(app.ds ? app.meta : null);
+  pill.className = 'data-pill ' + (!app.ds ? 'none' : demo ? 'stale' : age <= 4 ? 'ok' : 'stale');
+  pill.title = app.ds ? `Dati del ${fmt(app.ds.refDate)} — ${o.label}. Tocca per i dettagli.` : 'Nessun dato: tocca per caricarli';
+  const tag = app.ds && o.tag ? (app.meta.source === 'manual' ? 'manual' : 'cache') : '';
+  if (tag) pill.classList.add('tagged');
+  pill.append(...[h('span', { class: 'dot' }),
+    !app.ds ? h('span', { text: 'Nessun dato' }) : demo ? h('span', { text: 'Dati di esempio' })
+      : h('span', null, h('span', { class: 'hide-sm', text: 'Dati ' }), h('span', { class: 'd-full', text: fmt(app.ds.refDate) }), h('span', { class: 'd-short', text: fmt(app.ds.refDate).slice(0, 5) })),
+    tag ? h('span', { class: 'p-tag ' + tag }, icon(tag === 'manual' ? 'upload' : 'data'), h('span', { class: 't-txt', text: o.tag })) : null,
+    app.ds ? h('span', { class: 'txt-long faint', text: `· ${app.ds.bonds.length} titoli` }) : null].filter(Boolean));
 }
 
 async function setData(text, meta, { silent = false } = {}) {
   let ds;
   try { ds = enrich(loadText(text)); } catch (e) { toast(e.message, 'err'); return false; }
   app.ds = ds;
-  app.meta = { ...meta, refDate: meta.refDate || iso(ds.refDate) };
-  if (meta.source !== 'demo') writeCache(text, app.meta);
+  app.text = text;
+  app.meta = { ...meta, refDate: iso(ds.refDate) };        // fa fede la data scritta nel file
+  if (meta.source !== 'demo' && meta.from !== 'cache') writeCache(text, { ...app.meta, from: undefined });
   if (!app.st) app.st = loadSettings(ds.refDate);
   startWorker(text);
   renderDataPill();
   if (!silent) toast(meta.source === 'manual' ? `File caricato: dati del ${fmt(ds.refDate)}` : `Dati del ${fmt(ds.refDate)} pronti`, 'ok');
   route();
   return true;
+}
+
+/** Nessun dato in uso (copia cancellata e file automatico irraggiungibile). */
+function dropData() {
+  if (app.worker) app.worker.terminate();
+  Object.assign(app, { ds: null, meta: null, text: null, result: null, worker: null, workerReady: false });
+  renderDataPill();
+  route();
 }
 
 function startWorker(text) {
@@ -188,8 +210,8 @@ function noDataView() {
 }
 
 async function readFile(f) {
-  try { const text = await f.text(); await setData(text, { source: 'manual', fileName: f.name, fetchedAt: new Date().toISOString() }); closeSheet(); }
-  catch (e) { toast('Lettura non riuscita: ' + e.message, 'err'); }
+  try { const text = await f.text(); return await setData(text, { source: 'manual', fileName: f.name, loadedAt: new Date().toISOString() }); }
+  catch (e) { toast('Lettura non riuscita: ' + e.message, 'err'); return false; }
 }
 
 /* ---------------- Risultati del costruttore ---------------- */
@@ -287,23 +309,139 @@ function updateMobileBar() {
 }
 
 /* ---------------- Dialogo dati ---------------- */
+/** "oggi alle 23:13", "ieri alle 18:40", "il 22/09/2026 alle 21:05" (ora locale). */
+function when(isoStr) {
+  const d = isoStr ? new Date(isoStr) : null;
+  if (!d || isNaN(d)) return '';
+  const hm = d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  const n = new Date();
+  const diff = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(n.getFullYear(), n.getMonth(), n.getDate())) / 864e5);
+  return diff === 0 ? `oggi alle ${hm}` : diff === -1 ? `ieri alle ${hm}` : `il ${d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })} alle ${hm}`;
+}
+const dayText = isoDay => { const d = parseDay(isoDay); return d == null ? '—' : fmt(d); };
+const insight = (kind, text) => h('div', { class: 'insight ' + kind },
+  h('span', { class: 'ico', text: kind === 'good' ? '✓' : kind === 'warn' ? '!' : 'i' }), h('span', { text }));
+
+/** Il file in uso confrontato con il file automatico pubblicato. */
+function remoteStatus(remote) {
+  const m = app.ds ? app.meta : null;
+  if (!remote) return insight('warn', m && m.from === 'cache'
+    ? 'Il file automatico adesso non è raggiungibile (sei offline?): stai usando la copia salvata nel browser.'
+    : 'Il file automatico adesso non è raggiungibile (sei offline?).');
+  const rd = remote.meta.refDate;
+  const rdText = `dati del ${dayText(rd)}${remote.meta.fetchedAt ? ', pubblicato ' + when(remote.meta.fetchedAt) : ''}`;
+  if (!m) return insight('info', `Il file automatico è disponibile: ${rdText}.`);
+  if (m.source === 'demo') return insight('info', `Stai usando dati di esempio. Il file automatico ha i ${rdText}.`);
+  if (m.source === 'auto') {
+    if (rd === m.refDate) return insight('good', m.from === 'cache'
+      ? `La copia nel browser coincide con il file automatico più recente (${rdText}).`
+      : `Stai usando il file automatico più recente (${rdText}).`);
+    if (rd > m.refDate) return insight('warn', `C'è un file automatico più recente: ${rdText}. Tocca «Usa il file automatico».`);
+    return insight('info', `Il file automatico pubblicato ha dati più vecchi di quelli in uso (${dayText(rd)}).`);
+  }
+  if (rd > m.refDate) return insight('warn', `Il file automatico è più recente del tuo: ${rdText}. Tocca «Usa il file automatico».`);
+  if (rd === m.refDate) return insight('info', 'Il file automatico ha la stessa data del tuo file: dal prossimo avvio l\'app userà quello.');
+  return insight('info', `Il tuo file è più recente del file automatico (${dayText(rd)}): resta in uso finché non ne esce uno più nuovo.`);
+}
+
 function openDataDialog() {
-  const file = h('input', { type: 'file', accept: '.csv,text/csv', hidden: true, on: { change: e => e.target.files[0] && readFile(e.target.files[0]) } });
-  const src = !app.meta ? '—' : app.meta.source === 'auto' ? 'automatici (aggiornati ogni sera)' : app.meta.source === 'manual' ? `caricati da file${app.meta.fileName ? ' (' + app.meta.fileName + ')' : ''}` : app.meta.source === 'demo' ? 'di esempio (inventati)' : 'copia locale';
+  const file = h('input', { type: 'file', accept: '.csv,text/csv', hidden: true, on: { change: async e => {
+    const f = e.target.files[0];
+    e.target.value = '';
+    if (f && await readFile(f)) paint();
+  } } });
+  const box = h('div', { class: 'stack data-dlg' });
+  let remote = null, checking = true, busy = '', confirmClear = false;
+
+  const check = () => {
+    checking = true;
+    remoteInfo().then(r => { remote = r; checking = false; paint(); });
+  };
+
+  /** Scarica adesso il file automatico e lo mette in uso; false se non è raggiungibile. */
+  const useRemote = async () => {
+    const d = await loadLatest({ force: true });
+    if (!d) return false;
+    remote = d.remote; checking = false;
+    return setData(d.text, d.meta, { silent: true });
+  };
+
+  const run = async (key, fn) => {
+    if (busy) return;
+    busy = key; paint();
+    try { await fn(); } catch (e) { toast(e.message, 'err'); }
+    busy = ''; confirmClear = false;
+    if (box.isConnected) paint();
+  };
+
+  const actions = {
+    remote: () => run('remote', async () => {
+      if (await useRemote()) toast(`In uso il file automatico: dati del ${fmt(app.ds.refDate)}`, 'ok');
+      else { remote = null; checking = false; toast('File automatico non raggiungibile: controlla la connessione', 'err'); }
+    }),
+    upload: () => file.click(),
+    download: () => {
+      downloadFile(`stfi-dati-${iso(app.ds.refDate)}.csv`, app.text);
+      toast('CSV in uso scaricato', 'ok');
+    },
+    clear: () => {
+      if (app.meta && app.meta.source === 'manual' && !confirmClear) { confirmClear = true; paint(); return; }
+      run('clear', async () => {
+        clearCache();
+        if (await useRemote()) toast(`Copia cancellata: in uso il file automatico appena scaricato (dati del ${fmt(app.ds.refDate)})`, 'ok');
+        else {
+          remote = null; checking = false;
+          if (app.meta && app.meta.source !== 'demo') dropData();
+          toast('Copia cancellata. Il file automatico non è raggiungibile: carica un file a mano', 'err');
+        }
+      });
+    }
+  };
+
+  const paint = () => {
+    const m = app.ds ? app.meta : null, o = origin(m), cached = readCache();
+    const kpi = (label, value, sub, cls) => h('div', { class: 'kpi' + (cls ? ' ' + cls : '') }, h('div', { class: 'k-label', text: label }),
+      h('div', { class: 'k-value', text: value }), sub ? h('div', { class: 'k-sub', text: sub }) : null);
+    const src = (label, value, sub) => h('div', { class: 'src-row' }, h('div', { class: 's-label', text: label }),
+      h('div', null, h('div', { class: 's-value', text: value }), sub ? h('div', { class: 's-sub', text: sub }) : null));
+    const act = (key, ic, title, sub, cls = '') => h('button', { type: 'button', class: 'dact ' + cls, disabled: !!busy, 'aria-busy': busy === key ? 'true' : null, on: { click: actions[key] } },
+      busy === key ? h('span', { class: 'spinner' }) : icon(ic), h('b', { text: title }), h('span', { text: sub }));
+    const savedAt = cached && (cached.meta.loadedAt || (cached.meta.source === 'manual' ? cached.meta.fetchedAt : null));
+    const recRemote = !!remote && (!m || m.source === 'demo' || remote.meta.refDate > m.refDate || (m.source === 'auto' && m.from === 'cache'));
+
+    box.replaceChildren(
+      h('div', { class: 'lbl', text: 'In uso' }),
+      m ? h('div', { class: 'kpis' },
+        kpi('Data dei prezzi', fmt(app.ds.refDate), `valuta ${fmt(app.ds.settle)}`),
+        kpi('Titoli nel file', fmtNum(app.ds.bonds.length, 0)),
+        kpi('Origine', o.label, o.sub, 'kpi-wide'))
+        : h('p', { class: 'muted', text: 'Nessun dato caricato.' }),
+      checking ? h('div', { class: 'insight info' }, h('span', { class: 'spinner' }), h('span', { text: 'Controllo il file automatico pubblicato…' })) : remoteStatus(remote),
+      h('div', { class: 'lbl', text: 'Le due fonti' }),
+      h('div', { class: 'src-list' },
+        src('File automatico', checking ? 'controllo in corso…' : remote ? `dati del ${dayText(remote.meta.refDate)}` : 'non raggiungibile',
+          checking ? '' : remote ? `pubblicato ${when(remote.meta.fetchedAt) || '—'} · aggiornato ogni sera dei giorni feriali` : 'riprova quando sei online'),
+        src('Copia nel browser', cached ? `dati del ${dayText(cached.meta.refDate)}` : 'nessuna',
+          cached ? [cached.meta.source === 'manual' ? `file caricato da te${cached.meta.fileName ? ' (' + cached.meta.fileName + ')' : ''}` : 'file automatico', savedAt ? 'salvata ' + when(savedAt) : ''].filter(Boolean).join(' · ')
+            : 'si crea da sola a ogni caricamento: serve per usare l\'app offline')),
+      h('div', { class: 'lbl', text: 'Azioni' }),
+      h('div', { class: 'dacts' },
+        act('remote', 'refresh', 'Usa il file automatico', busy === 'remote' ? 'Scarico il file…' : 'Lo scarica di nuovo adesso e lo mette in uso', recRemote ? 'rec' : ''),
+        act('upload', 'upload', 'Carica un file CSV', 'Il file «Dati End of Day» scaricato da simpletoolsforinvestors', !m && !checking && !remote ? 'rec' : ''),
+        m && m.source !== 'demo' ? act('download', 'download', 'Scarica il CSV in uso', 'Salva sul dispositivo il file che l\'app sta usando') : null,
+        cached || busy === 'clear' ? act('clear', 'trash', confirmClear ? 'Conferma: cancella il tuo file' : 'Cancella la copia nel browser',
+          busy === 'clear' ? 'Cancello e scarico il file automatico…' : confirmClear ? 'Il file caricato da te andrà perso: tocca di nuovo per confermare' : 'Elimina i dati salvati qui e riparte dal file automatico',
+          'danger' + (confirmClear ? ' confirm' : '')) : null),
+      h('p', { class: 'help', text: 'All\'avvio l\'app scarica il file automatico, che un\'automazione su GitHub prende ogni sera dalla pagina Documenti e download di simpletoolsforinvestors. Un file caricato da te resta in uso solo finché è più recente del file automatico. La copia nel browser serve quando sei offline.' }),
+      file);
+  };
+
+  paint();
+  check();
   openSheet({
     title: 'Dati del giorno', sub: 'Fonte: simpletoolsforinvestors.eu — "Rendimenti e durate calcolati End of Day"',
-    body: h('div', { class: 'stack' },
-      app.ds ? h('div', { class: 'kpis' },
-        h('div', { class: 'kpi' }, h('div', { class: 'k-label', text: 'Data dei prezzi' }), h('div', { class: 'k-value', text: fmt(app.ds.refDate) }), h('div', { class: 'k-sub', text: `valuta ${fmt(app.ds.settle)}` })),
-        h('div', { class: 'kpi' }, h('div', { class: 'k-label', text: 'Titoli nel file' }), h('div', { class: 'k-value', text: fmtNum(app.ds.bonds.length, 0) })),
-        h('div', { class: 'kpi' }, h('div', { class: 'k-label', text: 'Origine' }), h('div', { class: 'k-value', style: { fontSize: '14px', whiteSpace: 'normal' }, text: src })))
-        : h('p', { class: 'muted', text: 'Nessun dato caricato.' }),
-      h('p', { class: 'help', text: 'Ogni sera un\'automazione su GitHub scarica il file dalla pagina Documenti e download di simpletoolsforinvestors e lo pubblica qui. Se ti serve un file più recente puoi caricarlo a mano.' }),
-      file),
-    foot: [
-      h('a', { class: 'btn btn-ghost', href: STFI_PAGE, target: '_blank', rel: 'noopener' }, icon('open'), 'Sito STFI'),
-      h('button', { class: 'btn btn-ghost', on: { click: async () => { const d = await loadLatest(); if (d) { closeSheet(); setData(d.text, d.meta); } else toast('Nessun dato automatico disponibile', 'err'); } } }, icon('refresh'), 'Aggiorna'),
-      h('button', { class: 'btn btn-primary', on: { click: () => file.click() } }, icon('upload'), 'Carica file CSV')]
+    body: box,
+    foot: [h('a', { class: 'btn btn-ghost', href: STFI_PAGE, target: '_blank', rel: 'noopener' }, icon('open'), 'Sito STFI')]
   });
 }
 
@@ -333,7 +471,12 @@ async function boot() {
   $('#app').replaceChildren(h('div', { class: 'card card-pad' }, h('span', { class: 'spinner' }), ' Carico i dati del giorno…'));
   try {
     const d = await loadLatest();
-    if (d) { await setData(d.text, d.meta, { silent: true }); return; }
+    if (d) {
+      await setData(d.text, d.meta, { silent: true });
+      if (d.meta.from === 'cache' && !d.remote) toast(`File automatico non raggiungibile: in uso la copia salvata nel browser (dati del ${fmt(app.ds.refDate)})`);
+      else if (d.meta.from === 'cache' && d.meta.source === 'manual') toast(`In uso il tuo file (dati del ${fmt(app.ds.refDate)}): è più recente del file automatico`);
+      return;
+    }
   } catch { /* nessun dato */ }
   app.st = loadSettings(null);
   route();

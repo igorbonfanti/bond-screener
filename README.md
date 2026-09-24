@@ -1,4 +1,4 @@
-# Bond Ladder — v3.0.0
+# Bond Ladder — v3.1.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -40,8 +40,16 @@ trova il pulsante **"Dati End of Day"** (il link `…/data/export/<codice>.csv` 
 lo valida e lo salva in `data/stfi-latest.csv` + `data/stfi-latest.json`. Sui branch di lavoro fa solo una prova
 a vuoto. Si può lanciare a mano da *Actions → Dati STFI giornalieri → Run workflow*.
 
-L'app carica da sola il file più recente (dal sito o dal repository), ne tiene una copia nel browser per l'uso
-offline e permette sempre di **caricare un file a mano** (indicatore dei dati in alto).
+All'avvio l'app scarica il file automatico (dal sito o, se più aggiornato, dal repository) e ne tiene una copia nel
+browser per l'uso offline. Un file **caricato a mano** resta in uso solo finché è più recente del file automatico;
+a parità di data vince il file automatico.
+
+Il dialogo che si apre toccando l'**indicatore dei dati** in alto dice sempre quale file è in uso — *file
+automatico* (scaricato adesso), *copia salvata nel browser* (quando il sito non risponde) o *file caricato da te* —
+e lo confronta con il file automatico pubblicato. Da lì si può **riscaricare e usare il file automatico**,
+**caricare un CSV**, **scaricare il CSV in uso** e **cancellare la copia nel browser**. L'indicatore mostra
+un'etichetta *manuale* o *copia locale* quando i dati non sono il file automatico appena scaricato. Il service
+worker non mette mai in cache i file di `data/`: "scaricato adesso" vuol dire davvero dalla rete.
 
 > I dati sono di simpletoolsforinvestors.eu: il repository è pubblico, quindi il file scaricato è consultabile da
 > chiunque. Se preferisci non ripubblicarlo, disattiva il workflow e carica il file a mano, oppure chiedi il
