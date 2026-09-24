@@ -7,8 +7,8 @@ import { issuerCatalog } from '../core/basket.js';
 import { ratingScore } from '../data/stfi.js';
 import { parts, MONTHS_LONG } from '../core/dates.js';
 
-const RATING_OPTS = [['AA-', '≥ AA-'], ['A-', '≥ A-'], ['BBB+', '≥ BBB+'], ['BBB-', 'Investment grade']];
-const LIQ_OPTS = [[0, 'Tutti'], [1, 'Scambiati'], [2, 'Buona'], [3, 'Alta']];
+const RATING_OPTS = [['AA-', '≥ AA-'], ['A-', '≥ A-'], ['BBB+', '≥ BBB+'], ['BBB-', '≥ BBB-']];
+const LIQ_OPTS = [[0, 'Nessuna'], [1, 'Bassa'], [2, 'Buona'], [3, 'Alta']];
 const CAP_OPTS = [[1, 'Libera'], [0.5, '≤ 50%'], [1 / 3, '≤ 33%'], [0.25, '≤ 25%']];
 const PRICE_OPTS = [[102, '≤ 102'], [105, '≤ 105'], [110, '≤ 110'], [null, 'Qualsiasi']];
 
@@ -184,14 +184,15 @@ function basketSection(st) {
     h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Emittenti' }),
       h('div', { class: 'area-toggles' }, areaChip('euro', 'Stati area euro'), areaChip('sov', 'Sovranazionali'), areaChip('extra', 'Altri Stati in euro'))),
     h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Rischio: rating minimo' }),
-      seg('rating', RATING_OPTS, b.minRating, v => set(s => { s.basket.minRating = v; }, true), 'Rating minimo')),
+      seg('rating', RATING_OPTS, b.minRating, v => set(s => { s.basket.minRating = v; }, true), 'Rating minimo'),
+      h('span', { class: 'help', text: 'Da BBB- in su è «investment grade»: i titoli con rating più basso, o senza rating, restano fuori.' })),
     groups.filter(Boolean).length ? h('div', null, groups) : h('div', { class: 'help', text: 'Scegli almeno un gruppo di emittenti.' }),
     sw('belowpar', b.belowPar, 'Solo titoli sotto la pari', 'Prezzo ≤ 100: a scadenza nessuna minusvalenza (che non si potrebbe compensare con le cedole).', v => set(s => { s.basket.belowPar = v; }, true)),
     b.belowPar ? null : h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Prezzo massimo' }),
       seg('maxprice', PRICE_OPTS, b.maxPrice ?? null, v => set(s => { s.basket.maxPrice = v; }, true))),
     h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Liquidità minima' }),
       seg('liq', LIQ_OPTS, b.minLiquidity, v => set(s => { s.basket.minLiquidity = v; }, true), 'Liquidità minima'),
-      h('span', { class: 'help', text: 'Classe di volume STFI (media 20 giorni): "Scambiati" esclude i titoli senza contrattazioni.' })),
+      h('span', { class: 'help', text: 'Classe di volume STFI (media 20 giorni): già "Bassa" esclude i titoli senza contrattazioni.' })),
     h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Quota massima per emittente' }),
       seg('cap', CAP_OPTS, CAP_OPTS.find(([v]) => Math.abs(v - b.issuerCap) < 1e-6)?.[0] ?? b.issuerCap, v => set(s => { s.basket.issuerCap = v; }, true), 'Quota massima per emittente'))
   ];

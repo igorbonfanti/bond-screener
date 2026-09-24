@@ -1,7 +1,7 @@
 {
   "name": "Bond Ladder — scale di titoli di Stato",
   "short_name": "Bond Ladder",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Scale di titoli di Stato per avere capitale a scadenza o una rendita mensile, con i dati di simpletoolsforinvestors.eu.",
   "lang": "it",
   "start_url": "./",
