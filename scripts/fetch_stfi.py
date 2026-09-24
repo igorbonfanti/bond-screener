@@ -49,7 +49,13 @@ def text_of(fragment):
 
 
 def find_link(page):
-    """Link del file End of Day: nella riga della tabella che lo descrive."""
+    """Link del file End of Day. Oggi è un pulsante "Dati End of Day" che punta a
+    ./data/export/<codice>.csv; in passato stava in una riga di tabella."""
+    for a in re.findall(r"<a\b[^>]*>.*?</a>", page, flags=re.S | re.I):
+        href = re.search(r"href\s*=\s*[\"']([^\"']+)[\"']", a, flags=re.I)
+        t = text_of(a)
+        if href and "data/export" in href.group(1) and "end of day" in t and "intraday" not in t:
+            return urllib.parse.urljoin(PAGE, html.unescape(href.group(1)))
     for row in re.findall(r"<tr\b.*?</tr>", page, flags=re.S | re.I):
         t = text_of(row)
         if "end of day" in t and "rendimenti" in t:
