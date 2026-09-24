@@ -314,3 +314,23 @@ Tutte le app usano lo **stesso interruttore** e la **stessa palette chiara**. Ri
 **Grafici (Chart.js)**: leggere i colori dalle variabili CSS a ogni render (`getComputedStyle`), così seguono il tema; **ridisegnare** i grafici al cambio tema.
 
 Il **tema scuro** resta la palette ufficiale della sezione 1 di questo documento.
+
+---
+
+## Grafici (STANDARD dalla v3 di Bond Ladder)
+
+I grafici non usano l'ambra del brand: hanno una palette propria, **validata** per daltonismo e contrasto su
+entrambe le superfici (validatore OKLab: ΔE CVD ≥ 24, ΔE normale ≥ 31, contrasto ≥ 3:1).
+
+| Ruolo | Scuro (su `#1a1d27`) | Chiaro (su `#ffffff`) |
+|---|---|---|
+| Serie 1 (blu) `--series-1` | `#3987e5` | `#2a78d6` |
+| Serie 2 (arancio) `--series-2` | `#d95926` | `#eb6834` |
+| Scala sequenziale `--seq-1…5` | `#1e2a44 → #86b6ef` | `#cde2fb → #1c5cab` |
+| Griglia / assi / testo | `--viz-grid`, `--viz-axis`, `--viz-muted` | idem |
+
+Regole: colonne ≤ 24px con estremità arrotondata 4px e base squadrata; 2px di stacco tra segmenti impilati;
+griglia a filo sottile continuo; legenda sempre presente con due o più serie; testo mai nel colore della serie;
+tooltip su ogni segno con area sensibile più grande del segno e stesso contenuto al focus da tastiera;
+"enfasi" (serie in evidenza + resto in grigio) al posto di molti colori; ogni grafico ha un equivalente in tabella.
+I colori passano per classi CSS (`.s1`, `.s2`, `.deemph`), così cambiano col tema senza ridisegnare.

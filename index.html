@@ -1,250 +1,61 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f1117">
-  <title>Bond Screener — Antigravity</title>
-  <link rel="manifest" href="./manifest.json">
+  <meta name="description" content="Costruisci una scala di titoli di Stato (bond ladder) per avere capitale a scadenze precise o una rendita mensile, con i dati di simpletoolsforinvestors.eu e le tasse italiane già calcolate.">
+  <title>Bond Ladder — scale di titoli di Stato</title>
   <script>(function(){try{var t=localStorage.getItem('antigravity-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./styles/app.css">
+  <script type="module" src="./src/main.js"></script>
 </head>
 <body>
-  <!-- ===================== HEADER ===================== -->
   <header class="topbar">
-    <div class="brand">
-      <span class="logo">▮▮▮</span>
-      <div>
-        <h1>Bond Screener</h1>
-        <span class="sub">Costruttore di Bond Ladder · Antigravity</span>
-      </div>
-    </div>
-    <div class="topbar-status">
-      <button id="themeToggle" class="theme-toggle" title="Cambia tema chiaro / scuro" aria-label="Cambia tema">🌙</button>
-      <span class="pill pill-muted" title="Versione app">v2.2.1</span>
-      <span id="refDate" class="pill pill-muted" title="Data di riferimento dati">Nessun dato</span>
-      <span id="bondCount" class="pill pill-muted">0 bond</span>
-      <span id="fbStatus" class="pill pill-muted" title="Stato Firebase">Cloud…</span>
+    <a class="brand" href="#/" aria-label="Bond Ladder, costruttore">
+      <span id="brandLogo"></span>
+      <span class="brand-text"><span class="brand-name">Bond Ladder</span><span class="brand-sub">scale di titoli di Stato · capitale o rendita</span></span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#/" data-route="build">Costruisci</a>
+      <a href="#/scale" data-route="saved"><span class="long">Le mie scale</span><span class="short">Scale</span></a>
+    </nav>
+    <div class="top-actions">
+      <button id="dataPill" class="data-pill" type="button" title="Dati del giorno: origine e aggiornamento"></button>
+      <button id="helpBtn" class="icon-btn" type="button" title="Come sceglie i titoli" aria-label="Come funziona">?</button>
+      <button id="themeToggle" class="icon-btn" type="button" title="Cambia tema chiaro / scuro" aria-label="Cambia tema">🌙</button>
     </div>
   </header>
 
-  <!-- ===================== TABS ===================== -->
-  <nav class="tabs">
-    <button class="tab active" data-tab="dati">1 · Dati &amp; Filtri</button>
-    <button class="tab" data-tab="ladder">2 · Bond Ladder</button>
-    <button class="tab" data-tab="storico">3 · Storico</button>
-  </nav>
-
-  <main>
-    <!-- ============================================================ -->
-    <!-- TAB 1 — DATI & FILTRI -->
-    <!-- ============================================================ -->
-    <section class="panel active" id="tab-dati">
-      <!-- Upload -->
-      <div class="card" id="uploadCard">
-        <div class="dropzone" id="dropzone">
-          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" hidden>
-          <div class="dz-icon">⬆</div>
-          <div class="dz-text"><strong>Carica il file bond</strong> (CSV o Excel) — trascina qui o clicca</div>
-          <div class="dz-hint">Formato atteso: colonne come il file Colab (isincode, grossytm, grossduration, redemptiondate, ratingsp…)</div>
-        </div>
-        <div id="uploadSummary" class="upload-summary hidden"></div>
-      </div>
-
-      <!-- Filtri -->
-      <div class="card" id="filtersCard">
-        <div class="card-head">
-          <h2>Filtri</h2>
-          <div class="row-gap">
-            <button class="btn btn-secondary btn-sm" id="presetBtn">Preset GOV/SOV · EUR</button>
-            <button class="btn btn-secondary btn-sm" id="resetFiltersBtn">Reset</button>
-            <button class="btn btn-primary btn-sm" id="applyFiltersBtn">Applica filtri</button>
-          </div>
-        </div>
-        <div class="filters-grid">
-          <div class="fld"><label>Emittenti</label><select id="fIssuers" multiple size="4" class="input-standard"></select></div>
-          <div class="fld"><label>Valute</label><select id="fCurrencies" multiple size="4" class="input-standard"></select></div>
-          <div class="fld"><label>Paesi</label><select id="fCountries" multiple size="4" class="input-standard"></select></div>
-          <div class="fld">
-            <label>Duration (min / max)</label>
-            <div class="pair"><input id="fDurMin" class="input-standard" placeholder="min" inputmode="decimal"><input id="fDurMax" class="input-standard" placeholder="max" inputmode="decimal"></div>
-          </div>
-          <div class="fld">
-            <label>Prezzo (min / max)</label>
-            <div class="pair"><input id="fPriceMin" class="input-standard" placeholder="min" inputmode="decimal"><input id="fPriceMax" class="input-standard" placeholder="max" inputmode="decimal"></div>
-          </div>
-          <div class="fld">
-            <label>Scadenza (da / a)</label>
-            <div class="pair"><input id="fRedMin" type="date" class="input-standard"><input id="fRedMax" type="date" class="input-standard"></div>
-          </div>
-          <div class="fld">
-            <label>Yield % (min / max)</label>
-            <div class="pair"><input id="fYieldMin" class="input-standard" placeholder="min" inputmode="decimal"><input id="fYieldMax" class="input-standard" placeholder="max" inputmode="decimal"></div>
-          </div>
-          <div class="fld">
-            <label>Cedola (min / max)</label>
-            <div class="pair"><input id="fCpnMin" class="input-standard" placeholder="min" inputmode="decimal"><input id="fCpnMax" class="input-standard" placeholder="max" inputmode="decimal"></div>
-          </div>
-          <div class="fld">
-            <label>Volume (min / max)</label>
-            <div class="pair"><input id="fVolMin" class="input-standard" placeholder="min" inputmode="decimal"><input id="fVolMax" class="input-standard" placeholder="max" inputmode="decimal"></div>
-          </div>
-          <div class="fld"><label>Rating S&amp;P minimo</label><select id="fRating" class="input-standard"></select></div>
-          <div class="fld fld-wide"><label>Ricerca (descrizione / ISIN)</label><input id="fSearch" class="input-standard" placeholder="es. BTP, AT0000…"></div>
-        </div>
-        <div id="filterLog" class="filter-log"></div>
-      </div>
-
-      <!-- Universo -->
-      <div class="card">
-        <div class="card-head">
-          <h2>Universo filtrato · <span id="universeCount" class="accent">0</span></h2>
-          <div class="row-gap">
-            <button class="btn btn-secondary btn-sm" id="exportUniverseBtn">Export Excel</button>
-            <button class="btn btn-primary btn-sm" id="goLadderBtn">Vai al Ladder →</button>
-          </div>
-        </div>
-        <div class="chart-box chart-sm"><canvas id="chartYield"></canvas></div>
-        <div class="table-wrap" id="universeTableWrap"><table id="universeTable"></table></div>
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- TAB 2 — LADDER -->
-    <!-- ============================================================ -->
-    <section class="panel" id="tab-ladder">
-      <div class="card">
-        <div class="card-head">
-          <h2>Analizza un ladder esistente</h2>
-          <span class="muted">i bond che già possiedi, ai valori del giorno caricato</span>
-        </div>
-        <p class="muted" style="margin-bottom:10px">Incolla i tuoi bond, uno per riga: <b>ISIN</b> oppure <b>ISIN;nominale€</b> (es. <code>IT0005215246;20000</code>). Vengono agganciati ai dati correnti e analizzati ponderando per importo.</p>
-        <div class="invest-bar" style="margin-bottom:10px">
-          <div class="fld" style="flex:1 1 280px"><label>Bond posseduti (ISIN o ISIN;nominale)</label>
-            <textarea id="existingInput" class="input-standard" rows="5" placeholder="IT0005215246;20000&#10;DE0001102481;15000&#10;FR0013451507;25000"></textarea></div>
-          <div class="fld"><label>Nominale default (€)</label><input id="existingDefault" type="number" min="0" step="1000" value="10000" class="input-standard"></div>
-          <button class="btn btn-primary" id="analyzeExistingBtn">Analizza ai valori attuali</button>
-        </div>
-        <div id="existingUnmatched" class="warnings"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head"><h2>Costruisci un nuovo Ladder</h2></div>
-        <div class="params-grid">
-          <div class="fld"><label>Obiettivo</label>
-            <select id="pObjective" class="input-standard">
-              <option value="yield">Massimizza Yield totale</option>
-              <option value="cedole">Massimizza Cedole nette</option>
-            </select>
-          </div>
-          <div class="fld"><label>Duration media max</label><input id="pDurMax" type="number" min="0" step="0.5" placeholder="∞ (nessun limite)" class="input-standard"></div>
-          <div class="fld"><label>N° step</label><input id="pSteps" type="number" min="1" max="20" value="6" class="input-standard"></div>
-          <div class="fld"><label>Intervallo (mesi)</label><input id="pInterval" type="number" min="1" value="12" class="input-standard"></div>
-          <div class="fld"><label>Prima scadenza (M/AAAA)</label><input id="pFirst" value="5/2027" class="input-standard"></div>
-          <div class="fld"><label>Max bond / emittente</label><input id="pMaxIssuer" type="number" min="1" value="1" class="input-standard"></div>
-          <div class="fld"><label>Max bond / paese</label><input id="pMaxCountry" type="number" min="1" placeholder="∞" class="input-standard"></div>
-          <div class="fld"><label>Tolleranza (giorni)</label><input id="pTolerance" type="number" min="0" value="120" class="input-standard"></div>
-          <div class="fld"><label>Rating S&amp;P minimo</label><select id="pRating" class="input-standard"></select></div>
-        </div>
-        <div class="card-actions">
-          <button class="btn btn-primary" id="buildGreedyBtn">⚡ Genera Greedy</button>
-          <button class="btn btn-primary" id="buildOptBtn">★ Genera Ottimizzato</button>
-          <span id="ladderHint" class="muted-inline"></span>
-        </div>
-        <div id="stepAvail" class="step-avail"></div>
-      </div>
-
-      <div class="card hidden" id="ladderResultCard">
-        <div class="card-head">
-          <h2 id="ladderTitle">Bond Ladder</h2>
-          <div class="row-gap">
-            <input id="ladderName" class="input-standard input-inline" placeholder="Nome ladder…">
-            <button class="btn btn-secondary btn-sm" id="exportLadderBtn">Export Excel</button>
-            <button class="btn btn-primary btn-sm" id="saveLadderBtn">Salva su cloud</button>
-          </div>
-        </div>
-        <div class="metrics" id="ladderMetrics"></div>
-        <div id="divWarnings" class="warnings"></div>
-
-        <div class="invest-bar">
-          <div class="fld" id="investAmountField"><label>Importo totale da investire (€)</label><input id="investAmount" type="number" min="0" step="1000" placeholder="es. 60000" class="input-standard"></div>
-          <div class="fld"><label>Frequenza cedole</label>
-            <select id="couponFreq" class="input-standard">
-              <option value="auto">Auto (IT/US/UK semestrali, resto annuali)</option>
-              <option value="1">Tutte annuali</option>
-              <option value="2">Tutte semestrali</option>
-            </select>
-          </div>
-          <span id="investInfo" class="muted-inline"></span>
-        </div>
-        <div id="couponReport" class="metrics"></div>
-
-        <div class="table-wrap"><table id="ladderTable"></table></div>
-
-        <div class="charts-grid">
-          <div class="chart-cell"><h3>Cedole mensili · flussi di cassa (regime perpetuo, cedola annuale)</h3><div class="chart-box"><canvas id="chartMonthly"></canvas></div></div>
-          <div class="chart-cell"><h3>Scadenze &amp; rendimento</h3><div class="chart-box"><canvas id="chartTimeline"></canvas></div></div>
-          <div class="chart-cell"><h3>Flussi: cedole &amp; rimborsi</h3><div class="chart-box"><canvas id="chartCashflow"></canvas></div></div>
-          <div class="chart-cell"><h3>Esposizione per paese</h3><div class="chart-box"><canvas id="chartCountry"></canvas></div></div>
-          <div class="chart-cell"><h3>Esposizione per emittente</h3><div class="chart-box"><canvas id="chartIssuer"></canvas></div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- TAB 3 — STORICO -->
-    <!-- ============================================================ -->
-    <section class="panel" id="tab-storico">
-      <div class="card">
-        <div class="card-head">
-          <h2>Snapshot giornalieri</h2>
-          <button class="btn btn-secondary btn-sm" id="refreshHistBtn">↻ Aggiorna</button>
-        </div>
-        <div id="snapshotList" class="hist-list"><div class="muted">Caricamento…</div></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head"><h2>Bond Ladder salvati</h2></div>
-        <div id="ladderList" class="hist-list"><div class="muted">Caricamento…</div></div>
-      </div>
-
-      <div class="card hidden" id="compareCard">
-        <div class="card-head">
-          <h2 id="compareTitle">Confronto nel tempo</h2>
-          <button class="btn btn-secondary btn-sm" id="closeCompareBtn">Chiudi</button>
-        </div>
-        <div id="compareBody"></div>
-      </div>
-    </section>
+  <main id="app" aria-live="polite">
+    <noscript><div class="card card-pad">Serve JavaScript per usare l'app.</div></noscript>
   </main>
 
-  <!-- toast -->
-  <div id="toast" class="toast hidden"></div>
+  <footer class="footer">
+    <span>Dati: <a href="https://www.simpletoolsforinvestors.eu/documentivari.php" target="_blank" rel="noopener">simpletoolsforinvestors.eu</a></span>
+    <span>Calcoli indicativi, non consulenza finanziaria · commissioni e imposta di bollo escluse · <a href="#" id="helpLink">come funziona</a></span>
+    <span><span id="version"></span> · versioni precedenti: <a href="./v2/">v2</a> · <a href="./v1/">v1</a></span>
+  </footer>
 
-  <!-- ===================== LIBRERIE ===================== -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-  <!-- ===================== MODULI APP ===================== -->
-  <script src="./js/firebase_config.js"></script>
-  <!-- Accesso opzionale: la consultazione resta libera, l'accesso serve solo
-       per salvare ed eliminare. Va dopo firebase_config.js. -->
-  <script src="./auth-opzionale.js"></script>
-  <script src="./js/data.js"></script>
-  <script src="./js/filters.js"></script>
-  <script src="./js/ladder.js"></script>
-  <script src="./js/charts.js"></script>
-  <script src="./js/store.js"></script>
-  <script src="./js/export.js"></script>
-  <script src="./js/app.js"></script>
+  <div class="mobile-bar" id="mobileBar" hidden>
+    <div class="mb-text"><span class="mb-main" id="mbMain">—</span><span class="mb-sub" id="mbSub"></span></div>
+    <button class="btn btn-primary btn-sm" id="mbBtn" type="button">Vedi proposta ↓</button>
+  </div>
+
+  <!-- Firebase (facoltativo): salvataggio, condivisione e monitoraggio delle scale -->
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Accesso opzionale (condiviso con coma-screener): serve solo per salvare ed eliminare -->
+  <script defer src="./auth-opzionale.js"></script>
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
-    }
+    if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
   </script>
 </body>
 </html>
