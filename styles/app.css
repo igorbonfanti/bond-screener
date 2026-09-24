@@ -1,7 +1,7 @@
 /* ==========================================================================
    Bond Ladder v3 — foglio di stile
    Design system Antigravity (token e tema chiaro/scuro standard), layout nuovo.
-   Colori dei grafici: palette validata (blu/arancio) per entrambi i temi.
+   Colori dei grafici: palette validata (blu/arancio/acqua) per entrambi i temi.
    ========================================================================== */
 
 :root {
@@ -17,7 +17,7 @@
   --shadow: 0 1px 0 rgba(255, 255, 255, .02), 0 12px 32px rgba(0, 0, 0, .25);
   --header-h: 60px;
   /* grafici — palette validata sulla superficie scura (#1a1d27) */
-  --series-1: #3987e5; --series-2: #d95926;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
   --viz-grid: #2a2e3d; --viz-axis: #3a3f55; --viz-muted: #8a8fa6; --viz-deemph: #4a5068;
   --seq-1: #1e2a44; --seq-2: #184f95; --seq-3: #256abf; --seq-4: #3987e5; --seq-5: #86b6ef;
   --seq-ink-dark: #0b0b0b; --seq-ink-light: #ffffff;
@@ -35,7 +35,7 @@ html[data-theme="light"] {
   --blue: #2563eb;
   --shadow: 0 1px 3px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .06);
   /* grafici — palette validata sulla superficie chiara (#ffffff) */
-  --series-1: #2a78d6; --series-2: #eb6834;
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
   --viz-grid: #e8ebf0; --viz-axis: #c9ced8; --viz-muted: #7c8496; --viz-deemph: #c3c8d3;
   --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #5598e7; --seq-4: #2a78d6; --seq-5: #1c5cab;
   color-scheme: light;
@@ -311,7 +311,7 @@ details.adv > .stack { margin-top: 14px; }
 .isin-copy { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text2); border-bottom: 1px dashed var(--text3); cursor: copy; }
 .compo { display: flex; height: 6px; border-radius: 6px; overflow: hidden; background: var(--surface3); gap: 2px; margin-top: 4px; max-width: 280px; }
 .compo span { display: block; height: 100%; }
-.compo .c1 { background: var(--series-1); } .compo .c2 { background: var(--series-2); }
+.compo .c1 { background: var(--series-1); } .compo .c2 { background: var(--series-2); } .compo .c3 { background: var(--series-3); }
 .rung-empty { padding: 14px; font-size: 13px; color: var(--text2); }
 .months { display: flex; gap: 3px; flex-wrap: wrap; }
 .months span { font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 999px; background: var(--surface3); color: var(--text2); text-transform: uppercase; }
@@ -357,6 +357,7 @@ html[data-theme="light"] .heat td.cell.h5 { color: #fff; }
 .chart text { fill: var(--viz-muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
 .chart .s1 { fill: var(--series-1); }
 .chart .s2 { fill: var(--series-2); }
+.chart .s3 { fill: var(--series-3); }
 .chart .deemph { fill: var(--viz-deemph); }
 .chart .target { stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
 .chart .avg { stroke: var(--text2); stroke-width: 1; }
@@ -368,7 +369,7 @@ html[data-theme="light"] .heat td.cell.h5 { color: #fff; }
 .chart .ring { stroke: var(--surface); stroke-width: 2; }
 .chart .hit { fill: transparent; cursor: pointer; }
 .chart .hit:hover + .bar-hl, .chart .mark-hl { opacity: 1; }
-.chart .col:hover .s1, .chart .col:hover .s2, .chart .col.focus .s1, .chart .col.focus .s2 { filter: brightness(1.15); }
+.chart .col:hover :is(.s1, .s2, .s3), .chart .col.focus :is(.s1, .s2, .s3) { filter: brightness(1.15); }
 .chart .dot { cursor: pointer; }
 .chart .dot.sel { stroke: var(--surface); stroke-width: 2; }
 .chart-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text2); margin-bottom: 10px; }

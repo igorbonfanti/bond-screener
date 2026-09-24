@@ -1,4 +1,4 @@
-# Bond Ladder — v3.1.1
+# Bond Ladder — v3.2.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -28,7 +28,9 @@ alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa
   del periodo). Il periodo di una scadenza è il suo anno o semestre (con le date precise, i 12 mesi prima della
   data): le cedole incassate prima della scala, o fra due date lontane, non contano per gli importi — resterebbero
   ferme per anni e in una scala che parte tardi toglierebbero il primo titolo — e sono indicate a parte come
-  entrata in più. La scelta dei titoli è **esatta**: flusso a costo minimo con importi uguali, branch & bound
+  entrata in più. Con l'opzione **"Accantona le cedole di prima"** restano invece da parte (senza interessi) e
+  pagano in ordine le prime scadenze, con l'avanzo che passa alla successiva (punto fisso: la cassa dipende dai
+  titoli e i titoli dalla cassa). La scelta dei titoli è **esatta**: flusso a costo minimo con importi uguali, branch & bound
   altrimenti; prima si coprono tutte le scadenze coperte possibili, poi si massimizza il rendimento netto nel
   rispetto della quota per emittente. Con le date precise conta il rendimento effettivo alla data.
 - **Rendita mensile**: programmazione lineare (javascript-lp-solver) che massimizza la cedola netta del mese più

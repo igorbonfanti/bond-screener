@@ -326,6 +326,7 @@ entrambe le superfici (validatore OKLab: ΔE CVD ≥ 24, ΔE normale ≥ 31, con
 |---|---|---|
 | Serie 1 (blu) `--series-1` | `#3987e5` | `#2a78d6` |
 | Serie 2 (arancio) `--series-2` | `#d95926` | `#eb6834` |
+| Serie 3 (acqua) `--series-3` | `#199e70` | `#1baf7a` |
 | Scala sequenziale `--seq-1…5` | `#1e2a44 → #86b6ef` | `#cde2fb → #1c5cab` |
 | Griglia / assi / testo | `--viz-grid`, `--viz-axis`, `--viz-muted` | idem |
 
@@ -333,4 +334,6 @@ Regole: colonne ≤ 24px con estremità arrotondata 4px e base squadrata; 2px di
 griglia a filo sottile continuo; legenda sempre presente con due o più serie; testo mai nel colore della serie;
 tooltip su ogni segno con area sensibile più grande del segno e stesso contenuto al focus da tastiera;
 "enfasi" (serie in evidenza + resto in grigio) al posto di molti colori; ogni grafico ha un equivalente in tabella.
-I colori passano per classi CSS (`.s1`, `.s2`, `.deemph`), così cambiano col tema senza ridisegnare.
+I colori passano per classi CSS (`.s1`, `.s2`, `.s3`, `.deemph`), così cambiano col tema senza ridisegnare.
+Con tre serie l'ordine è blu, arancio, acqua (coppie adiacenti: ΔE CVD ≥ 9,2, ΔE normale ≥ 26,5). L'acqua in tema
+chiaro ha contrasto 2,8:1 sul bianco: il valore va sempre anche scritto (tooltip e testo accanto al grafico).

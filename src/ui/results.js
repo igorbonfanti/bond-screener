@@ -145,10 +145,13 @@ function capitalView(st, result, plan) {
   const atTargets = plan.targets.reduce((s, t) => s + t.available, 0);
   const extra = Math.max(0, received - atTargets);                 // cedole che non servono agli importi
   const pre = plan.preCoupons || 0, gap = plan.gapCoupons || 0;
-  const extraWhat = !plan.useCoupons || (pre <= 0.5 && gap <= 0.5) ? 'di cedole'
-    : pre > 0.5 && gap > 0.5 ? 'di cedole incassate prima della scala e fra una data e l\'altra'
-      : gap > 0.5 ? 'di cedole incassate fra una data e l\'altra' : 'di cedole incassate prima della scala';
-  const extraLine = extra > 0.5 ? [', più ', h('strong', { text: fmtEur(extra) }), ` ${extraWhat}`] : [];
+  const extraWhat = plan.accumulate ? 'di cedole accantonate che avanzano'
+    : !plan.useCoupons || (pre <= 0.5 && gap <= 0.5) ? 'di cedole'
+      : pre > 0.5 && gap > 0.5 ? 'di cedole incassate prima della scala e fra una data e l\'altra'
+        : gap > 0.5 ? 'di cedole incassate fra una data e l\'altra' : 'di cedole incassate prima della scala';
+  const potUsed = plan.accumulate ? plan.targets.reduce((s, t) => s + (t.fromPot || 0), 0) : 0;
+  const extraLine = [potUsed > 0.5 ? [', di cui ', h('strong', { text: fmtEur(potUsed) }), ' dalle cedole accantonate'] : [],
+    extra > 0.5 ? [potUsed > 0.5 ? '; più ' : ', più ', h('strong', { text: fmtEur(extra) }), ` ${extraWhat}`] : []];
   const first = plan.targets[0].label, last = plan.targets[T - 1].label;
   const budgetMode = plan.budget != null;
   const perRung = T ? atTargets / T : 0;
@@ -173,7 +176,14 @@ function capitalView(st, result, plan) {
     if (tot > 0) ins.push(insight('info', `Le cedole coprono il ${fmtNum(cp / tot * 100, 0)}% degli importi: per questo serve meno capitale dei ${fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0))} da ricevere.`));
     if (pre > 0.5 || gap > 0.5) {
       const where = [pre > 0.5 ? `prima della scala (${fmtEur(pre)} fino al ${fmt(plan.preUntil)})` : '', gap > 0.5 ? `fra una data e l'altra (${fmtEur(gap)})` : ''].filter(Boolean).join(' e ');
-      ins.push(insight('info', `Per ogni scadenza contano solo le cedole del suo periodo. Quelle incassate ${where} resterebbero ferme per anni: non le conto negli importi, sono un'entrata in più da spendere o reinvestire.`));
+      if (plan.accumulate) {
+        const used = plan.targets.filter(t => t.fromPot > Math.max(0.5, 0.02 * t.amount));   // i ritocchi da arrotondamento non contano
+        const names = used.map(t => t.label + (t.nominal > 0 ? ' (in parte)' : ''));
+        const list = names.length > 1 ? names.slice(0, -1).join(', ') + ' e ' + names[names.length - 1] : names[0] || '';
+        ins.push(insight('info', `Accantoni le cedole incassate ${where}: ${used.length ? `pagano ${used.length === 1 ? 'la scadenza' : 'le scadenze'} ${list}` : 'non servono a nessuna scadenza'}${plan.potLeft > 0.5 ? `, e ne avanzano ${fmtEur(plan.potLeft)}` : ''}. Restano ferme fino ad allora, senza interessi.`));
+      } else {
+        ins.push(insight('info', `Per ogni scadenza contano solo le cedole del suo periodo. Quelle incassate ${where} resterebbero ferme per anni: non le conto negli importi, sono un'entrata in più da spendere o reinvestire. Se vuoi usarle per le prime scadenze, attiva «Accantona le cedole di prima».`));
+      }
     }
   }
   const surplus = plan.targets.filter(t => t.bond).reduce((s, t) => s + Math.max(0, t.surplus), 0);
@@ -182,18 +192,22 @@ function capitalView(st, result, plan) {
 
   // Grafico della scala
   const chartBox = h('div');
+  const pooledUsed = plan.accumulate && plan.targets.some(t => t.fromPot > 0.5);
   const labels = plan.targets.map(t => t.label.length > 12 ? t.label.slice(0, 11) + '…' : t.label);
   requestAnimationFrame(() => columnChart(chartBox, {
     labels, height: 250, yFormat: v => v >= 1000 ? `${fmtNum(v / 1000, 0)}k` : fmtNum(v, 0),
-    series: [{ cls: 's1', values: plan.targets.map(t => t.redemption) }, { cls: 's2', values: plan.targets.map(t => plan.useCoupons ? t.coupons : 0) }],
+    series: [{ cls: 's1', values: plan.targets.map(t => t.redemption) }, { cls: 's2', values: plan.targets.map(t => plan.useCoupons ? t.coupons : 0) },
+      ...(pooledUsed ? [{ cls: 's3', values: plan.targets.map(t => t.fromPot) }] : [])],
     target: plan.targets.map(t => t.amount), ariaLabel: 'Importo disponibile per ogni scadenza',
     tooltip: i => { const t = plan.targets[i]; return { title: t.label, rows: [
       { key: 'series-1', label: 'Rimborso', value: fmtEur(t.redemption) }, { key: 'series-2', label: 'Cedole', value: fmtEur(plan.useCoupons ? t.coupons : 0) },
+      ...(pooledUsed ? [{ key: 'series-3', label: 'Accantonate', value: fmtEur(t.fromPot) }] : []),
       { label: 'Disponibile', value: fmtEur(t.available) }, { label: 'Obiettivo', value: fmtEur(t.amount) }], note: t.bond ? t.bond.desc : 'Nessun titolo' }; },
     onClick: i => { const el = document.getElementById('rung-' + i); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }));
   const ladderCard = card('La tua scala', 'quanto ricevi a ogni scadenza', [
-    legend([{ key: 'series-1', label: 'Rimborso del titolo' }, { key: 'series-2', label: plan.useCoupons ? 'Cedole incassate nel periodo' : 'Cedole (non usate)' }, { type: 'line', label: 'Obiettivo' }]), chartBox]);
+    legend([{ key: 'series-1', label: 'Rimborso del titolo' }, { key: 'series-2', label: plan.useCoupons ? 'Cedole incassate nel periodo' : 'Cedole (non usate)' },
+      ...(pooledUsed ? [{ key: 'series-3', label: 'Cedole accantonate' }] : []), { type: 'line', label: 'Obiettivo' }]), chartBox]);
 
   // Gradini
   const rungs = h('div', { class: 'rungs' }, plan.targets.map((t, i) => rungCard(t, i, plan, c)));
@@ -210,13 +224,17 @@ function capitalView(st, result, plan) {
 
 function rungCard(t, i, plan, c) {
   const when = t.need != null ? `${t.label} · entro il ${fmt(t.need)}` : t.label;
-  const status = !t.bond ? h('span', { class: 'rung-status short', text: 'scoperta' })
+  const status = !t.bond && t.available < 0.5 ? h('span', { class: 'rung-status short', text: 'scoperta' })
     : t.available + 0.5 >= t.amount ? h('span', { class: 'rung-status ok', text: `✓ ${fmtEur(t.available)}` })
       : h('span', { class: 'rung-status short', text: `${fmtEur(t.available)} (${fmtSigned(t.available - t.amount)})` });
   const head = h('div', { class: 'rung-head' }, h('span', { class: 'rung-when', text: when }),
     h('span', { class: 'rung-goal', text: `obiettivo ${fmtEur(t.amount)}` }), status);
   if (!t.bond) {
-    return h('div', { class: 'rung', id: 'rung-' + i }, head, h('div', { class: 'rung-empty' },
+    const pot = t.fromPot > 0.5 ? (t.available + 0.5 >= t.amount
+      ? `Nessun titolo del paniere scade qui, ma le cedole accantonate (${fmtEur(t.fromPot)}) coprono l'obiettivo.`
+      : `Le cedole accantonate ne coprono ${fmtEur(t.fromPot)}. `) : '';
+    if (pot && t.available + 0.5 >= t.amount) return h('div', { class: 'rung', id: 'rung-' + i }, head, h('div', { class: 'rung-empty', text: pot }));
+    return h('div', { class: 'rung', id: 'rung-' + i }, head, h('div', { class: 'rung-empty' }, pot,
       t.candidates.length ? 'Ci sono titoli in questo periodo ma il limite per emittente ne impedisce l\'uso: allenta la quota massima.'
         : t.need != null ? 'Nessun titolo del paniere scade in questa finestra: aumenta la flessibilità o allarga il paniere (rating, emittenti, prezzo).'
           : 'Nessun titolo del paniere scade in questo periodo: allarga il paniere (rating, emittenti, prezzo) o la liquidità minima.'));
@@ -224,15 +242,17 @@ function rungCard(t, i, plan, c) {
   const b = t.bond, cost = t.nominal * b.cost / 100;
   if (!t.nominal) {
     const byCoupons = t.available + 0.5 >= t.amount;
+    const paid = t.fromPot > 0.5 ? `Le cedole accantonate (${fmtEur(t.fromPot)})${t.coupons > 0.5 ? ` e quelle del periodo (${fmtEur(t.coupons)})` : ''}`
+      : `Le cedole incassate in questo periodo (${fmtEur(t.coupons)})`;
     return h('div', { class: 'rung', id: 'rung-' + i }, head, h('div', { class: 'rung-empty' },
-      h('div', { text: byCoupons ? `Le cedole incassate in questo periodo (${fmtEur(t.coupons)}) coprono già l'obiettivo: non serve comprare un titolo.`
+      h('div', { text: byCoupons ? `${paid} coprono già l'obiettivo: non serve comprare un titolo.`
         : plan.budget != null ? `Il capitale non basta per il lotto minimo di ${b.desc} (${fmtNum(b.lot, 0)} di nominale): scegli un titolo con un lotto più piccolo o aumenta il capitale.`
           : `${b.desc} non scade in questo periodo: scegli un altro titolo.` }),
       h('div', { style: { display: 'flex', gap: '6px', marginTop: '8px' } },
         byCoupons ? null : h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onAlternatives && A.onAlternatives(t, i) } }, icon('swap'), 'Cambia'),
         t.fixed ? h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onUnfix && A.onUnfix(t.label) } }, 'Automatico') : null)));
   }
-  const tot = Math.max(1, t.redemption + (plan.useCoupons ? t.coupons : 0));
+  const tot = Math.max(1, t.redemption + (plan.useCoupons ? t.coupons : 0) + (t.fromPot || 0));
   const extra = t.fixed ? [h('span', { class: 'tag accent', text: 'scelto da te' })] : [];
   const rank = t.candidates.findIndex(x => x.bond.isin === b.isin);
   // Perché non il primo? Di solito perché i migliori sono di emittenti già al limite di quota.
@@ -244,8 +264,10 @@ function rungCard(t, i, plan, c) {
       h('div', { class: 'bond-buy' },
         h('span', { class: 'small', text: 'Nominale da comprare' }), h('span', { class: 'big', text: fmtEur(t.nominal) }),
         h('span', { class: 'small', text: `costo ≈ ${fmtEur(cost)}` }),
-        h('div', { class: 'compo', title: `rimborso ${fmtEur(t.redemption)} + cedole ${fmtEur(t.coupons)}` },
-          h('span', { class: 'c1', style: { width: `${t.redemption / tot * 100}%` } }), plan.useCoupons && t.coupons > 0 ? h('span', { class: 'c2', style: { width: `${t.coupons / tot * 100}%` } }) : null),
+        t.fromPot > 0.5 ? h('span', { class: 'small', text: `+ ${fmtEur(t.fromPot)} dalle cedole accantonate` }) : null,
+        h('div', { class: 'compo', title: `rimborso ${fmtEur(t.redemption)} + cedole ${fmtEur(t.coupons)}${t.fromPot > 0.5 ? ` + accantonate ${fmtEur(t.fromPot)}` : ''}` },
+          h('span', { class: 'c1', style: { width: `${t.redemption / tot * 100}%` } }), plan.useCoupons && t.coupons > 0 ? h('span', { class: 'c2', style: { width: `${t.coupons / tot * 100}%` } }) : null,
+          t.fromPot > 0.5 ? h('span', { class: 'c3', style: { width: `${t.fromPot / tot * 100}%` } }) : null),
         h('div', { style: { display: 'flex', gap: '6px', marginTop: '6px' } },
           h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onAlternatives && A.onAlternatives(t, i) } }, icon('swap'), 'Cambia'),
           t.fixed ? h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onUnfix && A.onUnfix(t.label) } }, 'Automatico') : null))));

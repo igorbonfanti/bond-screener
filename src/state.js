@@ -18,6 +18,7 @@ export function defaults(refDay) {
       ],
       flexMonths: 6,
       useCoupons: true,
+      accumulate: false,                          // cedole incassate prima della scala: accantonate per le prime scadenze
       rounding: 'up'                              // 'up' (almeno l'importo) | 'nearest'
     },
     income: {

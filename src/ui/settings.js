@@ -125,7 +125,10 @@ function capitalSection(st) {
   }
   out.push(sw('coupons', c.useCoupons, 'Usa le cedole per gli importi', c.useCoupons
     ? 'Per ogni scadenza contano le cedole del suo periodo (anno, semestre o 12 mesi prima della data): serve meno capitale. Quelle incassate prima sono un\'entrata in più.'
-    : 'Gli importi arrivano solo dai rimborsi; le cedole sono un\'entrata in più.', v => set(s => { s.capital.useCoupons = v; })));
+    : 'Gli importi arrivano solo dai rimborsi; le cedole sono un\'entrata in più.', v => set(s => { s.capital.useCoupons = v; }, true)));
+  if (c.useCoupons) out.push(sw('accumulate', !!c.accumulate, 'Accantona le cedole di prima', c.accumulate
+    ? 'Le cedole incassate prima della scala (o fra una data e l\'altra) restano da parte, senza interessi, e pagano le prime scadenze: serve meno capitale, i primi titoli si riducono o non servono.'
+    : 'Le cedole incassate prima della scala sono un\'entrata in più da spendere o reinvestire: ogni scadenza ha il suo titolo.', v => set(s => { s.capital.accumulate = v; }, true)));
   return out;
 }
 

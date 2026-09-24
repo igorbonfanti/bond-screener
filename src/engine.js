@@ -56,7 +56,7 @@ export function compute(ds, st) {
     const fixed = {};
     targets.forEach((t, i) => { const isin = st.fixed && st.fixed[t.label]; if (isin) fixed[i] = isin; });
     const budget = c.schedule !== 'dates' && c.start === 'budget' ? Math.max(0, +c.budget || 0) : null;
-    out.plan = planCapital(ds, bonds, { targets, useCoupons: c.useCoupons, zainetto, issuerCap: st.basket.issuerCap, budget, fixed, rounding: c.rounding });
+    out.plan = planCapital(ds, bonds, { targets, useCoupons: c.useCoupons, accumulate: c.accumulate, zainetto, issuerCap: st.basket.issuerCap, budget, fixed, rounding: c.rounding });
     if (targets.length) out.map = mapPoints(bonds, Math.min(...targets.map(t => t.start)), Math.max(...targets.map(t => t.end)), zainetto);
   } else if (st.goal === 'income') {
     const i = st.income;

@@ -210,6 +210,40 @@ test('capitale a scadenza: date precise, contano le cedole dei 12 mesi prima', (
   assert.ok(plan.gapCoupons > 1000, 'cinque anni di cedole fra le due date');
 });
 
+test('capitale a scadenza: opzione "accantona le cedole di prima"', () => {
+  const ds = load();
+  const { bonds } = applyBasket(ds, {});
+  const targets = regularTargets({ yearFrom: 2033, yearTo: 2036, everyMonths: 12, amount: 10000 }, ds.settle);
+  const base = planCapital(ds, bonds, { targets, issuerCap: 1 });
+  const acc = planCapital(ds, bonds, { targets, issuerCap: 1, accumulate: true });
+  assert.ok(acc.accumulate && !base.accumulate);
+  for (const t of acc.targets) {
+    assert.ok(t.available + 0.5 >= t.amount, `${t.label}: coperta (${t.available})`);
+    assert.equal(t.nominal % t.bond.lot, 0);
+  }
+  assert.ok(acc.targets[0].fromPot > 1000, 'le cedole accantonate pagano la prima scadenza');
+  const firstGap = acc.targets.findIndex(t => t.fromPot < 0.5);
+  if (firstGap >= 0) assert.ok(acc.targets.slice(firstGap).every(t => t.fromPot < 0.5), 'la cassa va prima alle scadenze più vicine');
+  assert.ok(acc.targets[0].nominal < base.targets[0].nominal, 'il primo titolo si riduce');
+  assert.ok(acc.totalCost < base.totalCost - 1000, `serve meno capitale: ${acc.totalCost} < ${base.totalCost}`);
+  const flows = acc.schedule.reduce((s, f) => s + f.net, 0);
+  assert.ok(Math.abs(flows - acc.targets.reduce((s, t) => s + t.available, 0) - acc.potLeft) < 1e-6, 'ogni euro è in una scadenza o nell\'avanzo');
+  assert.ok(acc.potLeft < 1100, `avanzo piccolo (${acc.potLeft})`);
+  // Dal capitale: somme più alte che senza accantonare, capitale investito
+  const unit = regularTargets({ yearFrom: 2033, yearTo: 2036, everyMonths: 12, amount: 1 }, ds.settle);
+  const b0 = planCapital(ds, bonds, { targets: unit, budget: 50000, issuerCap: 1 });
+  const b1 = planCapital(ds, bonds, { targets: unit, budget: 50000, issuerCap: 1, accumulate: true });
+  assert.ok(b1.totalCost <= 50000 + 1e-6 && 50000 - b1.totalCost < 1100);
+  assert.ok(b1.targets[0].amount > b0.targets[0].amount * 1.05, 'somma per scadenza più alta');
+  // Scala che parte subito: nessuna cedola "di prima", l'opzione non cambia nulla
+  const now = regularTargets({ yearFrom: 2026, yearTo: 2030, everyMonths: 12, amount: 10000 }, ds.settle);
+  const n0 = planCapital(ds, bonds, { targets: now, issuerCap: 1 }), n1 = planCapital(ds, bonds, { targets: now, issuerCap: 1, accumulate: true });
+  assert.equal(n0.preCoupons, 0);
+  assert.equal(n1.totalCost, n0.totalCost);
+  // Senza cedole negli importi l'opzione è spenta
+  assert.equal(planCapital(ds, bonds, { targets, issuerCap: 1, useCoupons: false, accumulate: true }).accumulate, false);
+});
+
 test('rendita mensile: 12 mesi coperti, regolare, capitale investito, priorità al rendimento', () => {
   const ds = load();
   const { bonds } = applyBasket(ds, {});
@@ -237,6 +271,10 @@ test('dalle impostazioni alla proposta (engine.compute)', () => {
   st.fixed = {};
   st.capital.start = 'budget'; st.capital.budget = 50000;
   assert.ok(compute(ds, st).plan.totalCost <= 50000 + 1e-6);
+  st.capital.accumulate = true; st.capital.yearFrom = 2032;
+  const ra = compute(ds, st).plan;
+  assert.ok(ra.accumulate && ra.totalCost <= 50000 + 1e-6 && ra.targets[0].fromPot > 0, 'opzione "accantona" dalle impostazioni');
+  st.capital.accumulate = false;
   st.basket.excluded = ['GOV_IT'];
   assert.ok(!compute(ds, st).plan.positions.some(p => p.bond.issuer === 'GOV_IT'), 'emittente escluso');
   st.basket.excluded = [];

@@ -13,7 +13,7 @@ import { openHelp } from './ui/help.js';
 import { saveLadder, cloudReady } from './cloud.js';
 import { fmt, iso, today, parseDay } from './core/dates.js';
 
-const VERSION = '3.1.1';
+const VERSION = '3.2.0';
 const app = { ds: null, meta: null, text: null, st: null, result: null, worker: null, workerReady: false, req: 0, pending: new Map(), lastSaved: null };
 
 /* ---------------- Tema (standard Antigravity) ---------------- */
