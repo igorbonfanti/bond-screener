@@ -1,0 +1,10 @@
+{
+  "name": "bond-screener",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bond Ladder — selezione titoli di Stato e costruzione di scale obbligazionarie (dati simpletoolsforinvestors.eu)",
+  "scripts": {
+    "test": "TZ=Europe/Rome node --test tests/*.test.js"
+  }
+}
