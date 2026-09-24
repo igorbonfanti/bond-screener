@@ -139,17 +139,25 @@ function commonInsights(plan, result) {
 function capitalView(st, result, plan) {
   const c = st.capital;
   if (!plan.targets.length) return [h('div', { class: 'card card-pad' }, insight('warn', 'Nessuna scadenza futura nel periodo scelto: sposta gli anni in avanti.'))];
-  const covered = plan.targets.filter(t => t.bond && t.nominal > 0).length, T = plan.targets.length;
+  // Coperta: c'è un titolo da comprare, oppure bastano le cedole del periodo
+  const covered = plan.targets.filter(t => (t.bond && t.nominal > 0) || t.available + 0.5 >= t.amount).length, T = plan.targets.length;
   const received = plan.schedule.reduce((s, f) => s + f.net, 0);
+  const atTargets = plan.targets.reduce((s, t) => s + t.available, 0);
+  const extra = Math.max(0, received - atTargets);                 // cedole che non servono agli importi
+  const pre = plan.preCoupons || 0, gap = plan.gapCoupons || 0;
+  const extraWhat = !plan.useCoupons || (pre <= 0.5 && gap <= 0.5) ? 'di cedole'
+    : pre > 0.5 && gap > 0.5 ? 'di cedole incassate prima della scala e fra una data e l\'altra'
+      : gap > 0.5 ? 'di cedole incassate fra una data e l\'altra' : 'di cedole incassate prima della scala';
+  const extraLine = extra > 0.5 ? [', più ', h('strong', { text: fmtEur(extra) }), ` ${extraWhat}`] : [];
   const first = plan.targets[0].label, last = plan.targets[T - 1].label;
   const budgetMode = plan.budget != null;
-  const perRung = T ? plan.targets.reduce((s, t) => s + t.available, 0) / T : 0;
+  const perRung = T ? atTargets / T : 0;
   const hero = h('section', { class: 'card hero' },
     budgetMode
       ? h('div', null, h('div', { class: 'hero-figure' }, fmtEur(perRung), h('small', { text: `circa, per ${c.schedule === 'semester' ? 'semestre' : 'anno'}` })),
-          h('p', { class: 'hero-line' }, 'Investendo ', h('strong', { text: fmtEur(plan.totalCost) }), ` ricevi ${T} somme dal ${first} al ${last}, per un totale di `, h('strong', { text: fmtEur(received) }), ' netti.'))
+          h('p', { class: 'hero-line' }, 'Investendo ', h('strong', { text: fmtEur(plan.totalCost) }), ` ricevi ${T} somme dal ${first} al ${last}, per un totale di `, h('strong', { text: fmtEur(atTargets) }), ' netti', extraLine, '.'))
       : h('div', null, h('div', { class: 'hero-figure' }, fmtEur(plan.totalCost), h('small', { text: 'da investire oggi' })),
-          h('p', { class: 'hero-line' }, 'Per avere ', h('strong', { text: fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0)) }), ` in ${T} ${T === 1 ? 'scadenza' : 'scadenze'} (${first === last ? first : first + ' → ' + last}), incassando in tutto `, h('strong', { text: fmtEur(received) }), ' netti.')),
+          h('p', { class: 'hero-line' }, 'Per avere ', h('strong', { text: fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0)) }), ` in ${T} ${T === 1 ? 'scadenza' : 'scadenze'} (${first === last ? first : first + ' → ' + last}) ricevi `, h('strong', { text: fmtEur(atTargets) }), ' netti alle scadenze', extraLine, '.')),
     h('div', { class: 'kpis' },
       kpi('Rendimento netto', fmtPct(plan.irr * 100), 'annuo, dai flussi netti'),
       kpi('Guadagno netto', fmtSigned(received - plan.totalCost), 'incassi − investimento'),
@@ -163,6 +171,10 @@ function capitalView(st, result, plan) {
   if (plan.useCoupons) {
     const cp = plan.targets.reduce((s, t) => s + t.coupons, 0), tot = plan.targets.reduce((s, t) => s + t.available, 0);
     if (tot > 0) ins.push(insight('info', `Le cedole coprono il ${fmtNum(cp / tot * 100, 0)}% degli importi: per questo serve meno capitale dei ${fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0))} da ricevere.`));
+    if (pre > 0.5 || gap > 0.5) {
+      const where = [pre > 0.5 ? `prima della scala (${fmtEur(pre)} fino al ${fmt(plan.preUntil)})` : '', gap > 0.5 ? `fra una data e l'altra (${fmtEur(gap)})` : ''].filter(Boolean).join(' e ');
+      ins.push(insight('info', `Per ogni scadenza contano solo le cedole del suo periodo. Quelle incassate ${where} resterebbero ferme per anni: non le conto negli importi, sono un'entrata in più da spendere o reinvestire.`));
+    }
   }
   const surplus = plan.targets.filter(t => t.bond).reduce((s, t) => s + Math.max(0, t.surplus), 0);
   if (!budgetMode && surplus > 0.03 * plan.targets.reduce((s, t) => s + t.amount, 0)) ins.push(insight('info', `Arrotondando ai lotti minimi ricevi ${fmtEur(surplus)} in più del necessario in totale.`));
@@ -210,6 +222,16 @@ function rungCard(t, i, plan, c) {
           : 'Nessun titolo del paniere scade in questo periodo: allarga il paniere (rating, emittenti, prezzo) o la liquidità minima.'));
   }
   const b = t.bond, cost = t.nominal * b.cost / 100;
+  if (!t.nominal) {
+    const byCoupons = t.available + 0.5 >= t.amount;
+    return h('div', { class: 'rung', id: 'rung-' + i }, head, h('div', { class: 'rung-empty' },
+      h('div', { text: byCoupons ? `Le cedole incassate in questo periodo (${fmtEur(t.coupons)}) coprono già l'obiettivo: non serve comprare un titolo.`
+        : plan.budget != null ? `Il capitale non basta per il lotto minimo di ${b.desc} (${fmtNum(b.lot, 0)} di nominale): scegli un titolo con un lotto più piccolo o aumenta il capitale.`
+          : `${b.desc} non scade in questo periodo: scegli un altro titolo.` }),
+      h('div', { style: { display: 'flex', gap: '6px', marginTop: '8px' } },
+        byCoupons ? null : h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onAlternatives && A.onAlternatives(t, i) } }, icon('swap'), 'Cambia'),
+        t.fixed ? h('button', { class: 'btn btn-ghost btn-sm', on: { click: () => A.onUnfix && A.onUnfix(t.label) } }, 'Automatico') : null)));
+  }
   const tot = Math.max(1, t.redemption + (plan.useCoupons ? t.coupons : 0));
   const extra = t.fixed ? [h('span', { class: 'tag accent', text: 'scelto da te' })] : [];
   const rank = t.candidates.findIndex(x => x.bond.isin === b.isin);

@@ -163,6 +163,53 @@ test('capitale a scadenza: dal capitale disponibile, titolo fissato a mano, date
   }
 });
 
+test('capitale a scadenza: scala che parte fra anni, le cedole di prima non tolgono il primo titolo', () => {
+  const ds = load();
+  const { bonds } = applyBasket(ds, {});
+  const sumNet = (plan, pred) => plan.schedule.filter(f => f.kind === 'coupon' && pred(f.day)).reduce((s, f) => s + f.net, 0);
+  // Importi fissi: 2033-2036, dopo sette anni di cedole
+  const targets = regularTargets({ yearFrom: 2033, yearTo: 2036, everyMonths: 12, amount: 10000 }, ds.settle);
+  const plan = planCapital(ds, bonds, { targets, issuerCap: 1 });
+  plan.targets.forEach((t, i) => {
+    assert.ok(t.bond && t.nominal > 0, `${t.label}: il titolo si compra`);
+    assert.ok(t.available >= t.amount - 1e-6, `${t.label}: importo garantito`);
+    const lo = day(2033 + i, 1, 1) - 1, hi = day(2033 + i, 12, 31);
+    assert.equal(t.periodFrom, lo);
+    assert.ok(Math.abs(t.coupons - sumNet(plan, d => d > lo && d <= hi)) < 1e-6, `${t.label}: solo le cedole del suo anno`);
+  });
+  assert.ok(plan.targets[0].nominal >= 0.8 * plan.targets[1].nominal, 'il primo titolo non è ridotto dalle cedole di prima');
+  const pre = sumNet(plan, d => d <= day(2032, 12, 31));
+  assert.ok(pre > 1000, 'sette anni di cedole prima della scala');
+  assert.ok(Math.abs(plan.preCoupons - pre) < 1e-6 && plan.gapCoupons < 1e-6);
+  assert.equal(plan.preUntil, day(2032, 12, 31));
+  const all = plan.schedule.reduce((s, f) => s + f.net, 0);
+  assert.ok(Math.abs(all - plan.targets.reduce((s, t) => s + t.available, 0) - plan.preCoupons) < 1e-6, 'ogni flusso è negli importi o fra le cedole di prima');
+  // Dal capitale disponibile: stessa cosa, e il capitale è investito
+  const unit = regularTargets({ yearFrom: 2033, yearTo: 2036, everyMonths: 12, amount: 1 }, ds.settle);
+  const b = planCapital(ds, bonds, { targets: unit, budget: 50000, issuerCap: 1 });
+  assert.ok(b.targets.every(t => t.nominal > 0), 'dal capitale: nessun gradino senza titolo');
+  assert.ok(b.totalCost <= 50000 + 1e-6 && 50000 - b.totalCost < 1100);
+  const amounts = b.targets.map(t => t.available);
+  assert.ok(Math.max(...amounts) / Math.min(...amounts) < 1.15, `somme simili: ${amounts.map(Math.round)}`);
+});
+
+test('capitale a scadenza: date precise, contano le cedole dei 12 mesi prima', () => {
+  const ds = load();
+  const { bonds } = applyBasket(ds, {});
+  const dt = dateTargets([{ day: day(2028, 9, 1), amount: 10000 }, { day: day(2034, 6, 30), amount: 30000 }], 6, ds.settle);
+  const plan = planCapital(ds, bonds, { targets: dt, issuerCap: 1 });
+  const sumNet = pred => plan.schedule.filter(f => f.kind === 'coupon' && pred(f.day)).reduce((s, f) => s + f.net, 0);
+  plan.targets.forEach(t => {
+    const lo = addMonths(t.need, -12);
+    assert.equal(t.periodFrom, lo);
+    assert.ok(t.nominal > 0 && t.available >= t.amount - 1e-6, `${t.label}: coperta dal suo titolo`);
+    assert.ok(Math.abs(t.coupons - sumNet(d => d > lo && d <= t.need)) < 1e-6, `${t.label}: solo le cedole dei 12 mesi prima`);
+  });
+  assert.ok(Math.abs(plan.preCoupons - sumNet(d => d <= addMonths(day(2028, 9, 1), -12))) < 1e-6);
+  assert.ok(Math.abs(plan.gapCoupons - sumNet(d => d > day(2028, 9, 1) && d <= addMonths(day(2034, 6, 30), -12))) < 1e-6);
+  assert.ok(plan.gapCoupons > 1000, 'cinque anni di cedole fra le due date');
+});
+
 test('rendita mensile: 12 mesi coperti, regolare, capitale investito, priorità al rendimento', () => {
   const ds = load();
   const { bonds } = applyBasket(ds, {});

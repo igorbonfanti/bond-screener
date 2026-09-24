@@ -124,7 +124,7 @@ function capitalSection(st) {
     out.push(h('div', { class: 'field' }, h('span', { class: 'lbl' }, 'Flessibilità'), h('span', { class: 'help' }, 'Il titolo può scadere fino a ', flexLbl, ' prima della data: più margine = più scelta e rendimenti migliori.'), flex));
   }
   out.push(sw('coupons', c.useCoupons, 'Usa le cedole per gli importi', c.useCoupons
-    ? 'Le cedole incassate nel frattempo contano per l\'importo della scadenza: serve meno capitale.'
+    ? 'Per ogni scadenza contano le cedole del suo periodo (anno, semestre o 12 mesi prima della data): serve meno capitale. Quelle incassate prima sono un\'entrata in più.'
     : 'Gli importi arrivano solo dai rimborsi; le cedole sono un\'entrata in più.', v => set(s => { s.capital.useCoupons = v; })));
   return out;
 }

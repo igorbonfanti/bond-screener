@@ -5,7 +5,11 @@
       scala regolare → rendimento netto; data precisa → rendimento effettivo alla data
       (se il titolo scade prima, i soldi restano fermi fino alla data: conta anche questo).
    3. Nominali calcolati all'indietro, dall'ultima scadenza alla prima: l'importo di ogni
-      obiettivo = rimborso del suo titolo + cedole incassate nel periodo da tutti i titoli.
+      obiettivo = rimborso del suo titolo + cedole incassate nel suo periodo da tutti i titoli.
+      Il periodo è l'anno o il semestre della scadenza (per le date precise, i 12 mesi prima):
+      le cedole incassate prima della scala, o fra due date lontane, non contano per gli
+      importi (resterebbero ferme per anni e in una scala che parte tardi toglierebbero il
+      primo titolo): restano all'investitore, che le spende o le reinveste.
    4. Nominali arrotondati al lotto minimo (per eccesso se parti dagli importi, per difetto
       se parti dal capitale; il capitale avanzato viene poi usato lotto per lotto). */
 import { day, parts, addMonths, years, fmt, fmtMonthYear } from './dates.js';
@@ -38,6 +42,19 @@ export function dateTargets(list, flexMonths, settle) {
   });
 }
 
+/** Periodo di ogni obiettivo ({lo} escluso, {hi} incluso): solo i flussi che arrivano qui
+    contano per il suo importo. Scala regolare: il suo anno o semestre. Data precisa: i 12 mesi
+    prima della data (o tutta la finestra di scadenza, se più lunga), mai prima dell'obiettivo
+    precedente. */
+export function periods(targets, settle) {
+  return targets.map((t, i) => {
+    const hi = t.need ?? t.end;
+    const prev = i ? (targets[i - 1].need ?? targets[i - 1].end) : settle;
+    const lo = t.need == null ? Math.max(prev, t.start) : Math.max(prev, Math.min(t.start, addMonths(hi, -12)));
+    return { lo, hi };
+  });
+}
+
 function candidatesFor(t, bonds, settle, zainetto, approxAmount) {
   const out = [];
   for (const b of bonds) {
@@ -58,12 +75,10 @@ const roundLot = (x, lot, mode) => {
   return (mode === 'up' ? Math.ceil(q - 1e-9) : mode === 'down' ? Math.floor(q + 1e-9) : mode === 'nearest' ? Math.round(q) : q) * lot;
 };
 
-/** Nominali all'indietro. amounts[t] = importo voluto; restituisce nominali e composizione degli importi. */
-function sizeBackward(targets, choice, flows, settle, amounts, useCoupons, rounding) {
-  const T = targets.length;
-  const cut = targets.map(t => t.need ?? t.end);
-  const inInterval = (t, d) => d > (t ? cut[t - 1] : settle) && d <= cut[t];
-  const sumIn = (t, fl, kinds) => fl.reduce((s, f) => s + (inInterval(t, f.day) && kinds.includes(f.kind) ? f.net : 0), 0);
+/** Nominali all'indietro. amounts[t] = importo voluto; flows[s][k].p = periodo in cui cade il flusso (−1 = nessuno). */
+function sizeBackward(choice, flows, amounts, useCoupons, rounding) {
+  const T = amounts.length;
+  const sumIn = (t, fl, kinds) => fl.reduce((s, f) => s + (f.p === t && kinds.includes(f.kind) ? f.net : 0), 0);
   const nominal = new Array(T).fill(0);
   for (let t = T - 1; t >= 0; t--) {
     if (!choice[t]) continue;
@@ -76,22 +91,23 @@ function sizeBackward(targets, choice, flows, settle, amounts, useCoupons, round
   return nominal;
 }
 
-/** Composizione di cassa per obiettivo, dati i nominali. */
-function composition(targets, choice, flows, settle, nominal, useCoupons) {
-  const cut = targets.map(t => t.need ?? t.end);
-  return targets.map((t, i) => {
-    const lo = i ? cut[i - 1] : settle, hi = cut[i];
-    let redemption = 0, coupons = 0;
-    choice.forEach((c, s) => {
-      if (!c || !nominal[s]) return;
-      for (const f of flows[s]) if (f.day > lo && f.day <= hi) {
-        const v = nominal[s] / 100 * f.net;
-        if (f.kind === 'redemption') redemption += v; else coupons += v;
-      }
-    });
-    const usable = redemption + (useCoupons ? coupons : 0);
-    return { redemption, coupons, available: usable, extraCoupons: useCoupons ? 0 : coupons };
+/** Composizione di cassa per obiettivo, dati i nominali; più le cedole fuori dai periodi
+    (prima della scala o fra due date lontane), che restano all'investitore. */
+function composition(choice, flows, per, nominal, useCoupons) {
+  const rows = per.map(() => ({ redemption: 0, coupons: 0 }));
+  let before = 0, between = 0;
+  choice.forEach((c, s) => {
+    if (!c || !nominal[s]) return;
+    for (const f of flows[s]) {
+      const v = nominal[s] / 100 * f.net;
+      if (f.p >= 0) { if (f.kind === 'redemption') rows[f.p].redemption += v; else rows[f.p].coupons += v; }
+      else if (f.kind === 'coupon') { if (f.day <= per[0].lo) before += v; else between += v; }
+    }
   });
+  return {
+    rows: rows.map(r => ({ ...r, available: r.redemption + (useCoupons ? r.coupons : 0), extraCoupons: useCoupons ? 0 : r.coupons })),
+    before, between
+  };
 }
 
 /**
@@ -123,19 +139,21 @@ export function planCapital(ds, bonds, cfg) {
     { issuerCap, totalWeight: weightSum, preUsedIsins: preIsin, preIssuerWeights: preIss });
   free.forEach((i, k) => { choice[i] = sel.choice[k]; });
 
-  const flows = choice.map(c => c ? cashflows(c.bond, settle, { zainetto }) : []);
+  const per = periods(targets, settle);
+  const periodOf = d => per.findIndex(q => d > q.lo && d <= q.hi);
+  const flows = choice.map(c => c ? cashflows(c.bond, settle, { zainetto }).map(f => ({ ...f, p: periodOf(f.day) })) : []);
   let amounts = targets.map(t => t.amount), nominal;
   if (budget) {
-    const unit = sizeBackward(targets, choice, flows, settle, amounts, useCoupons, 'none');
+    const unit = sizeBackward(choice, flows, amounts, useCoupons, 'none');
     const unitCost = unit.reduce((s, n, i) => s + (choice[i] ? n * choice[i].bond.cost / 100 : 0), 0);
     const f = unitCost > 0 ? budget / unitCost : 0;
     amounts = amounts.map(a => a * f);
-    nominal = sizeBackward(targets, choice, flows, settle, amounts, useCoupons, 'down');
+    nominal = sizeBackward(choice, flows, amounts, useCoupons, 'down');
     // Capitale avanzato dall'arrotondamento: un lotto alla volta dove manca di più
     const costOf = () => nominal.reduce((s, n, i) => s + (choice[i] ? n * choice[i].bond.cost / 100 : 0), 0);
     for (let guard = 0; guard < 500; guard++) {
       const left = budget - costOf();
-      const comp = composition(targets, choice, flows, settle, nominal, useCoupons);
+      const comp = composition(choice, flows, per, nominal, useCoupons).rows;
       let bestI = -1, bestGap = 0;
       choice.forEach((c, i) => {
         if (!c || c.bond.lot * c.bond.cost / 100 > left) return;
@@ -146,10 +164,10 @@ export function planCapital(ds, bonds, cfg) {
       nominal[bestI] += choice[bestI].bond.lot;
     }
   } else {
-    nominal = sizeBackward(targets, choice, flows, settle, amounts, useCoupons, rounding === 'nearest' ? 'nearest' : 'up');
+    nominal = sizeBackward(choice, flows, amounts, useCoupons, rounding === 'nearest' ? 'nearest' : 'up');
   }
 
-  const comp = composition(targets, choice, flows, settle, nominal, useCoupons);
+  const { rows: comp, before, between } = composition(choice, flows, per, nominal, useCoupons);
   const positions = [];
   choice.forEach((c, i) => {
     if (!c || !nominal[i]) return;
@@ -178,9 +196,11 @@ export function planCapital(ds, bonds, cfg) {
     mode: 'capital', settle, useCoupons, zainetto, budget, issuerCap,
     targets: targets.map((t, i) => ({
       ...t, amount: amounts[i], bond: choice[i] ? choice[i].bond : null, fixed: !!(choice[i] && choice[i].fixed),
-      nominal: nominal[i], candidates: allCands[i], ...comp[i],
+      nominal: nominal[i], candidates: allCands[i], ...comp[i], periodFrom: per[i].lo,
       surplus: comp[i].available - amounts[i]
     })),
+    // Cedole che non servono agli importi: prima del periodo della prima scadenza e fra date lontane
+    preCoupons: before, gapCoupons: between, preUntil: per[0].lo,
     positions, schedule, totalCost, irr,
     summary: summarize(positions, totalCost),
     warnings, exact: sel.exact
