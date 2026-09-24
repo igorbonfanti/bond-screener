@@ -1,8 +1,10 @@
 // Service worker di Bond Ladder v3.
 // Strategia "prima la rete": online si ha sempre l'ultima versione (niente più cache da
-// alzare a mano come nella v2), offline si usa la copia salvata. I dati del giorno
-// restano anche nel browser (localStorage) grazie all'app.
-const CACHE = 'bond-ladder-v3';
+// alzare a mano come nella v2), offline si usa la copia salvata. I dati del giorno (data/)
+// non passano di qui: arrivano sempre dalla rete e la copia offline la tiene l'app nel
+// browser, così "scaricato ora" vuol dire davvero scaricato ora.
+const CACHE = 'bond-ladder-v3.1';
+const DATA_PATH = new URL('./data/', self.location.href).pathname;
 const SHELL = [
   './', './index.html', './manifest.json', './styles/app.css', './assets/icon.svg', './assets/icon-192.png',
   './auth-opzionale.js', './vendor/lp-solver.mjs',
@@ -54,5 +56,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
   if (url.origin !== self.location.origin) return;   // Firebase, GitHub raw…: sempre rete
+  if (url.pathname.startsWith(DATA_PATH)) return;    // dati del giorno: sempre rete
   e.respondWith(networkFirst(req));
 });

@@ -4,7 +4,7 @@ import { openSheet } from './sheet.js';
 
 const SECTIONS = [
   ['Da dove arrivano i dati',
-    'Dal file "Rendimenti e durate calcolati End of Day" di simpletoolsforinvestors.eu: prezzi di chiusura del giorno e rendimenti lordi, netti e "super netti" calcolati da STFI. Ogni sera un\'automazione lo scarica e lo pubblica qui; puoi sempre caricarne uno a mano. Gli acquisti si intendono con valuta a due giorni lavorativi (T+2).'],
+    'Dal file "Rendimenti e durate calcolati End of Day" di simpletoolsforinvestors.eu: prezzi di chiusura del giorno e rendimenti lordi, netti e "super netti" calcolati da STFI. Ogni sera un\'automazione lo scarica e lo pubblica qui, e all\'avvio l\'app usa quello; un file caricato a mano resta in uso solo se è più recente. Toccando l\'indicatore dei dati in alto vedi quale file stai usando e puoi riscaricare il file automatico, caricarne uno tuo, salvare il CSV o cancellare la copia nel browser. Gli acquisti si intendono con valuta a due giorni lavorativi (T+2).'],
   ['Capitale a scadenza',
     'Per ogni scadenza (un anno, un semestre o una data precisa) l\'app guarda i titoli del paniere che scadono in quella finestra e sceglie la combinazione con il rendimento netto più alto, rispettando la quota massima per emittente (con un algoritmo esatto: non lascia mai scoperta una scadenza che si può coprire). Poi calcola quanto comprare partendo dall\'ultima scadenza: ogni importo è il rimborso del suo titolo più le cedole incassate nel periodo da tutti i titoli (se l\'opzione è attiva), arrotondato al lotto minimo. Con le date precise conta il "rendimento effettivo alla data": se il titolo scade prima, i soldi restano fermi fino a quel giorno.'],
   ['Rendita mensile',

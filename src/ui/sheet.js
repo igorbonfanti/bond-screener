@@ -17,7 +17,7 @@ export function openSheet({ title, sub, body, foot, onClose }) {
   document.addEventListener('keydown', onKey);
   document.body.appendChild(backdrop);
   current = { backdrop, onKey };
-  (dlg.querySelector('input, button.alt, .sheet-foot .btn-primary') || closeBtn).focus({ preventScroll: true });
+  (dlg.querySelector('input:not([type=file]), button.alt, .sheet-foot .btn-primary') || closeBtn).focus({ preventScroll: true });
   return close;
 }
 
