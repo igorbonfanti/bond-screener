@@ -9,6 +9,8 @@ import { enrich, applyBasket } from '../src/core/basket.js';
 import { selectPerSlot, assignByFlow, branchAndBound } from '../src/core/select.js';
 import { regularTargets, dateTargets, planCapital } from '../src/core/capital.js';
 import { planIncome } from '../src/core/income.js';
+import { compute } from '../src/engine.js';
+import { defaults } from '../src/state.js';
 
 const FIX = fs.readFileSync(new URL('./fixtures/stfi-synthetic.csv', import.meta.url), 'utf8');
 const load = () => enrich(loadText(FIX));
@@ -171,6 +173,32 @@ test('rendita mensile: 12 mesi coperti, regolare, capitale investito, priorità 
   for (const p of r.positions) assert.equal(p.nominal % p.bond.lot, 0);
   const y = planIncome(ds, bonds, { capital: 100000, yearFrom: 2028, yearTo: 2036, issuerCap: 1, tradeoff: 0.8 });
   assert.ok(y.summary.yieldNet >= r.summary.yieldNet - 0.02, 'meno vincolo sulla rendita → rendimento non inferiore');
+});
+
+test('dalle impostazioni alla proposta (engine.compute)', () => {
+  const ds = load();
+  const st = defaults(ds.refDate);
+  st.goal = 'capital';
+  const r = compute(ds, st);
+  assert.equal(r.plan.mode, 'capital');
+  assert.equal(r.plan.targets.length, 10, 'dieci anni di scadenze predefinite');
+  assert.ok(r.map.length > 0, 'punti per la mappa dei rendimenti');
+  const t = r.plan.targets.find(x => x.candidates.length > 1);
+  const alt = t.candidates.find(c => c.bond.isin !== t.bond.isin);
+  st.fixed = { [t.label]: alt.bond.isin };
+  assert.equal(compute(ds, st).plan.targets.find(x => x.label === t.label).bond.isin, alt.bond.isin, 'scelta manuale per etichetta');
+  st.fixed = {};
+  st.capital.start = 'budget'; st.capital.budget = 50000;
+  assert.ok(compute(ds, st).plan.totalCost <= 50000 + 1e-6);
+  st.basket.excluded = ['GOV_IT'];
+  assert.ok(!compute(ds, st).plan.positions.some(p => p.bond.issuer === 'GOV_IT'), 'emittente escluso');
+  st.basket.excluded = [];
+  st.goal = 'income'; st.income.start = 'target'; st.income.monthlyTarget = 150;
+  const ri = compute(ds, st);
+  assert.ok(ri.plan.minMonth >= 150, `rendita minima ${ri.plan.minMonth}`);
+  const banned = ri.plan.positions[0].bond.isin;
+  st.basket.excludedIsins = [banned];
+  assert.ok(!compute(ds, st).plan.positions.some(p => p.bond.isin === banned), 'titolo escluso a mano');
 });
 
 // Facoltativo: STFI_CSV=/percorso/file.csv npm test → confronto sui dati reali

@@ -1,62 +1,86 @@
-# Bond Screener — Antigravity · v2.2.1
+# Bond Ladder — v3.0.0
 
-App web per analizzare obbligazioni governative/sovranazionali e costruire **bond ladder**,
-evoluzione del notebook Colab "bond screener".
+App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
+[simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
+italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unica domanda:
+**che cosa deve fare la scala?**
 
-> La versione **v1.0.0** congelata resta disponibile nella sottocartella [`/v1/`](./v1/) (e nel tag git `v1.0.0`).
+- **Capitale a scadenza** — avere somme disponibili a date precise (università, casa, auto…) oppure la
+  stessa cifra ogni anno o semestre. Si può partire dagli importi che servono o dal capitale che si ha.
+- **Rendita mensile** — incassare cedole ogni mese nel modo più regolare possibile; il capitale torna man
+  mano che i titoli scadono. Si può partire dal capitale o dalla rendita desiderata (€/mese).
 
-## Novità v2.2.1
-- Tema chiaro allineato allo **standard Antigravity** (vedi `antigravity_design_system.md`):
-  interruttore 🌙/☀️, chiave condivisa `antigravity-theme`, script anti-flash, `theme-color`
-  aggiornato, palette identica a coma-screener.
+## Come si usa
+1. **Obiettivo**: capitale a scadenza oppure rendita mensile.
+2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
+3. **Titoli ammessi**: aree (area euro, sovranazionali, altri Stati in euro), rating minimo, emittenti uno per uno,
+   solo sotto la pari, liquidità minima, quota massima per emittente.
 
-## Novità v2.2.0
-- **Tema chiaro/scuro**: interruttore nell'header, scelta salvata nel browser.
-  I grafici seguono il tema (colori letti dalle variabili CSS). Default: scuro.
+La proposta si aggiorna mentre modifichi i parametri. Per ogni scadenza puoi **cambiare titolo** (elenco delle
+alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa, si esporta in CSV e si condivide.
 
-## Novità v2.1.0
-- **Analizza un ladder esistente**: incolli i bond che già possiedi (`ISIN` o `ISIN;nominale€`),
-  vengono agganciati ai dati del giorno e analizzati ai valori attuali — yield/duration **ponderati
-  per valore di mercato**, cedola netta in €, valore di mercato totale, scadenze, flussi mensili,
-  esposizioni per emittente/paese. Gli ISIN non presenti nei dati vengono segnalati.
+## Metodo in breve
+- **Flussi e tasse**: calendario cedole dai mesi di stacco del file, rateo ACT/ACT, valuta T+2, ritenuta 12,5%
+  (Stati e sovranazionali) o 26%, credito d'imposta sul rateo pagato, tassa sulla plusvalenza a scadenza
+  (azzerata con l'opzione "zainetto", che usa il rendimento *super netto* di STFI). I rendimenti ricalcolati
+  coincidono con quelli di STFI per oltre il 97% dei titoli entro 0,05 punti (test sui dati reali).
+- **Capitale a scadenza**: *cash-flow matching* all'indietro (dall'ultima scadenza alla prima: rimborso + cedole
+  del periodo). La scelta dei titoli è **esatta**: flusso a costo minimo con importi uguali, branch & bound
+  altrimenti; prima si coprono tutte le scadenze coperte possibili, poi si massimizza il rendimento netto nel
+  rispetto della quota per emittente. Con le date precise conta il rendimento effettivo alla data.
+- **Rendita mensile**: programmazione lineare (javascript-lp-solver) che massimizza la cedola netta del mese più
+  povero e poi il rendimento; scadenze distribuite negli anni, quote per emittente e per titolo, pulizia delle
+  posizioni piccole senza mai scoprire un mese, arrotondamento ai lotti con scambi locali.
+- Esclusi dai calcoli: commissioni, imposta di bollo, spread denaro-lettera. BTP Italia/BTP€i esclusi di default
+  (rendimento "senza indicizzazione"); step-up stimati con la cedola attuale.
 
-## Novità v2.0.0
-- **Obiettivo selezionabile** nel ladder: *Massimizza Yield totale* oppure *Massimizza Cedole nette*
-  (ottimizzazione lessicografica: a parità di cedola netta sceglie lo yield più alto).
-- **Vincolo di duration media di portafoglio** (≤ X anni) nell'ottimizzatore (branch & bound).
-- **Cedola netta** calcolata per bond: 12,5% per titoli di Stato/sovranazionali whitelist, 26% altrimenti;
-  report con lordo · imposta · netto in € e rendita mensile.
-- **Esposizione in %** per emittente/paese (con l'equipeso, max bond/emittente = cap di esposizione).
-- Sempre **equipesato** per gradino (distribuzione del rischio robusta).
+## Dati: aggiornamento automatico
+Il workflow `.github/workflows/stfi-data.yml` gira ogni sera nei giorni lavorativi. Legge `documentivari.php`,
+trova il pulsante **"Dati End of Day"** (il link `…/data/export/<codice>.csv` cambia nel tempo), scarica il file,
+lo valida e lo salva in `data/stfi-latest.csv` + `data/stfi-latest.json`. Sui branch di lavoro fa solo una prova
+a vuoto. Si può lanciare a mano da *Actions → Dati STFI giornalieri → Run workflow*.
 
-## Cosa fa
-1. **Dati & Filtri** — carichi il file bond aggiornato (CSV `;` o Excel), l'app pulisce i dati
-   (virgola→punto, date `gg/mm/aaaa`, rating S&P→score) e li filtra con un pannello visuale
-   (emittente, valuta, paese, duration, prezzo, scadenza, yield, cedola, volume, rating, ricerca).
-2. **Bond Ladder** — generi il ladder con 3 metodi:
-   - **Greedy** (come il notebook: miglior yield per step entro la tolleranza)
-   - **Ottimizzato** (branch & bound: massimizza il rendimento totale rispettando i vincoli)
-   - **Manuale** (scegli bond per bond dai menu a tendina)
-   Con metriche (yield/duration/cedola medi), avvisi di diversificazione e grafici
-   (scadenze, flussi cedolari, esposizione per paese/emittente).
-3. **Storico** — ogni caricamento è salvabile come **snapshot** su cloud; i ladder costruiti
-   si salvano e si possono **confrontare con i dati correnti** per vedere come yield/duration/prezzo
-   sono cambiati giorno per giorno, senza perdere il lavoro precedente.
+L'app carica da sola il file più recente (dal sito o dal repository), ne tiene una copia nel browser per l'uso
+offline e permette sempre di **caricare un file a mano** (indicatore dei dati in alto).
 
-## Stack
-Vanilla JS (no build) · SheetJS 0.20.1 · Chart.js 4 · Firebase 8.10.1 (Firestore + Storage) · PWA.
-Design system Antigravity (dark, accent ambra). Deploy su GitHub Pages.
+> I dati sono di simpletoolsforinvestors.eu: il repository è pubblico, quindi il file scaricato è consultabile da
+> chiunque. Se preferisci non ripubblicarlo, disattiva il workflow e carica il file a mano, oppure chiedi il
+> consenso all'autore del sito.
 
-## Storage cloud
-Progetto Firebase condiviso `magazzino-edile-pos`, namespacato:
-- Firestore: `bond_snapshots` (metadati), `bond_ladders` (ladder salvati)
-- Storage: `bond_screener/snapshots/<id>/` (dati JSON normalizzati + file grezzo)
+## Salvataggio, condivisione, monitoraggio
+- **Salva**: su Firebase (progetto `igorbonfanti-screener`, collezione `bond_ladders`), con titoli, nominali e
+  prezzi del giorno. Lettura libera, scrittura solo dopo l'accesso (`auth-opzionale.js`, regole in
+  `firestore.rules`).
+- **Le mie scale**: ogni scala salvata è confrontata con i prezzi di oggi — valore attuale, cedole e rimborsi
+  già incassati, plus/minus, rendimento annualizzato dall'acquisto — e si può ricostruire con i dati del giorno.
+  Anche le scale salvate con la v2 sono leggibili.
+- **Condividi**: link con la configurazione (chi lo apre vede la stessa scala con i dati del giorno); ogni scala
+  salvata ha anche il suo link.
 
-## Colonne attese nel file
-`isincode, description, redemptiondate, referencedate, issuercode, currencycode, price,
-grossytm, grossduration, currentcouponrate, ratingsp, volumevalue` (+ le altre del file Colab).
-Colonne mancanti vengono semplicemente ignorate.
+## Struttura
+```
+index.html, styles/app.css, sw.js, manifest.json, assets/   interfaccia (moduli ES, nessuna build)
+src/main.js            avvio, dati, calcolo nel Web Worker, navigazione, dialoghi
+src/engine.js          impostazioni → proposta (usato dal worker)
+src/data/              lettura del CSV STFI, sorgenti dati
+src/core/              date, flussi e tasse, paniere, selezione (flusso/B&B), capitale, rendita, LP
+src/ui/                pannello, risultati, grafici SVG, dialoghi, le mie scale, guida
+vendor/lp-solver.mjs   javascript-lp-solver 1.0.3 (Unlicense)
+scripts/fetch_stfi.py  download giornaliero dei dati
+tests/                 test del motore (node --test) con un file STFI sintetico
+v2/, v1/               versioni precedenti, congelate
+```
 
 ## Sviluppo
-File statici: aprire `index.html` con un server locale (`npx serve` o `python -m http.server`).
-Deploy: push su `main`, GitHub Pages serve la root.
+```
+python3 -m http.server 8000        # poi http://localhost:8000
+npm test                           # test del motore (fuso Europe/Rome)
+STFI_CSV=/percorso/file.csv npm test   # in più: confronto con un file STFI reale
+node tests/fixtures/make-synthetic.mjs # rigenera il file di prova (titoli inventati)
+```
+Per provare in locale con i dati veri basta mettere il file scaricato in `data/stfi-latest.csv`
+(oppure caricarlo dall'indicatore dei dati nell'app).
+
+## Versioni precedenti
+- [`/v2/`](./v2/) — screener + ladder greedy/ottimizzato (v2.2.1), congelata.
+- [`/v1/`](./v1/) — prima versione (v1.0.0), congelata.

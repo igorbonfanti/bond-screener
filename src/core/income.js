@@ -90,37 +90,61 @@ export function planIncome(ds, bonds, cfg) {
   }
   if (pruned) sol = solveWeights(cands, C, opt) || sol;   // giri esauriti dopo una potatura: ricalcolo finale
 
-  // Arrotondamento ai lotti (per difetto) e uso del capitale avanzato.
-  // I pesi valgono per l'elenco di candidati che li ha prodotti (sol.cands), non per quello potato dopo.
-  const picked = sol.cands.map((c, i) => ({ c, x: sol.x[i] })).filter(p => p.x > 1e-6);
-  const pos = picked.map(p => {
-    const b = p.c.bond, nominal = Math.floor(p.x / b.cost * 100 / b.lot + 1e-9) * b.lot;
-    return { bond: b, nominal, c: p.c };
+  // Arrotondamento ai lotti. I pesi valgono per l'elenco di candidati che li ha prodotti (sol.cands).
+  // 1) lotto più vicino al peso ottimo; 2) se si sfora il capitale, via i lotti che pesano meno sul
+  // mese più povero; 3) scambi di un lotto fra due titoli finché il mese più povero sale;
+  // 4) il capitale avanzato va, lotto per lotto, dove alza di più il mese più povero.
+  // Passo minimo 100 € anche per i titoli con lotto 1, per avere importi ordinati.
+  const pos = sol.cands.map((c, i) => ({ c, x: sol.x[i] })).filter(p => p.x > 1e-6).map(p => {
+    const b = p.c.bond, step = b.lot >= 100 ? b.lot : 100;
+    return { bond: b, c: p.c, step, k: Math.max(0, Math.round(p.x / b.cost * 100 / step)),
+      inc: step / 100 * netCouponPerPeriod(b), stepCost: step * b.cost / 100 };
   });
-  const monthlyOf = () => {
-    const m = new Array(12).fill(0);
-    for (const p of pos) for (const mo of p.bond.months) m[mo - 1] += p.nominal / 100 * netCouponPerPeriod(p.bond);
-    return m;
-  };
-  const costOf = () => pos.reduce((s, p) => s + p.nominal * p.bond.cost / 100, 0);
-  for (let guard = 0; guard < 2000; guard++) {
-    const left = C - costOf();
-    const m = monthlyOf();
-    const minM = Math.min(...coverable.map(mo => m[mo - 1]));
+  const capPos = Math.max(bondCap, 1 / Math.max(1, pos.length)) * C * 1.02;
+  const monthlyNow = () => { const m = new Array(12).fill(0); for (const p of pos) for (const mo of p.bond.months) m[mo - 1] += p.k * p.inc; return m; };
+  const minOf = m => Math.min(...coverable.map(mo => m[mo - 1]));
+  const costNow = () => pos.reduce((s, p) => s + p.k * p.stepCost, 0);
+  const bump = (m, p, d) => { for (const mo of p.bond.months) m[mo - 1] += d * p.inc; };
+  while (costNow() > C + 1e-6) {
+    const m = monthlyNow();
+    let best = null, bestV = -Infinity;
+    for (const p of pos) {
+      if (p.k <= 0) continue;
+      bump(m, p, -1); const v = minOf(m); bump(m, p, +1);
+      if (v > bestV + 1e-9 || (Math.abs(v - bestV) <= 1e-9 && best && p.c.y < best.c.y)) { bestV = v; best = p; }
+    }
+    if (!best) break;
+    best.k--;
+  }
+  for (let it = 0; it < 400; it++) {
+    const m = monthlyNow(), cur = minOf(m), budget = C - costNow();
+    let move = null, bestV = cur + 1e-6;
+    for (const a of pos) {
+      if (a.k <= 0) continue;
+      for (const b of pos) {
+        if (a === b || b.stepCost - a.stepCost > budget + 1e-6 || (b.k + 1) * b.stepCost > capPos) continue;
+        bump(m, a, -1); bump(m, b, +1);
+        const v = minOf(m);
+        bump(m, a, +1); bump(m, b, -1);
+        if (v > bestV) { bestV = v; move = [a, b]; }
+      }
+    }
+    if (!move) break;
+    move[0].k--; move[1].k++;
+  }
+  for (let guard = 0; guard < 4000; guard++) {
+    const left = C - costNow(), m = monthlyNow(), cur = minOf(m);
     let best = null, bestGain = -Infinity;
     for (const p of pos) {
-      const lotCost = p.bond.lot * p.bond.cost / 100;
-      if (lotCost > left) continue;
-      if ((p.nominal + p.bond.lot) * p.bond.cost / 100 > Math.max(bondCap, 1 / pos.length) * C * 1.02) continue;
-      // preferisci il lotto che alza il mese più povero; a parità il rendimento
-      const add = p.bond.lot / 100 * netCouponPerPeriod(p.bond);
-      const newMin = Math.min(...coverable.map(mo => m[mo - 1] + (p.bond.months.includes(mo) ? add : 0)));
-      const gain = (newMin - minM) * 1e6 + p.c.y;
+      if (p.stepCost > left + 1e-6 || (p.k + 1) * p.stepCost > capPos) continue;
+      bump(m, p, +1); const v = minOf(m); bump(m, p, -1);
+      const gain = (v - cur) * 1e6 + p.c.y;
       if (gain > bestGain) { bestGain = gain; best = p; }
     }
     if (!best) break;
-    best.nominal += best.bond.lot;
+    best.k++;
   }
+  for (const p of pos) p.nominal = p.k * p.step;
 
   const positions = pos.filter(p => p.nominal > 0).map(p => ({
     bond: p.bond, nominal: p.nominal, cost: p.nominal * p.bond.cost / 100, score: p.c.y,

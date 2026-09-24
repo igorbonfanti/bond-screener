@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Test del motore (fuso Europe/Rome)
+        run: npm test
+      - name: Controllo sintassi dei moduli e dello script dati
+        run: |
+          for f in src/*.js src/*/*.js sw.js; do node --check "$f"; done
+          python3 -m py_compile scripts/fetch_stfi.py

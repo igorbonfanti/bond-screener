@@ -1,18 +1,17 @@
 {
-  "name": "Bond Screener — Antigravity",
-  "short_name": "Bond Screener",
-  "version": "2.2.1",
-  "description": "Screener obbligazioni governative e costruttore di bond ladder",
+  "name": "Bond Ladder — scale di titoli di Stato",
+  "short_name": "Bond Ladder",
+  "version": "3.0.0",
+  "description": "Scale di titoli di Stato per avere capitale a scadenza o una rendita mensile, con i dati di simpletoolsforinvestors.eu.",
+  "lang": "it",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f1117",
   "theme_color": "#0f1117",
   "icons": [
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%230f1117'/%3E%3Cg fill='%23f59e0b'%3E%3Crect x='40' y='120' width='24' height='32' rx='4'/%3E%3Crect x='84' y='96' width='24' height='56' rx='4'/%3E%3Crect x='128' y='64' width='24' height='88' rx='4'/%3E%3C/g%3E%3C/svg%3E",
-      "sizes": "192x192",
-      "type": "image/svg+xml"
-    }
+    { "src": "./assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "./assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

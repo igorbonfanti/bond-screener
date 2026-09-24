@@ -1,0 +1,4 @@
+{
+  "//": "Versione 2 congelata: i vecchi self-test usano require (CommonJS).",
+  "type": "commonjs"
+}

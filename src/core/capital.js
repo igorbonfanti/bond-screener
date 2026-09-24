@@ -55,7 +55,7 @@ function candidatesFor(t, bonds, settle, zainetto, approxAmount) {
 const roundLot = (x, lot, mode) => {
   if (!(x > 0)) return 0;
   const q = x / lot;
-  return (mode === 'up' ? Math.ceil(q - 1e-9) : mode === 'down' ? Math.floor(q + 1e-9) : q) * lot;
+  return (mode === 'up' ? Math.ceil(q - 1e-9) : mode === 'down' ? Math.floor(q + 1e-9) : mode === 'nearest' ? Math.round(q) : q) * lot;
 };
 
 /** Nominali all'indietro. amounts[t] = importo voluto; restituisce nominali e composizione degli importi. */
@@ -97,10 +97,11 @@ function composition(targets, choice, flows, settle, nominal, useCoupons) {
 /**
  * @param ds       dataset (settle)
  * @param bonds    titoli del paniere
- * @param cfg      { targets, useCoupons=true, zainetto=false, issuerCap=1, budget=null, fixed={} (indice → isin) }
+ * @param cfg      { targets, useCoupons=true, zainetto=false, issuerCap=1, budget=null,
+ *                   fixed={} (indice → isin), rounding='up'|'nearest' }
  */
 export function planCapital(ds, bonds, cfg) {
-  const { targets, useCoupons = true, zainetto = false, issuerCap = 1, budget = null, fixed = {} } = cfg;
+  const { targets, useCoupons = true, zainetto = false, issuerCap = 1, budget = null, fixed = {}, rounding = 'up' } = cfg;
   const settle = ds.settle, T = targets.length;
   if (!T) return { empty: true, targets: [], positions: [], warnings: ['Nessuna scadenza futura nel periodo scelto.'] };
   const weightSum = targets.reduce((s, t) => s + t.amount, 0);
@@ -145,7 +146,7 @@ export function planCapital(ds, bonds, cfg) {
       nominal[bestI] += choice[bestI].bond.lot;
     }
   } else {
-    nominal = sizeBackward(targets, choice, flows, settle, amounts, useCoupons, 'up');
+    nominal = sizeBackward(targets, choice, flows, settle, amounts, useCoupons, rounding === 'nearest' ? 'nearest' : 'up');
   }
 
   const comp = composition(targets, choice, flows, settle, nominal, useCoupons);
@@ -174,7 +175,7 @@ export function planCapital(ds, bonds, cfg) {
   if (!sel.exact) warnings.push('Ricerca interrotta per complessità: la proposta è molto buona ma potrebbe non essere la migliore in assoluto.');
 
   return {
-    mode: 'capital', settle, useCoupons, zainetto, budget,
+    mode: 'capital', settle, useCoupons, zainetto, budget, issuerCap,
     targets: targets.map((t, i) => ({
       ...t, amount: amounts[i], bond: choice[i] ? choice[i].bond : null, fixed: !!(choice[i] && choice[i].fixed),
       nominal: nominal[i], candidates: allCands[i], ...comp[i],
