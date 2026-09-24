@@ -173,7 +173,8 @@ function capitalView(st, result, plan) {
   if (covered === T) ins.push(insight('good', `Tutte le ${T} scadenze sono coperte.`));
   if (plan.useCoupons) {
     const cp = plan.targets.reduce((s, t) => s + t.coupons, 0), tot = plan.targets.reduce((s, t) => s + t.available, 0);
-    if (tot > 0) ins.push(insight('info', `Le cedole coprono il ${fmtNum(cp / tot * 100, 0)}% degli importi: per questo serve meno capitale dei ${fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0))} da ricevere.`));
+    const pct = v => fmtNum(v / tot * 100, 0) + '%';
+    if (tot > 0) ins.push(insight('info', `Le cedole coprono il ${pct(cp + potUsed)} degli importi${potUsed > 0.5 ? ` (${pct(cp)} quelle del periodo, ${pct(potUsed)} quelle accantonate)` : ''}: per questo serve meno capitale dei ${fmtEur(plan.targets.reduce((s, t) => s + t.amount, 0))} da ricevere.`));
     if (pre > 0.5 || gap > 0.5) {
       const where = [pre > 0.5 ? `prima della scala (${fmtEur(pre)} fino al ${fmt(plan.preUntil)})` : '', gap > 0.5 ? `fra una data e l'altra (${fmtEur(gap)})` : ''].filter(Boolean).join(' e ');
       if (plan.accumulate) {
