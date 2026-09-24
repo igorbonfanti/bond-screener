@@ -63,6 +63,24 @@ def find_link(page):
     return urllib.parse.urljoin(PAGE, html.unescape(m.group(1))) if m else None
 
 
+def diagnose(page):
+    """Stampa nel log quanto serve per capire come è fatta la pagina."""
+    title = re.search(r"<title[^>]*>(.*?)</title>", page, flags=re.S | re.I)
+    print(f"Pagina: {len(page)} caratteri, titolo: {text_of(title.group(1)) if title else '—'}")
+    links = re.findall(r"<a\b[^>]*>.*?</a>", page, flags=re.S | re.I)
+    print(f"Link nella pagina: {len(links)}")
+    for a in links:
+        href = re.search(r"href\s*=\s*[\"']([^\"']*)[\"']", a, flags=re.I)
+        h = href.group(1) if href else ""
+        if any(k in (h + a).lower() for k in ("export", "csv", "zip", "download", "end of day", "rendiment")):
+            print(f"  link: {h[:160]!r} testo={text_of(a)[:80]!r}")
+    for m in re.finditer(r"end of day|rendimenti e durate", page, flags=re.I):
+        s = max(0, m.start() - 300)
+        print(f"  contesto: {page[s:m.end() + 400]!r}")
+        break
+    print(f"  inizio testo: {text_of(page)[:600]!r}")
+
+
 def to_text(blob):
     if blob[:2] == b"PK":                       # a volte il file è compresso
         with zipfile.ZipFile(io.BytesIO(blob)) as z:
@@ -107,6 +125,7 @@ def main():
     page = get(PAGE).decode("utf-8", "replace")
     link = find_link(page)
     if not link:
+        diagnose(page)
         fail("Link al file End of Day non trovato in documentivari.php (la pagina è cambiata?).")
     print(f"Link trovato: {link}")
     text = to_text(get(link, referer=PAGE))
