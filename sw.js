@@ -3,10 +3,13 @@
 // alzare a mano come nella v2), offline si usa la copia salvata. I dati del giorno (data/)
 // non passano di qui: arrivano sempre dalla rete e la copia offline la tiene l'app nel
 // browser, così "scaricato ora" vuol dire davvero scaricato ora.
-const CACHE = 'bond-ladder-v3.1';
+const CACHE = 'bond-ladder-v3.3';
 const DATA_PATH = new URL('./data/', self.location.href).pathname;
 const SHELL = [
-  './', './index.html', './manifest.json', './styles/app.css', './assets/icon.svg', './assets/icon-192.png',
+  './', './index.html', './manifest.json', './css/terminale.css', './styles/app.css', './assets/icon.svg', './assets/icon-192.png',
+  './fonts/ibm-plex-mono-latin-400-normal.woff2', './fonts/ibm-plex-mono-latin-500-normal.woff2', './fonts/ibm-plex-mono-latin-600-normal.woff2',
+  './fonts/ibm-plex-sans-condensed-latin-400-normal.woff2', './fonts/ibm-plex-sans-condensed-latin-500-normal.woff2',
+  './fonts/ibm-plex-sans-condensed-latin-600-normal.woff2', './fonts/ibm-plex-sans-condensed-latin-700-normal.woff2',
   './auth-opzionale.js', './vendor/lp-solver.mjs',
   './src/main.js', './src/worker.js', './src/engine.js', './src/state.js', './src/cloud.js',
   './src/data/stfi.js', './src/data/source.js',
@@ -14,7 +17,6 @@ const SHELL = [
   './src/core/capital.js', './src/core/income.js', './src/core/lp.js',
   './src/ui/dom.js', './src/ui/charts.js', './src/ui/settings.js', './src/ui/results.js', './src/ui/sheet.js', './src/ui/saved.js', './src/ui/help.js'
 ];
-const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => c.add(u).catch(() => {})))));
@@ -48,13 +50,6 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  if (FONT_HOSTS.includes(url.hostname)) {           // font: dalla cache, aggiornati in background
-    e.respondWith(caches.match(req).then(c => {
-      const net = fetch(req).then(res => { if (res && (res.ok || res.type === 'opaque')) caches.open(CACHE).then(k => k.put(req, res.clone())); return res; }).catch(() => c);
-      return c || net;
-    }));
-    return;
-  }
   if (url.origin !== self.location.origin) return;   // Firebase, GitHub raw…: sempre rete
   if (url.pathname.startsWith(DATA_PATH)) return;    // dati del giorno: sempre rete
   e.respondWith(networkFirst(req));

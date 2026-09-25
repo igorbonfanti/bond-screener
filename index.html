@@ -1,61 +1,76 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="dark">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f1117">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
   <meta name="description" content="Costruisci una scala di titoli di Stato (bond ladder) per avere capitale a scadenze precise o una rendita mensile, con i dati di simpletoolsforinvestors.eu e le tasse italiane già calcolate.">
   <title>Bond Ladder — scale di titoli di Stato</title>
-  <script>(function(){try{var t=localStorage.getItem('antigravity-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <script>(function(){try{if(localStorage.getItem('bondladder.cvd')==='1')document.documentElement.classList.add('cvd');}catch(e){}})();</script>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Design system «Terminale ambra»: css/terminale.css e i font IBM Plex in fonts/ (SIL OFL) -->
+  <link rel="preload" href="./fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/ibm-plex-sans-condensed-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./css/terminale.css">
   <link rel="stylesheet" href="./styles/app.css">
   <script type="module" src="./src/main.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#/" aria-label="Bond Ladder, costruttore">
-      <span id="brandLogo"></span>
-      <span class="brand-text"><span class="brand-name">Bond Ladder</span><span class="brand-sub">scale di titoli di Stato · capitale o rendita</span></span>
-    </a>
-    <nav class="nav" aria-label="Sezioni">
-      <a href="#/" data-route="build">Costruisci</a>
-      <a href="#/scale" data-route="saved"><span class="long">Le mie scale</span><span class="short">Scale</span></a>
-    </nav>
-    <div class="top-actions">
-      <button id="dataPill" class="data-pill" type="button" title="Dati del giorno: origine e aggiornamento"></button>
-      <button id="helpBtn" class="icon-btn" type="button" title="Come sceglie i titoli" aria-label="Come funziona">?</button>
-      <button id="themeToggle" class="icon-btn" type="button" title="Cambia tema chiaro / scuro" aria-label="Cambia tema">🌙</button>
-    </div>
+<div class="term" id="term">
+  <header class="cmdbar">
+    <h1 class="brand"><a href="#/" aria-label="Bond Ladder, torna alla proposta">Bond·Ladder</a></h1>
+    <form class="cmd" id="cmd" role="search" autocomplete="off">
+      <span class="prompt" aria-hidden="true">&gt;</span>
+      <input id="cmdInput" aria-label="Comando" aria-describedby="cmdHint" spellcheck="false" autocapitalize="characters"
+        placeholder="Comando: CAP, REN, SCALE, DATI, un ISIN, HELP · poi Invio">
+      <button class="go" type="submit">GO</button>
+    </form>
+    <span id="cmdStatus" class="sr" role="status"></span>
+    <span id="cmdHint" class="sr">Comandi: CAP capitale a scadenza, REN rendita mensile, SCALE le mie scale, DATI dati del giorno, CVD colori per daltonici, HELP guida, oppure un codice ISIN.</span>
+    <button type="button" class="clock" id="dataClock" aria-haspopup="dialog">EOD <b>—</b></button>
+    <span class="tools">
+      <button type="button" class="tool" id="helpBtn" aria-haspopup="dialog">? Guida</button>
+      <button type="button" class="tool" id="cvdBtn" aria-pressed="false" title="Colori per daltonici: su e giù in azzurro e rosso">CVD</button>
+      <button type="button" class="tool" id="loginBtn" hidden>Accedi</button>
+    </span>
   </header>
 
-  <main id="app" aria-live="polite">
-    <noscript><div class="card card-pad">Serve JavaScript per usare l'app.</div></noscript>
+  <nav aria-label="Viste">
+    <div class="fnkeys" role="tablist" aria-label="Viste" id="tabs">
+      <button type="button" role="tab" id="tab-capital" data-view="capital" aria-controls="view" aria-selected="true">1 Capitale a scadenza</button>
+      <button type="button" role="tab" id="tab-income" data-view="income" aria-controls="view" aria-selected="false" tabindex="-1">2 Rendita mensile</button>
+      <button type="button" role="tab" id="tab-saved" data-view="saved" aria-controls="view" aria-selected="false" tabindex="-1">3 Le mie scale</button>
+    </div>
+  </nav>
+
+  <main class="view" id="view" role="tabpanel" aria-labelledby="tab-capital" tabindex="-1">
+    <p class="loading note">Caricamento dei dati…</p>
+    <noscript><p class="note">Serve JavaScript per usare l'app.</p></noscript>
   </main>
 
-  <footer class="footer">
-    <span>Dati: <a href="https://www.simpletoolsforinvestors.eu/documentivari.php" target="_blank" rel="noopener">simpletoolsforinvestors.eu</a></span>
-    <span>Calcoli indicativi, non consulenza finanziaria · commissioni e imposta di bollo escluse · <a href="#" id="helpLink">come funziona</a></span>
-    <span><span id="version"></span> · versioni precedenti: <a href="./v2/">v2</a> · <a href="./v1/">v1</a></span>
+  <footer class="statusline" id="statusline">
+    <span id="stSource">Dati di fine giornata: <a href="https://www.simpletoolsforinvestors.eu/documentivari.php" target="_blank" rel="noopener">simpletoolsforinvestors.eu</a> · Rendimenti e durate calcolati End of Day</span>
+    <span id="stGen"><span id="stFile"></span> <span id="version"></span> · versioni precedenti <a href="./v2/">v2</a> · <a href="./v1/">v1</a></span>
+    <span class="discl">Strumento di studio: non è consulenza finanziaria né una raccomandazione di investimento. I rendimenti passati non indicano quelli futuri. Commissioni, imposta di bollo e spread denaro-lettera esclusi.</span>
   </footer>
+</div>
 
-  <div class="mobile-bar" id="mobileBar" hidden>
-    <div class="mb-text"><span class="mb-main" id="mbMain">—</span><span class="mb-sub" id="mbSub"></span></div>
-    <button class="btn btn-primary btn-sm" id="mbBtn" type="button">Vedi proposta ↓</button>
-  </div>
+<div class="mobile-bar" id="mobileBar" hidden>
+  <div class="mb-text"><span class="mb-main num" id="mbMain">—</span><span class="mb-sub" id="mbSub"></span></div>
+  <button class="mini" id="mbBtn" type="button">Vedi proposta ↓</button>
+</div>
 
-  <!-- Firebase (facoltativo): salvataggio, condivisione e monitoraggio delle scale -->
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <!-- Accesso opzionale (condiviso con coma-screener): serve solo per salvare ed eliminare -->
-  <script defer src="./auth-opzionale.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
-  </script>
+<!-- Firebase (facoltativo): salvataggio, condivisione e monitoraggio delle scale -->
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Accesso opzionale (condiviso con coma-screener): serve solo per salvare ed eliminare -->
+<script defer src="./auth-opzionale.js"></script>
+<script>
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Bond Ladder — v3.2.1
+# Bond Ladder — v3.3.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -11,13 +11,27 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
   mano che i titoli scadono. Si può partire dal capitale o dalla rendita desiderata (€/mese).
 
 ## Come si usa
-1. **Obiettivo**: capitale a scadenza oppure rendita mensile.
+1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile` oppure `3 Le mie scale` (le scale salvate).
 2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
 3. **Titoli ammessi**: aree (area euro, sovranazionali, altri Stati in euro), rating minimo, emittenti uno per uno,
    solo sotto la pari, liquidità minima, quota massima per emittente.
 
 La proposta si aggiorna mentre modifichi i parametri. Per ogni scadenza puoi **cambiare titolo** (elenco delle
 alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa, si esporta in CSV e si condivide.
+
+Dalla tastiera: `1`–`3` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
+Nella barra comandi: `CAP`, `REN`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
+daltonici, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella proposta. Le scorciatoie da un tasto
+si spengono dalla guida.
+
+## Aspetto: design system «Terminale ambra»
+L'interfaccia segue il design system «Terminale ambra»: `css/terminale.css` (il kit, da non modificare) più gli
+stili propri dell'app in `styles/app.css`; font IBM Plex Sans Condensed e IBM Plex Mono in `fonts/` (SIL OFL,
+licenza in `fonts/LICENSE-IBM-Plex.txt`), senza richieste a servizi esterni. Cornice `.term` con barra comandi,
+schede numerate, pannelli e riga di stato con fonte, data dei dati e avvertenza. Regole di colore: **ambra** solo
+per navigare (marchio, schede, titoli, codici, focus, selezione), **blu** per il segnale del progetto (l'obiettivo
+di ogni scadenza), **verde/rosso** con ▲ ▼ solo per le variazioni di prezzo o di valore (il pulsante CVD li passa ad
+azzurro e rosso), testo nero sui riempimenti colorati, numeri all'italiana con il segno meno tipografico (−).
 
 ## Metodo in breve
 - **Flussi e tasse**: calendario cedole dai mesi di stacco del file, rateo ACT/ACT, valuta T+2, ritenuta 12,5%
@@ -49,12 +63,14 @@ All'avvio l'app scarica il file automatico (dal sito o, se più aggiornato, dal 
 browser per l'uso offline. Un file **caricato a mano** resta in uso solo finché è più recente del file automatico;
 a parità di data vince il file automatico.
 
-Il dialogo che si apre toccando l'**indicatore dei dati** in alto dice sempre quale file è in uso — *file
-automatico* (scaricato adesso), *copia salvata nel browser* (quando il sito non risponde) o *file caricato da te* —
-e lo confronta con il file automatico pubblicato. Da lì si può **riscaricare e usare il file automatico**,
-**caricare un CSV**, **scaricare il CSV in uso** e **cancellare la copia nel browser**. L'indicatore mostra
-un'etichetta *manuale* o *copia locale* quando i dati non sono il file automatico appena scaricato. Il service
-worker non mette mai in cache i file di `data/`: "scaricato adesso" vuol dire davvero dalla rete.
+Nella barra comandi la **data EOD** dice di quando sono i prezzi e se sono aggiornati (*Aggiornato*, *1 seduta
+indietro*, *N sedute indietro*, contando i giorni di borsa). Toccandola (o con il comando `DATI`) si apre il dialogo
+che dice sempre quale file è in uso — *file automatico* (scaricato adesso), *copia salvata nel browser* (quando il
+sito non risponde) o *file caricato da te* — e lo confronta con il file automatico pubblicato. Da lì si può
+**riscaricare e usare il file automatico**, **caricare un CSV**, **scaricare il CSV in uso** e **cancellare la copia
+nel browser**. Accanto alla data compare l'etichetta *manuale* o *copia locale* quando i dati non sono il file
+automatico appena scaricato. Il service worker non mette mai in cache i file di `data/`: "scaricato adesso" vuol
+dire davvero dalla rete.
 
 > I dati sono di simpletoolsforinvestors.eu: il repository è pubblico, quindi il file scaricato è consultabile da
 > chiunque. Se preferisci non ripubblicarlo, disattiva il workflow e carica il file a mano, oppure chiedi il
@@ -72,8 +88,10 @@ worker non mette mai in cache i file di `data/`: "scaricato adesso" vuol dire da
 
 ## Struttura
 ```
-index.html, styles/app.css, sw.js, manifest.json, assets/   interfaccia (moduli ES, nessuna build)
-src/main.js            avvio, dati, calcolo nel Web Worker, navigazione, dialoghi
+index.html, sw.js, manifest.json, assets/   interfaccia (moduli ES, nessuna build)
+css/terminale.css, fonts/   design system «Terminale ambra» e font IBM Plex (SIL OFL)
+styles/app.css         stili propri dell'app sopra il design system
+src/main.js            avvio, dati, calcolo nel Web Worker, schede e barra comandi, dialoghi
 src/engine.js          impostazioni → proposta (usato dal worker)
 src/data/              lettura del CSV STFI, sorgenti dati
 src/core/              date, flussi e tasse, paniere, selezione (flusso/B&B), capitale, rendita, LP
@@ -92,7 +110,7 @@ STFI_CSV=/percorso/file.csv npm test   # in più: confronto con un file STFI rea
 node tests/fixtures/make-synthetic.mjs # rigenera il file di prova (titoli inventati)
 ```
 Per provare in locale con i dati veri basta mettere il file scaricato in `data/stfi-latest.csv`
-(oppure caricarlo dall'indicatore dei dati nell'app).
+(oppure caricarlo dalla data EOD nella barra comandi dell'app).
 
 ## Versioni precedenti
 - [`/v2/`](./v2/) — screener + ladder greedy/ottimizzato (v2.2.1), congelata.
