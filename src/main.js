@@ -14,9 +14,10 @@ import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.3.0';
+const VERSION = '3.4.0';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
+const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'
 const store = {
   get: k => { try { return localStorage.getItem(k); } catch { return null; } },
   set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* navigazione privata */ } }
@@ -609,9 +610,20 @@ function runCommand(raw) {
   if (['DATI', 'EOD', 'DATA'].includes(q)) { done(); openDataDialog(); return; }
   if (['HELP', 'GUIDA', 'AIUTO', '?'].includes(q)) { done(); openHelp(); return; }
   if (q === 'CVD') { done(); toggleCvd(); return; }
+  if (['CHIARO', 'SCURO', 'TEMA'].includes(q)) { done(); setTheme(q === 'TEMA' ? !isLight() : q === 'CHIARO'); return; }
   if (/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(q)) { done(); findIsin(q); return; }
-  cmdError(`«${text.slice(0, 24)}»: comando non trovato. Prova CAP, REN, SCALE, DATI, HELP o un ISIN`, `«${text.slice(0, 10)}»: non trovato`);
+  cmdError(`«${text.slice(0, 24)}»: comando non trovato. Prova CAP, REN, SCALE, DATI, CHIARO, HELP o un ISIN`, `«${text.slice(0, 10)}»: non trovato`);
 }
+
+/** Tema chiaro o scuro: attributo su <html> (i colori li cambia il CSS), interruttore, colore della barra del browser. */
+function setTheme(light) {
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+  $('#themeBtn').setAttribute('aria-checked', String(light));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', light ? '#ffffff' : '#000000');
+  store.set(THEME_KEY, light ? 'light' : 'dark');
+}
+const isLight = () => document.documentElement.getAttribute('data-theme') === 'light';
 
 function toggleCvd() {
   const on = !document.documentElement.classList.contains('cvd');
@@ -676,6 +688,8 @@ async function boot() {
   const cvd = $('#cvdBtn');
   cvd.setAttribute('aria-pressed', String(document.documentElement.classList.contains('cvd')));
   cvd.addEventListener('click', toggleCvd);
+  $('#themeBtn').setAttribute('aria-checked', String(isLight()));
+  $('#themeBtn').addEventListener('click', () => setTheme(!isLight()));
   $('#dataClock').addEventListener('click', openDataDialog);
   $('#helpBtn').addEventListener('click', openHelp);
   $('#cmd').addEventListener('submit', e => { e.preventDefault(); runCommand($('#cmdInput').value); });

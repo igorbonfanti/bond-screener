@@ -1,4 +1,4 @@
-# Bond Ladder — v3.3.0
+# Bond Ladder — v3.4.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -21,8 +21,8 @@ alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa
 
 Dalla tastiera: `1`–`3` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
 Nella barra comandi: `CAP`, `REN`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
-daltonici, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella proposta. Le scorciatoie da un tasto
-si spengono dalla guida.
+daltonici, `CHIARO` / `SCURO` per il tema, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella
+proposta. Le scorciatoie da un tasto si spengono dalla guida.
 
 ## Aspetto: design system «Terminale ambra»
 L'interfaccia segue il design system «Terminale ambra»: `css/terminale.css` (il kit, da non modificare) più gli
@@ -32,6 +32,11 @@ schede numerate, pannelli e riga di stato con fonte, data dei dati e avvertenza.
 per navigare (marchio, schede, titoli, codici, focus, selezione), **blu** per il segnale del progetto (l'obiettivo
 di ogni scadenza), **verde/rosso** con ▲ ▼ solo per le variazioni di prezzo o di valore (il pulsante CVD li passa ad
 azzurro e rosso), testo nero sui riempimenti colorati, numeri all'italiana con il segno meno tipografico (−).
+
+**Tema chiaro**: l'interruttore `CHIARO` nella barra comandi (o i comandi `CHIARO` / `SCURO`) passa al fondo bianco
+con le stesse regole. Il sistema nasce scuro, quindi il tema chiaro è ricavato qui (`styles/app.css`): ambra più scura
+per testi e linee (almeno 4,5:1 sul bianco), riempimenti in ambra viva con testo nero, verde e rosso più scuri come
+testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condivisa con le altre app del sito.
 
 ## Metodo in breve
 - **Flussi e tasse**: calendario cedole dai mesi di stacco del file, rateo ACT/ACT, valuta T+2, ritenuta 12,5%

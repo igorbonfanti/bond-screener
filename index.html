@@ -7,7 +7,8 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Costruisci una scala di titoli di Stato (bond ladder) per avere capitale a scadenze precise o una rendita mensile, con i dati di simpletoolsforinvestors.eu e le tasse italiane già calcolate.">
   <title>Bond Ladder — scale di titoli di Stato</title>
-  <script>(function(){try{if(localStorage.getItem('bondladder.cvd')==='1')document.documentElement.classList.add('cvd');}catch(e){}})();</script>
+  <!-- prima del CSS: tema (chiave condivisa con le altre app: antigravity-theme) e colori per daltonici, senza lampi -->
+  <script>(function(){try{var d=document.documentElement,t=localStorage.getItem('antigravity-theme')==='light'?'light':'dark';d.setAttribute('data-theme',t);if(t==='light')document.querySelector('meta[name="theme-color"]').setAttribute('content','#ffffff');if(localStorage.getItem('bondladder.cvd')==='1')d.classList.add('cvd');}catch(e){}})();</script>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
@@ -29,11 +30,12 @@
       <button class="go" type="submit">GO</button>
     </form>
     <span id="cmdStatus" class="sr" role="status"></span>
-    <span id="cmdHint" class="sr">Comandi: CAP capitale a scadenza, REN rendita mensile, SCALE le mie scale, DATI dati del giorno, CVD colori per daltonici, HELP guida, oppure un codice ISIN.</span>
+    <span id="cmdHint" class="sr">Comandi: CAP capitale a scadenza, REN rendita mensile, SCALE le mie scale, DATI dati del giorno, CVD colori per daltonici, CHIARO o SCURO per il tema, HELP guida, oppure un codice ISIN.</span>
     <button type="button" class="clock" id="dataClock" aria-haspopup="dialog">EOD <b>—</b></button>
     <span class="tools">
       <button type="button" class="tool" id="helpBtn" aria-haspopup="dialog">? Guida</button>
       <button type="button" class="tool" id="cvdBtn" aria-pressed="false" title="Colori per daltonici: su e giù in azzurro e rosso">CVD</button>
+      <button type="button" class="tool theme-sw" id="themeBtn" role="switch" aria-checked="false" aria-label="Tema chiaro" title="Tema chiaro: fondo bianco, stessi colori per i dati"><span class="sw" aria-hidden="true"></span>Chiaro</button>
       <button type="button" class="tool" id="loginBtn" hidden>Accedi</button>
     </span>
   </header>

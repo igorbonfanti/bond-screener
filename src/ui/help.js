@@ -31,7 +31,8 @@ const GLOSS = [
   ['Duration', 'durata finanziaria media (modificata), in anni: quanto il prezzo reagisce ai tassi.'],
   ['Lotto minimo', 'il taglio minimo acquistabile; i nominali sono multipli del lotto.'],
   ['Liquidità', 'classe di volume STFI da 0 a 4 (media di 20 giorni): quanto il titolo si scambia.'],
-  ['Colori', 'ambra per navigare; blu per l\'obiettivo; verde e rosso, con ▲ ▼, solo per variazioni di prezzo o di valore (CVD li passa ad azzurro e rosso).']
+  ['Colori', 'ambra per navigare; blu per l\'obiettivo; verde e rosso, con ▲ ▼, solo per variazioni di prezzo o di valore (CVD li passa ad azzurro e rosso).'],
+  ['Tema', 'l\'interruttore CHIARO in alto passa al fondo bianco, con le stesse regole di colore; la scelta resta salvata nel browser.']
 ];
 
 export function openHelp() {
@@ -44,7 +45,7 @@ export function openHelp() {
     h('dl', { class: 'gloss' }, GLOSS.map(([t, d]) => [h('dt', { text: t }), h('dd', { text: d })])),
     h('h3', { text: 'Tasti e comandi' }),
     h('p', null, 'Tasti: ', h('kbd', { text: '1' }), '–', h('kbd', { text: '3' }), ' viste (anche con ← → sulle schede) · ', h('kbd', { text: '/' }), ' comando · ', h('kbd', { text: '?' }), ' guida · ', h('kbd', { text: 'Esc' }), ' chiude.'),
-    h('p', null, 'Comandi (poi Invio): ', h('b', { text: 'CAP' }), ', ', h('b', { text: 'REN' }), ', ', h('b', { text: 'SCALE' }), ' per le viste; ', h('b', { text: 'DATI' }), ' per i dati del giorno; ', h('b', { text: 'CVD' }), ' per i colori per daltonici; ', h('b', { text: 'HELP' }), ' per questa guida; un ', h('b', { text: 'ISIN' }), ' per trovare il titolo nella proposta.'),
+    h('p', null, 'Comandi (poi Invio): ', h('b', { text: 'CAP' }), ', ', h('b', { text: 'REN' }), ', ', h('b', { text: 'SCALE' }), ' per le viste; ', h('b', { text: 'DATI' }), ' per i dati del giorno; ', h('b', { text: 'CVD' }), ' per i colori per daltonici; ', h('b', { text: 'CHIARO' }), ' o ', h('b', { text: 'SCURO' }), ' per il tema; ', h('b', { text: 'HELP' }), ' per questa guida; un ', h('b', { text: 'ISIN' }), ' per trovare il titolo nella proposta.'),
     h('label', { class: 'kbopt' }, kb, h('span', { text: 'Scorciatoie da un tasto attive' })),
     h('p', { class: 'note', text: 'Strumento di studio: non è consulenza finanziaria né una raccomandazione di investimento. I rendimenti passati non indicano quelli futuri.' }));
   openSheet({ title: 'Guida', sub: 'metodo, tasse, tasti', body });

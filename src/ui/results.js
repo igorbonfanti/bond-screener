@@ -108,7 +108,7 @@ function yieldMapPanel(result, sel, bands, onPick, pickable) {
   return panel('Mappa dei rendimenti', `${pts.length} titoli · rendimento netto per scadenza`,
     box,
     legend([{ key: 'amber', label: 'titoli della proposta' }, { key: 'chart-trail', label: 'altri titoli del paniere' },
-      bands.length ? { el: h('span', { class: 'kb', style: { background: '#ffffff', opacity: 0.12 } }), label: 'finestre delle scadenze' } : null,
+      bands.length ? { el: h('span', { class: 'kb', style: { background: 'var(--band)', opacity: 0.12 } }), label: 'finestre delle scadenze' } : null,
       { type: 'text', label: bands.length ? 'un punto dentro una fascia è un\'alternativa per quella scadenza: clic per usarlo' : 'più in alto rende di più, più a destra scade più tardi' }].filter(Boolean)));
 }
 

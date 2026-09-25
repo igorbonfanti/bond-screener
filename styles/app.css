@@ -7,6 +7,10 @@
    - testo nero sui riempimenti colorati; niente ombre, sfumature o angoli arrotondati.
    ========================================================================== */
 
+/* token propri dell'app, nel tema scuro del sistema; il tema chiaro li ridefinisce più sotto */
+:root { color-scheme: dark; --heat-1: #1d1d1d; --heat-2: #2f2f2f; --heat-3: #4a4a4a; --heat-4: #8a8a8a; --heat-5: #b4b4b4;
+  --disabled: #4a4a4f; --band: #ffffff; --amber-fill: var(--amber); }
+
 @media (max-width: 600px) { body { padding: 8px; } }
 .term { min-height: calc(100dvh - 32px); display: flex; flex-direction: column; }
 .term > main { flex: 1; }
@@ -83,8 +87,8 @@ button.clock:hover b { color: var(--amber); }
 .chip .cc { color: var(--ink-3); margin-right: 5px; }
 .chip .rt { color: var(--ink-3); margin-left: 5px; font-weight: 400; }
 .chip[aria-pressed="true"] .cc, .chip[aria-pressed="true"] .rt { color: var(--ink-2); }
-.chip:disabled { color: #4a4a4f; cursor: not-allowed; }
-.chip:disabled .cc, .chip:disabled .rt { color: #4a4a4f; }
+.chip:disabled { color: var(--disabled); cursor: not-allowed; }
+.chip:disabled .cc, .chip:disabled .rt { color: var(--disabled); }
 .linkbtn { all: unset; cursor: pointer; color: var(--amber); font: 600 10.5px var(--f-mono); letter-spacing: 0.05em; text-transform: uppercase; }
 .linkbtn:hover { text-decoration: underline; }
 .linkbtn:focus-visible { outline: 1px solid var(--amber); outline-offset: 1px; }
@@ -92,7 +96,6 @@ button.clock:hover b { color: var(--amber); }
 .date-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr) minmax(0, 0.9fr) auto; gap: 4px; }
 .date-row .del { background: var(--bg); border: 1px solid var(--rule); color: var(--ink-3); width: 30px; font: 600 14px var(--f-mono); cursor: pointer; }
 .date-row .del:hover { color: var(--amber); }
-.date-row input[type="date"] { color-scheme: dark; }
 details.panel > summary { list-style: none; cursor: pointer; }
 details.panel > summary::-webkit-details-marker { display: none; }
 details.panel > summary .meta::after { content: '  ▸'; }
@@ -142,17 +145,17 @@ details.panel > summary:hover h2 { text-decoration: underline; }
 .t.heat td, .t.heat th { padding: 5px 6px; }
 .t.heat td.cell { text-align: right; }
 .heat .h0 { color: var(--ink-3); }
-.heat .h1 { background: #1d1d1d; }
-.heat .h2 { background: #2f2f2f; }
-.heat .h3 { background: #4a4a4a; }
-.heat .h4 { background: var(--ink-3); color: var(--bg); }
-.heat .h5 { background: var(--ink-2); color: var(--bg); }
+.heat .h1 { background: var(--heat-1); }
+.heat .h2 { background: var(--heat-2); }
+.heat .h3 { background: var(--heat-3); }
+.heat .h4 { background: var(--heat-4); color: #000; }
+.heat .h5 { background: var(--heat-5); color: #000; }
 .heat td.redeem { box-shadow: inset 0 0 0 1px var(--ink); }
 .legend .kb.frame { background: transparent; box-shadow: inset 0 0 0 1px var(--ink); }
 .legend .ramp { display: inline-flex; gap: 1px; vertical-align: -1px; margin-right: 5px; }
 .legend .ramp i { display: inline-block; width: 12px; height: 10px; }
-.legend .ramp .h1 { background: #1d1d1d; } .legend .ramp .h2 { background: #2f2f2f; } .legend .ramp .h3 { background: #4a4a4a; }
-.legend .ramp .h4 { background: var(--ink-3); } .legend .ramp .h5 { background: var(--ink-2); }
+.legend .ramp .h1 { background: var(--heat-1); } .legend .ramp .h2 { background: var(--heat-2); } .legend .ramp .h3 { background: var(--heat-3); }
+.legend .ramp .h4 { background: var(--heat-4); } .legend .ramp .h5 { background: var(--heat-5); }
 
 /* ---------- grafici SVG ---------- */
 .chart { position: relative; padding: 8px 6px 2px; }
@@ -172,7 +175,7 @@ details.panel > summary:hover h2 { text-decoration: underline; }
 .chart.dim .col:not(.focus), .chart.dim .avg, .chart.dim .avgtag, .chart.dim .avgtxt { opacity: 0.16; }
 .chart .col:focus { outline: none; }
 .chart .col.focus .hit { stroke: var(--amber); stroke-width: 1; }
-.chart .band { fill: #ffffff; opacity: 0.035; }
+.chart .band { fill: var(--band); opacity: 0.035; }
 .chart .band.alt { opacity: 0.065; }
 .chart .band-t { fill: var(--ink-3); font: 10px var(--f-mono); }
 .chart .dot { fill: var(--chart-trail); }
@@ -257,19 +260,61 @@ h3.lbl { margin: 2px 0 0; }
   .linkbtn { padding: 6px 0; }
 }
 
+/* ==========================================================================
+   Tema chiaro (interruttore CHIARO nella barra comandi). Il sistema nasce scuro:
+   qui le stesse regole su fondo bianco. L'ambra dei testi e delle linee è più
+   scura per restare leggibile (almeno 4,5:1); i riempimenti restano ambra viva
+   con testo nero; su e giù sono più scuri come testo e vivi come riempimento.
+   ========================================================================== */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff; --panel: #f2f2f0; --panel-2: #e6e6e3; --row-hi: #ececea; --bench-row: #f7f7f5; --st-normal-bg: #e4e4e2;
+  --rule: #c4c4c0; --grid: #e3e3e0; --ink: #111111; --ink-2: #3a3a3a; --ink-3: #626262; --placeholder: #86694a;
+  --amber: #9a4a00; --amber-2: #7a4600; --amber-fill: #ffa028;
+  --up: #137a3a; --down: #c62828; --up-fill: #22c55e; --down-fill: #ef4444;
+  --chart-base: #8c8c8c; --chart-line: #b8b8b8; --chart-trail: #8a8a8a; --chart-axis: #9a9a9a;
+  --heat-1: #f1f1ef; --heat-2: #e0e0dc; --heat-3: #cacac5; --heat-4: #adada8; --heat-5: #8e8e89;
+  --disabled: #a3a3a3; --band: #111111;
+}
+:root.cvd[data-theme="light"] { --up: #0b66c3; --down: #c2361f; --up-fill: #3b9eff; --down-fill: #ff5c4d; }
+/* riempimenti: colore vivo, testo nero */
+[data-theme="light"] .brand, [data-theme="light"] .fnkeys button[aria-selected="true"],
+[data-theme="light"] .seg button[aria-pressed="true"], [data-theme="light"] kbd { background: var(--amber-fill); color: #000; }
+[data-theme="light"] .go, [data-theme="light"] .tool[aria-pressed="true"], [data-theme="light"] .fresh.late,
+[data-theme="light"] .st-watch, [data-theme="light"] .st-setup, [data-theme="light"] .st-trig { color: #000; }
+[data-theme="light"] .fresh.ok { background: var(--up-fill); color: #000; }
+[data-theme="light"] .fresh.stale, [data-theme="light"] .st-fail { background: var(--down-fill); color: #000; }
+[data-theme="light"] .chart .avgtag { fill: var(--amber-fill); }
+[data-theme="light"] .chart .avgtxt { fill: #000; }
+[data-theme="light"] .seg button:disabled { color: var(--disabled); }
+[data-theme="light"] .brand a:focus-visible { outline-color: #000; }
+[data-theme="light"] dialog.modal-card::backdrop { background: rgba(0, 0, 0, 0.35); }
+
+/* interruttore del tema: binario e cursore quadrati, colore del testo del pulsante */
+.theme-sw { display: inline-flex; align-items: center; gap: 6px; }
+.theme-sw .sw { position: relative; flex: none; width: 20px; height: 10px; box-shadow: inset 0 0 0 1px currentColor; }
+.theme-sw .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 6px; height: 6px; background: currentColor; transition: left 0.12s; }
+.theme-sw[aria-checked="true"] .sw::after { left: 12px; }
+.tool[aria-checked="true"] { color: var(--bg); background: var(--q-lead); }
+[data-theme="light"] .tool[aria-checked="true"] { color: #000; }
+/* telefono stretto: i quattro pulsanti non stanno accanto al nome, vanno su una riga loro */
+@media (max-width: 440px) {
+  .tools { flex: 1 1 100%; }
+  .tools .tool { flex: 1 1 auto; justify-content: center; }
+}
+
 /* ---------- stampa: solo la proposta, nero su bianco ---------- */
 @media print {
   /* stessi componenti, token chiari: inchiostro nero su bianco, grigi per le serie secondarie */
   :root { --bg: #fff; --panel: #fff; --panel-2: #eee; --row-hi: #f2f2f2; --bench-row: #f5f5f5; --st-normal-bg: #e6e6e6;
     --rule: #999; --grid: #ddd; --ink: #000; --ink-2: #333; --ink-3: #555;
-    --chart-base: #666; --chart-line: #bbb; --chart-trail: #8a8a8a; }
+    --chart-base: #666; --chart-line: #bbb; --chart-trail: #8a8a8a; --band: #000;
+    --heat-1: #f0f0f0; --heat-2: #dcdcdc; --heat-3: #c4c4c4; --heat-4: #a6a6a6; --heat-5: #8a8a8a; }
   html, body { background: #fff !important; padding: 0; }
   .st, .fresh { color: #000 !important; }
+  .chart .avgtxt { fill: #000; }
   .cmdbar, nav, .side, .mobile-bar, .actions, .row-acts, .t:not(.rungs) .acts, .intro { display: none !important; }
   .layout { display: block; }
   .ph h2, .sym, a, .t th[aria-sort] { color: #000 !important; }
   .panel { break-inside: avoid; margin-bottom: 8px; }
-  .heat .h1, .legend .ramp .h1 { background: #f0f0f0; } .heat .h2, .legend .ramp .h2 { background: #dcdcdc; }
-  .heat .h3, .legend .ramp .h3 { background: #c4c4c4; } .heat .h4, .legend .ramp .h4 { background: #a6a6a6; }
-  .heat .h5, .legend .ramp .h5 { background: #8a8a8a; }
 }

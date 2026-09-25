@@ -3,7 +3,7 @@
 // alzare a mano come nella v2), offline si usa la copia salvata. I dati del giorno (data/)
 // non passano di qui: arrivano sempre dalla rete e la copia offline la tiene l'app nel
 // browser, così "scaricato ora" vuol dire davvero scaricato ora.
-const CACHE = 'bond-ladder-v3.3';
+const CACHE = 'bond-ladder-v3.4';
 const DATA_PATH = new URL('./data/', self.location.href).pathname;
 const SHELL = [
   './', './index.html', './manifest.json', './css/terminale.css', './styles/app.css', './assets/icon.svg', './assets/icon-192.png',
