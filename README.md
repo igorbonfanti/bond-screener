@@ -1,4 +1,4 @@
-# Bond Ladder — v3.4.0
+# Bond Ladder — v3.4.1
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità

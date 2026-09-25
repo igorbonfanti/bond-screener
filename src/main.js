@@ -14,7 +14,7 @@ import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.4.0';
+const VERSION = '3.4.1';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
 const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'

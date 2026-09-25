@@ -262,33 +262,47 @@ h3.lbl { margin: 2px 0 0; }
 
 /* ==========================================================================
    Tema chiaro (interruttore CHIARO nella barra comandi). Il sistema nasce scuro:
-   qui le stesse regole su fondo bianco. L'ambra dei testi e delle linee è più
-   scura per restare leggibile (almeno 4,5:1); i riempimenti restano ambra viva
-   con testo nero; su e giù sono più scuri come testo e vivi come riempimento.
+   qui gli stessi token su fondo bianco, uguali in tutte le app «Terminale ambra».
+   Testi e linee sottili usano la versione scura (almeno 4,5:1 su bg, panel,
+   panel-2 e row-hi); i riempimenti con testo nero restano vivi (-fill).
    ========================================================================== */
 :root[data-theme="light"] {
   color-scheme: light;
+  /* superfici e testo */
   --bg: #ffffff; --panel: #f2f2f0; --panel-2: #e6e6e3; --row-hi: #ececea; --bench-row: #f7f7f5; --st-normal-bg: #e4e4e2;
   --rule: #c4c4c0; --grid: #e3e3e0; --ink: #111111; --ink-2: #3a3a3a; --ink-3: #626262; --placeholder: #86694a;
+  /* testo e linee (scuri) · riempimenti con testo nero (vivi) */
   --amber: #9a4a00; --amber-2: #7a4600; --amber-fill: #ffa028;
-  --up: #137a3a; --down: #c62828; --up-fill: #22c55e; --down-fill: #ef4444;
-  --chart-base: #8c8c8c; --chart-line: #b8b8b8; --chart-trail: #8a8a8a; --chart-axis: #9a9a9a;
+  --up: #127337; --down: #c22727; --up-fill: #22c55e; --down-fill: #ef4444;
+  --blue-light: #1f5ad6;
+  --q-lead: #0a7164; --q-weak: #825e00; --q-lag: #bb341e; --q-imp: #6a4bd8;
+  --q-lead-fill: #35d0ba; --q-weak-fill: #ffc400; --q-lag-fill: #ff5c4d; --q-imp-fill: #9b7bff;
+  /* grafici */
+  --chart-axis: #8c8c8c; --chart-base: #8c8c8c; --chart-line: #b8b8b8; --chart-trail: #8a8a8a;
+  --chart-ring: #ececea; --chart-leader: #a8a7a2; --bar-fill: #f2b8b5; --bar-mark: #8a8a8a;
+  /* propri di Bond Ladder */
   --heat-1: #f1f1ef; --heat-2: #e0e0dc; --heat-3: #cacac5; --heat-4: #adada8; --heat-5: #8e8e89;
   --disabled: #a3a3a3; --band: #111111;
 }
-:root.cvd[data-theme="light"] { --up: #0b66c3; --down: #c2361f; --up-fill: #3b9eff; --down-fill: #ff5c4d; }
-/* riempimenti: colore vivo, testo nero */
+:root.cvd[data-theme="light"] { --up: #0b65c1; --down: #bb341e; --up-fill: #3b9eff; --down-fill: #ff5c4d; }
+/* riempimenti del kit: colore vivo, testo nero (nel kit il testo è var(--bg), che qui è bianco) */
 [data-theme="light"] .brand, [data-theme="light"] .fnkeys button[aria-selected="true"],
 [data-theme="light"] .seg button[aria-pressed="true"], [data-theme="light"] kbd { background: var(--amber-fill); color: #000; }
-[data-theme="light"] .go, [data-theme="light"] .tool[aria-pressed="true"], [data-theme="light"] .fresh.late,
-[data-theme="light"] .st-watch, [data-theme="light"] .st-setup, [data-theme="light"] .st-trig { color: #000; }
+[data-theme="light"] .tool[aria-pressed="true"], [data-theme="light"] .tool[aria-checked="true"] { background: var(--q-lead-fill); color: #000; }
 [data-theme="light"] .fresh.ok { background: var(--up-fill); color: #000; }
+[data-theme="light"] .fresh.late { background: var(--q-weak-fill); color: #000; }
 [data-theme="light"] .fresh.stale, [data-theme="light"] .st-fail { background: var(--down-fill); color: #000; }
-[data-theme="light"] .chart .avgtag { fill: var(--amber-fill); }
-[data-theme="light"] .chart .avgtxt { fill: #000; }
-[data-theme="light"] .seg button:disabled { color: var(--disabled); }
+[data-theme="light"] .go, [data-theme="light"] .st-watch, [data-theme="light"] .st-setup, [data-theme="light"] .st-trig,
+[data-theme="light"] .stepper output { color: #000; }
+[data-theme="light"] .stepper button { color: var(--blue-light); }
+[data-theme="light"] .ts .lasttag { fill: var(--amber-fill); }
+[data-theme="light"] .ts .lasttxt { fill: #000; }
+[data-theme="light"] .seg button:disabled { color: #a3a3a3; }
 [data-theme="light"] .brand a:focus-visible { outline-color: #000; }
 [data-theme="light"] dialog.modal-card::backdrop { background: rgba(0, 0, 0, 0.35); }
+/* propri di Bond Ladder: cartellino della media nei grafici */
+[data-theme="light"] .chart .avgtag { fill: var(--amber-fill); }
+[data-theme="light"] .chart .avgtxt { fill: #000; }
 
 /* interruttore del tema: binario e cursore quadrati, colore del testo del pulsante */
 .theme-sw { display: inline-flex; align-items: center; gap: 6px; }
@@ -296,7 +310,6 @@ h3.lbl { margin: 2px 0 0; }
 .theme-sw .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 6px; height: 6px; background: currentColor; transition: left 0.12s; }
 .theme-sw[aria-checked="true"] .sw::after { left: 12px; }
 .tool[aria-checked="true"] { color: var(--bg); background: var(--q-lead); }
-[data-theme="light"] .tool[aria-checked="true"] { color: #000; }
 /* telefono stretto: i quattro pulsanti non stanno accanto al nome, vanno su una riga loro */
 @media (max-width: 440px) {
   .tools { flex: 1 1 100%; }
