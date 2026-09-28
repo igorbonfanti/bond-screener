@@ -110,6 +110,11 @@ details.panel > summary:hover h2 { text-decoration: underline; }
 .drop b { color: var(--ink); font: 600 12px var(--f-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 .drop:hover, .drop.drag { border-color: var(--amber); }
 
+/* ---------- scheda Portafoglio ---------- */
+.add-row { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+@media (max-width: 600px) { .add-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .add-row > .field:first-child { grid-column: 1 / -1; } }
+textarea.input { resize: vertical; min-height: 64px; font: 12.5px/1.45 var(--f-mono); }
+
 /* ---------- osservazioni: badge a sinistra, motivo a destra ---------- */
 .states div.srow { grid-template-columns: 112px minmax(0, 1fr); }
 .states .srow .st { justify-self: start; }
@@ -201,6 +206,7 @@ dialog.modal-card.wide { width: min(880px, calc(100% - 24px)); }
 .data-dlg .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .kpi.wide { grid-column: 1 / -1; }
 .modal-close:hover { color: var(--amber); }
+.mfoot .push-left { margin-right: auto; }
 .mfoot { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; padding: 8px 10px; border-top: 1px solid var(--rule); background: var(--panel); }
 .modal-card .kpis { margin: 0; }
 .modal-card .facts { font-size: 12px; }

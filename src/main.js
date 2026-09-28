@@ -10,6 +10,9 @@ import { mountSettings, renderSettings } from './ui/settings.js';
 import { renderResults } from './ui/results.js';
 import { openSheet, closeSheet } from './ui/sheet.js';
 import { renderSavedList, renderSavedDetail } from './ui/saved.js';
+import { renderPortfolio } from './ui/portfolio.js';
+import { loadPortfolio, savePortfolio } from './portfolio.js';
+import { readSpreadsheet } from './data/xls.js';
 import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
@@ -23,7 +26,8 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* navigazione privata */ } }
 };
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-const app = { ds: null, meta: null, text: null, st: null, result: null, worker: null, workerReady: false, req: 0, pending: new Map(), lastSaved: null, booting: false, settings: null };
+const app = { ds: null, meta: null, text: null, st: null, result: null, worker: null, workerReady: false, req: 0, pending: new Map(), lastSaved: null, booting: false, settings: null,
+  portfolio: loadPortfolio() };
 
 /* ---------------- Dati: data EOD, stato e origine ---------------- */
 /** "oggi alle 23:13", "ieri alle 18:40", "il 22/09/2026 alle 21:05" (ora locale). */
@@ -177,7 +181,7 @@ function settingsChanged() {
 }
 
 /* ---------------- Schede e indirizzi ---------------- */
-const TABS = { capital: '#/capitale', income: '#/rendita', saved: '#/scale' };
+const TABS = { capital: '#/capitale', income: '#/rendita', portfolio: '#/portafoglio', saved: '#/scale' };
 
 function currentRoute() {
   const hsh = location.hash || '#/';
@@ -185,6 +189,7 @@ function currentRoute() {
   if ((m = hsh.match(/^#\/l\/(.+)$/))) return { name: 'ladder', id: decodeURIComponent(m[1]) };
   if ((m = hsh.match(/^#\/s\/(.+)$/))) return { name: 'shared', data: m[1] };
   if (hsh.startsWith('#/scale')) return { name: 'saved' };
+  if (hsh.startsWith('#/portafoglio')) return { name: 'portfolio' };
   if (hsh.startsWith('#/rendita')) return { name: 'build', goal: 'income' };
   if (hsh.startsWith('#/capitale')) return { name: 'build', goal: 'capital' };
   return { name: 'build', goal: null };
@@ -215,6 +220,24 @@ function route() {
     } catch { toast('Link non valido', 'err'); }
     history.replaceState(null, '', TABS[app.st && app.st.goal === 'income' ? 'income' : 'capital']);
     return route();
+  }
+  if (r.name === 'portfolio') {
+    selectTab('portfolio');
+    const box = h('div', { class: 'stack' });
+    view.replaceChildren(box);
+    renderPortfolio(box, {
+      ds: app.ds, portfolio: app.portfolio, zainetto: !!(app.st && app.st.basket && app.st.basket.zainetto),
+      readFile: readSpreadsheet,
+      onChange: (p, msg) => {
+        app.portfolio = p;
+        if (!savePortfolio(p)) toast('Il browser non ha salvato il portafoglio (spazio pieno o navigazione privata): resta finché non chiudi la pagina.', 'err');
+        else if (msg) toast(msg, 'ok');
+        app.result = null;
+        route();
+      },
+      onBuild: goal => { app.st.usePortfolio = true; saveSettings(app.st); go(goal); }
+    });
+    return;
   }
   if (r.name === 'saved' || r.name === 'ladder') {
     selectTab('saved');
@@ -568,7 +591,7 @@ function openDataDialog() {
 
 /* ---------------- Barra comandi ---------------- */
 const NARROW = matchMedia('(max-width: 600px)');   // sul telefono il segnaposto intero non ci sta
-const cmdHint = () => NARROW.matches ? 'CAP, REN, SCALE, ISIN, HELP' : 'Comando: CAP, REN, SCALE, DATI, un ISIN, HELP · poi Invio';
+const cmdHint = () => NARROW.matches ? 'CAP, REN, PTF, ISIN, HELP' : 'Comando: CAP, REN, PTF, SCALE, DATI, un ISIN, HELP · poi Invio';
 let cmdTimer = 0;
 /** Comando non riconosciuto: messaggio nel segnaposto, in rosso, per 4 secondi (e letto dai lettori di schermo). */
 function cmdError(msg, short) {
@@ -599,7 +622,8 @@ function findIsin(isin) {
   toast(`${b.desc} (${isin}) non è nella proposta: scade il ${fmt(b.maturity)}, prezzo ${fmtNum(b.price, 2)}, rendimento netto ${fmtPct(b.ytmNet)}.`);
 }
 
-const VIEW_CMDS = { 1: 'capital', CAP: 'capital', CAPITALE: 'capital', 2: 'income', REN: 'income', RENDITA: 'income', 3: 'saved', SCALE: 'saved', SCALA: 'saved', SALVATE: 'saved' };
+const VIEW_CMDS = { 1: 'capital', CAP: 'capital', CAPITALE: 'capital', 2: 'income', REN: 'income', RENDITA: 'income',
+  3: 'portfolio', PTF: 'portfolio', PORT: 'portfolio', PORTAFOGLIO: 'portfolio', 4: 'saved', SCALE: 'saved', SCALA: 'saved', SALVATE: 'saved' };
 function runCommand(raw) {
   const text = String(raw || '').trim();
   const q = text.toUpperCase().replace(/\s+/g, ' ');
@@ -654,7 +678,7 @@ function wireLogin() {
   obs.observe(document.body, { childList: true });
 }
 
-/** Schede con frecce, Home e Fine; tasti 1–3, / e ? (si spengono dalla guida). */
+/** Schede con frecce, Home e Fine; tasti 1–4, / e ? (si spengono dalla guida). */
 function wireKeys() {
   const tabs = [...document.querySelectorAll('#tabs [role="tab"]')];
   tabs.forEach((t, i) => {
@@ -673,9 +697,9 @@ function wireKeys() {
     if (document.querySelector('dialog[open]')) return;
     const tg = e.target;
     if (tg && tg.closest && tg.closest('input, textarea, select, [contenteditable="true"], #accessoForm')) return;
-    if (e.key >= '1' && e.key <= '3') {
+    if (e.key >= '1' && e.key <= '4') {
       e.preventDefault();
-      const v = ['capital', 'income', 'saved'][+e.key - 1];
+      const v = ['capital', 'income', 'portfolio', 'saved'][+e.key - 1];
       go(v);
       $('#tab-' + v).focus({ preventScroll: true });
     } else if (e.key === '/') { e.preventDefault(); $('#cmdInput').focus(); }

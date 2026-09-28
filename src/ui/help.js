@@ -10,7 +10,8 @@ const SECTIONS = [
   ['Le viste', [
     ['1 Capitale a scadenza', 'somme disponibili a date precise (università, casa, auto…) oppure la stessa cifra ogni anno o semestre. Parti dagli importi che servono o dal capitale che hai.'],
     ['2 Rendita mensile', 'cedole ogni mese nel modo più regolare possibile; il capitale torna man mano che i titoli scadono.'],
-    ['3 Le mie scale', 'le scale salvate, confrontate con i prezzi di oggi: valore, cedole e rimborsi incassati, risultato.']]],
+    ['3 Portafoglio', 'i titoli che hai già, caricati dall\'export della banca (per esempio Fineco, in Excel), incollati o inseriti a mano: valore di oggi, rendimento da qui a scadenza con la tassa sul tuo prezzo di carico, calendario degli incassi. Nelle viste 1 e 2 la scala si costruisce attorno a questi titoli, senza venderli. Il portafoglio resta solo in questo browser.'],
+    ['4 Le mie scale', 'le scale salvate, confrontate con i prezzi di oggi: valore, cedole e rimborsi incassati, risultato.']]],
   ['Da dove arrivano i dati',
     'Dal file "Rendimenti e durate calcolati End of Day" di simpletoolsforinvestors.eu: prezzi di chiusura e rendimenti lordi, netti e "super netti" del giorno. Ogni sera un\'automazione lo scarica e lo pubblica qui, e all\'avvio l\'app usa quello; un file caricato a mano resta in uso solo se è più recente. La data EOD in alto dice di quando sono i prezzi e se sono aggiornati; toccandola vedi quale file stai usando e puoi riscaricarlo, caricarne uno tuo, salvarlo o cancellare la copia nel browser. Gli acquisti si intendono con valuta a due giorni lavorativi (T+2).'],
   ['Capitale a scadenza',
@@ -44,8 +45,8 @@ export function openHelp() {
     h('h3', { text: 'Glossario' }),
     h('dl', { class: 'gloss' }, GLOSS.map(([t, d]) => [h('dt', { text: t }), h('dd', { text: d })])),
     h('h3', { text: 'Tasti e comandi' }),
-    h('p', null, 'Tasti: ', h('kbd', { text: '1' }), '–', h('kbd', { text: '3' }), ' viste (anche con ← → sulle schede) · ', h('kbd', { text: '/' }), ' comando · ', h('kbd', { text: '?' }), ' guida · ', h('kbd', { text: 'Esc' }), ' chiude.'),
-    h('p', null, 'Comandi (poi Invio): ', h('b', { text: 'CAP' }), ', ', h('b', { text: 'REN' }), ', ', h('b', { text: 'SCALE' }), ' per le viste; ', h('b', { text: 'DATI' }), ' per i dati del giorno; ', h('b', { text: 'CVD' }), ' per i colori per daltonici; ', h('b', { text: 'CHIARO' }), ' o ', h('b', { text: 'SCURO' }), ' per il tema; ', h('b', { text: 'HELP' }), ' per questa guida; un ', h('b', { text: 'ISIN' }), ' per trovare il titolo nella proposta.'),
+    h('p', null, 'Tasti: ', h('kbd', { text: '1' }), '–', h('kbd', { text: '4' }), ' viste (anche con ← → sulle schede) · ', h('kbd', { text: '/' }), ' comando · ', h('kbd', { text: '?' }), ' guida · ', h('kbd', { text: 'Esc' }), ' chiude.'),
+    h('p', null, 'Comandi (poi Invio): ', h('b', { text: 'CAP' }), ', ', h('b', { text: 'REN' }), ', ', h('b', { text: 'PTF' }), ', ', h('b', { text: 'SCALE' }), ' per le viste; ', h('b', { text: 'DATI' }), ' per i dati del giorno; ', h('b', { text: 'CVD' }), ' per i colori per daltonici; ', h('b', { text: 'CHIARO' }), ' o ', h('b', { text: 'SCURO' }), ' per il tema; ', h('b', { text: 'HELP' }), ' per questa guida; un ', h('b', { text: 'ISIN' }), ' per trovare il titolo nella proposta.'),
     h('label', { class: 'kbopt' }, kb, h('span', { text: 'Scorciatoie da un tasto attive' })),
     h('p', { class: 'note', text: 'Strumento di studio: non è consulenza finanziaria né una raccomandazione di investimento. I rendimenti passati non indicano quelli futuri.' }));
   openSheet({ title: 'Guida', sub: 'metodo, tasse, tasti', body });

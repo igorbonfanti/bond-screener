@@ -61,7 +61,7 @@ function bondCell(b, extra) {
 }
 
 /** Tabella del sistema: intestazioni ordinabili (▲ ▼, aria-sort), numeri a destra, riga dei totali in fondo. */
-function dataTable({ cols, rows, sortBy = null, dir = 1, rowAttrs = () => ({}), foot = null, label, cls = '' }) {
+export function dataTable({ cols, rows, sortBy = null, dir = 1, rowAttrs = () => ({}), foot = null, label, cls = '' }) {
   let key = sortBy, d = dir;
   const tbody = h('tbody');
   const cmp = (a, b) => typeof a === 'number' && typeof b === 'number' ? a - b : String(a ?? '').localeCompare(String(b ?? ''), 'it');
@@ -112,7 +112,7 @@ function yieldMapPanel(result, sel, bands, onPick, pickable) {
       { type: 'text', label: bands.length ? 'un punto dentro una fascia è un\'alternativa per quella scadenza: clic per usarlo' : 'più in alto rende di più, più a destra scade più tardi' }].filter(Boolean)));
 }
 
-function calendarPanel(schedule) {
+export function calendarPanel(schedule) {
   const byYear = new Map();
   for (const f of schedule) {
     const { y, m } = parts(f.day);
