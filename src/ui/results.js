@@ -13,7 +13,7 @@ export function renderResults(root, { st, result, actions }) {
   const plan = result && result.plan;
   if (!plan) { root.replaceChildren(); return; }
   if (plan.mode === 'capital') root.replaceChildren(...(plan.holdings ? portfolioCapitalView(st, result, plan) : capitalView(st, result, plan)));
-  else root.replaceChildren(...incomeView(st, result, plan));
+  else root.replaceChildren(...(plan.holdings ? portfolioIncomeView(st, result, plan) : incomeView(st, result, plan)));
 }
 
 /* ------------------------------ comuni ------------------------------ */
@@ -534,4 +534,110 @@ function incomeView(st, result, plan) {
     panel('Capitale che torna', 'rimborsi netti per anno · euro', capBox, legend([{ key: 'ink', label: 'rimborsi dell\'anno' }])),
     yieldMapPanel(result, sel, [], null, null),
     calendarPanel(plan.schedule), purchasePanel(plan.positions, plan.settle)];
+}
+
+/* ---------------- Rendita mensile attorno al portafoglio posseduto ---------------- */
+function portfolioIncomeView(st, result, plan) {
+  const avg = plan.annual / 12, target = plan.monthlyTarget, nHeld = plan.holdings.length;
+  const newAnnual = plan.annual - plan.annualHeld;
+  const kpis = h('div', { class: 'kpis' },
+    kpi('Rendita al mese', fmtEur(avg), `media netta · prima ${fmtEur(plan.annualHeld / 12)}`),
+    kpi('Mese più basso', fmtEur(plan.minMonth), plan.zeroMonthsBefore ? `prima ${plural(plan.zeroMonthsBefore, 'mese', 'mesi')} a zero` : `prima ${fmtEur(plan.minAllBefore)}`),
+    kpi('Dai tuoi titoli', fmtPct(plan.heldShare * 100, 0), `delle cedole · ${plural(nHeld, 'titolo', 'titoli')}`),
+    kpi('Rendimento netto', fmtPct(plan.irrAll * 100), plan.positions.length ? `tutto il portafoglio · nuovi ${fmtPct(plan.irr * 100)}` : 'tutto il portafoglio'),
+    kpi('Nuovi acquisti', fmtEur(plan.totalCost), target ? `per almeno ${fmtEur(target)} al mese` : plan.positions.length ? `${plural(plan.newLines, 'titolo nuovo', 'titoli nuovi')}${plan.topUps ? ` + ${plural(plan.topUps, 'rabbocco', 'rabbocchi')}` : ''}` : 'niente da comprare'),
+    kpi('Mesi pagati', String(plan.coveredMonths), plan.coveredMonths === 12 ? 'tutti' : `${12 - plan.coveredMonths} senza cedole`, '/ 12'));
+  const b = t => h('b', { text: t });
+  const lead = h('p', { class: 'lead' },
+    'Con i tuoi ', b(plural(nHeld, 'titolo', 'titoli')), plan.totalCost > 0.5 ? [' e ', b(fmtEur(plan.totalCost)), ' di nuovi acquisti'] : [],
+    ` le cedole arrivano in ${plan.coveredMonths} mesi su 12: da un minimo di `, b(fmtEur(plan.minMonth)), ' a un massimo di ', b(fmtEur(plan.maxMonth)), ' al mese',
+    plan.totalCost > 0.5 ? ['; oggi, con i soli tuoi titoli, ', b(fmtEur(plan.annualHeld / 12)), ' al mese in media.'] : '. Non vendi nulla.');
+
+  const ins = [];
+  if (plan.coveredMonths === 12) ins.push(insight('good', plan.zeroMonthsBefore ? `Cedole in tutti i 12 mesi: prima ${plan.zeroMonthsBefore === 1 ? 'un mese era' : `${plan.zeroMonthsBefore} mesi erano`} a zero.` : 'Cedole in tutti i 12 mesi dell\'anno.'));
+  if (plan.positions.length && newAnnual > 0.5) ins.push(insight('info', `I nuovi acquisti aggiungono ${fmtEur(newAnnual)} l'anno di cedole nette${plan.minAllAfter > plan.minAllBefore + 0.5 ? ` e portano il mese più basso da ${fmtEur(plan.minAllBefore)} a ${fmtEur(plan.minAllAfter)}` : ''}.`));
+  if (plan.topUps) ins.push(insight('info', `Per ${plan.topUps === 1 ? 'un titolo' : `${plan.topUps} titoli`} compri altri pezzi di quello che hai già.`));
+  if (plan.heldBefore.length) {
+    const first = Math.min(...plan.heldBefore.map(x => x.maturity));
+    ins.push(insight('info', `${plural(plan.heldBefore.length, 'tuo titolo scade', 'tuoi titoli scadono')} prima dell'orizzonte scelto (${plan.heldBefore.length === 1 ? 'il' : 'dal'} ${fmt(first)}): ${plan.heldBefore.length === 1 ? 'la sua cedola' : 'le loro cedole'} (${fmtEur(plan.heldBeforeAnnual)} l'anno) non ${plan.heldBefore.length === 1 ? 'conta' : 'contano'} nella rendita dei mesi, perché smetterebbero presto di arrivare.`));
+  }
+  const cap = st.basket.issuerCap, W = plan.heldValue + plan.totalCost;
+  if (cap < 1 && W > 0) {
+    const m = new Map();
+    for (const x of plan.holdings) { const e = m.get(x.bond.issuer) || { name: x.bond.issuerName, v: 0 }; e.v += x.value || 0; m.set(x.bond.issuer, e); }
+    for (const e of m.values()) if (e.v / W > cap + 1e-9) ins.push(insight('warn', `${e.name} pesa già il ${fmtNum(e.v / W * 100, 0)}% del portafoglio complessivo, oltre il limite per emittente del ${fmtNum(cap * 100, 0)}%: non compro altri suoi titoli. Il limite si cambia nel paniere.`));
+  }
+  const info = result.portfolio || {};
+  if (info.missing && info.missing.length) ins.push(insight('warn', `${plural(info.missing.length, 'titolo del portafoglio non è', 'titoli del portafoglio non sono')} nei dati di oggi e ${info.missing.length === 1 ? 'resta' : 'restano'} fuori dal calcolo: ${info.missing.length === 1 ? 'completalo' : 'completali'} nella scheda Portafoglio.`));
+  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', 'Per i BTP Italia conto la cedola reale senza inflazione futura: incasserai un po\' di più.'));
+  if (plan.capitalByYear.length || plan.heldCapitalByYear.length) {
+    const years = [...new Set(plan.capitalByYear.map(([y]) => y).concat(plan.heldCapitalByYear.map(([y]) => y)))].sort((a, c) => a - c);
+    const tot = y => (plan.capitalByYear.find(([k]) => k === y) || [0, 0])[1] + (plan.heldCapitalByYear.find(([k]) => k === y) || [0, 0])[1];
+    ins.push(insight('info', `Il capitale torna man mano (tuoi titoli e nuovi): ${years.map(y => `${y} ${fmtEur(tot(y))}`).join(' · ')}.`));
+  }
+  ins.push(...commonInsights(plan, result));
+
+  const monthsBox = h('div');
+  const payers = MONTHS.map((_, m) => plan.positions.filter(p => p.months.includes(m + 1)));
+  const heldPayers = MONTHS.map((_, m) => plan.holdings.filter(x => x.counted && x.bond.months && x.bond.months.includes(m + 1) && x.netPerPayment > 0));
+  const newMonthly = plan.monthly.map((v, i) => v - plan.monthlyHeld[i]);
+  requestAnimationFrame(() => columnChart(monthsBox, {
+    labels: MONTHS, height: 240, yFormat: v => fmtNum(v, 0), average: avg, averageLabel: `MEDIA ${fmtNum(avg, 0)} €`,
+    series: [{ cls: 's4', values: plan.monthlyHeld }, { cls: 's1', values: newMonthly }], ariaLabel: 'Cedole nette per mese: dai tuoi titoli e dai nuovi',
+    tooltip: m => ({ title: MONTHS_LONG[m], meta: fmtEur(plan.monthly[m]), rows: [
+      ...heldPayers[m].map(x => ({ key: 'amber-fill', label: 'tuo · ' + (x.desc.length > 26 ? x.desc.slice(0, 25) + '…' : x.desc), value: fmtEur(x.netPerPayment) })),
+      ...payers[m].map(p => ({ key: 'ink', label: p.bond.desc.length > 30 ? p.bond.desc.slice(0, 29) + '…' : p.bond.desc, value: fmtEur(p.netPerPayment) }))],
+    note: payers[m].length || heldPayers[m].length ? null : 'nessuna cedola' })
+  }));
+  const monthsPanel = panel('Cedole nette mese per mese', 'anno tipo, dopo le tasse', monthsBox,
+    legend([{ key: 'amber-fill', label: 'dai tuoi titoli' }, { key: 'ink', label: 'dai nuovi acquisti' }, { type: 'line', key: 'amber', label: 'media' }, { type: 'text', label: 'passa sopra un mese per vedere chi paga' }]));
+
+  const years = [...new Set(plan.capitalByYear.map(([y]) => y).concat(plan.heldCapitalByYear.map(([y]) => y)))].sort((a, c) => a - c);
+  const valOf = (list, y) => (list.find(([k]) => k === y) || [0, 0])[1];
+  const capBox = h('div');
+  requestAnimationFrame(() => columnChart(capBox, {
+    labels: years.map(String), height: 200, yFormat: v => fmtNum(v, 0),
+    series: [{ cls: 's4', values: years.map(y => valOf(plan.heldCapitalByYear, y)) }, { cls: 's1', values: years.map(y => valOf(plan.capitalByYear, y)) }],
+    ariaLabel: 'Capitale rimborsato per anno: tuoi titoli e nuovi',
+    tooltip: i => ({ title: String(years[i]), meta: fmtEur(valOf(plan.heldCapitalByYear, years[i]) + valOf(plan.capitalByYear, years[i])), rows: [
+      { key: 'amber-fill', label: 'tuoi titoli', value: fmtEur(valOf(plan.heldCapitalByYear, years[i])) }, { key: 'ink', label: 'nuovi', value: fmtEur(valOf(plan.capitalByYear, years[i])) }] })
+  }));
+
+  const out = [kpis, lead, actionsBar(), h('div', { class: 'grid-2' }, monthsPanel, notesPanel(ins))];
+  if (plan.positions.length) {
+    const maxShare = Math.max(...plan.positions.map(p => p.cost / plan.totalCost));
+    out.push(panel('Titoli da comprare', `${plan.positions.length} titoli · euro · Escludi toglie un titolo e ricalcola`, dataTable({
+      label: 'Titoli da comprare per la rendita', sortBy: 1, cls: 'compact',
+      cols: [
+        { label: 'Titolo', cls: 'wrap', sort: p => p.bond.desc, cell: p => [h('span', { class: 'sym', text: p.bond.isin }), h('span', { class: 'nm', text: p.bond.desc }),
+          bondTags(p.bond, p.topUp ? [h('span', { class: 'tag', title: 'Titolo che hai già: ne compri altri pezzi', text: 'ne hai già' })] : [])] },
+        { label: 'Scadenza', sort: p => p.bond.maturity, cell: p => [h('span', { class: 'num', text: fmt(p.bond.maturity) }), h('span', { class: 'dsub', title: 'mesi in cui arriva la cedola', text: monthsText(p.bond) })] },
+        { label: 'Prezzo', r: 1, sort: p => p.bond.price, cell: p => fmtNum(p.bond.price, 2) },
+        { label: 'Netto', r: 1, sort: p => p.bond.ytmNet, dir: -1, cell: p => fmtPct(p.bond.ytmNet) },
+        { label: 'Cedola', r: 1, sort: p => p.bond.coupon, dir: -1, cell: p => p.bond.zc ? '—' : fmtPct(p.bond.coupon, 2) },
+        { label: 'Rating', cell: p => [p.bond.rating || 'NR', h('span', { class: 'dsub liq', title: `classe di liquidità STFI ${p.bond.liquidity} su 4`, text: liqDots(p.bond.liquidity) })] },
+        { label: 'Nominale', r: 1, sort: p => p.nominal, dir: -1, cell: p => eur0(p.nominal) },
+        { label: 'Costo', r: 1, sort: p => p.cost, dir: -1, cell: p => eur0(p.cost) },
+        { label: 'Quota', sort: p => p.cost, dir: -1, cls: 'num', cell: p => [h('span', { class: 'wbar' }, h('i', { style: { width: `${(p.cost / plan.totalCost) / maxShare * 100}%` } })), h('span', { class: 'num', text: fmtPct(p.cost / plan.totalCost * 100, 0) })] },
+        { label: 'Stacco netto', r: 1, sort: p => p.netPerPayment, dir: -1, cell: p => eur0(p.netPerPayment) },
+        { label: '', cls: 'acts', cell: p => h('button', { type: 'button', class: 'mini', 'aria-label': `Escludi ${p.bond.desc} e ricalcola`, text: 'Escludi', on: { click: () => A.onExclude && A.onExclude(p.bond.isin, p.bond.desc) } }) }],
+      rows: plan.positions
+    }), h('p', { class: 'note', style: { padding: '6px 10px' } }, 'Solo i titoli nuovi: i tuoi restano come sono. Sotto la scadenza, i mesi in cui arriva la cedola. Stacco netto: quanto incassi a ogni pagamento, dopo le tasse.')));
+  }
+  out.push(panel('I tuoi titoli nella rendita', `${plural(nHeld, 'titolo', 'titoli')} · cedole nette a ogni stacco`, dataTable({
+    label: 'I tuoi titoli nella rendita', sortBy: 1, cls: 'compact',
+    cols: [
+      { label: 'Titolo', cls: 'wrap', sort: x => x.desc, cell: x => [h('span', { class: 'sym', text: x.isin }), h('span', { class: 'nm', text: x.desc })] },
+      { label: 'Scadenza', sort: x => x.bond.maturity, cell: x => [h('span', { class: 'num', text: fmt(x.bond.maturity) }), h('span', { class: 'dsub', text: monthsText(x.bond) })] },
+      { label: 'Nominale', r: 1, sort: x => x.nominal, dir: -1, cell: x => eur0(x.nominal) },
+      { label: 'Stacco netto', r: 1, sort: x => x.netPerPayment, dir: -1, cell: x => x.netPerPayment > 0 ? eur0(x.netPerPayment) : '—' },
+      { label: 'Nella rendita', cell: x => x.counted ? badge('trig', 'Conta') : badge('normal', 'Scade prima') }],
+    rows: plan.holdings
+  })));
+  out.push(panel('Capitale che torna', 'rimborsi netti per anno · euro', capBox, legend([{ key: 'amber-fill', label: 'tuoi titoli' }, { key: 'ink', label: 'nuovi acquisti' }])));
+  out.push(yieldMapPanel(result, new Set(plan.positions.map(p => p.bond.isin)), [], null, null));
+  const allFlows = plan.schedule.concat(plan.heldSchedule).sort((a, c) => a.day - c.day);
+  if (allFlows.length) out.push(calendarPanel(allFlows, 'tuoi titoli e nuovi acquisti · euro netti, mese per mese'));
+  if (plan.positions.length) out.push(purchasePanel(plan.positions, plan.settle, 'Da comprare'));
+  return out;
 }

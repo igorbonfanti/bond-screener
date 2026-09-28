@@ -2,7 +2,7 @@
    (interfaccia sempre fluida) o, se il worker non è disponibile, nel thread principale. */
 import { applyBasket, issuerCatalog } from './core/basket.js';
 import { regularTargets, dateTargets, planCapital, ALWAYS } from './core/capital.js';
-import { planIncome } from './core/income.js';
+import { planIncome, planIncomeTarget } from './core/income.js';
 import { parseDay, day } from './core/dates.js';
 import { scoreYield } from './core/bond.js';
 import { resolveHoldings } from './portfolio.js';
@@ -10,6 +10,8 @@ import { RETAIL_BTP } from './data/retail-btp.js';
 
 /** Preferenza per i titoli già posseduti → vantaggio di rendimento nella scelta (0,001 = 0,10 punti percentuali). */
 export const PREF_BONUS = { mine: ALWAYS, balanced: 0.001, yield: 1e-6 };
+/** Nella rendita il vantaggio vale nel secondo obiettivo (rendimento, in punti %), a parità di mese più povero. */
+const PREF_INCOME = { mine: 1, balanced: 0.1, yield: 0.01 };
 
 export function basketFromSettings(ds, b) {
   const excluded = new Set(b.excluded || []);
@@ -63,7 +65,7 @@ function portfolioInput(ds, st, zainetto, basket) {
   const pool = pref === 'mine' ? [...new Set(holdings.map(x => x.topUpIsin))].map(i => byIsin.get(i))
     .filter(b => b && !inBasket.has(b.isin) && b.currency === 'EUR' && !b.anomaly && b.maturity > ds.settle + 30) : [];
   return {
-    holdings, pool, bonus: PREF_BONUS[pref],
+    holdings, pool, bonus: PREF_BONUS[pref], incomeBonus: PREF_INCOME[pref],
     info: { pref, count: res.length, used: live.length, value: live.reduce((s, r) => s + r.value, 0),
       missing: res.filter(r => r.status === 'missing').map(r => r.h.isin), matured: res.filter(r => r.status === 'matured').map(r => r.h.isin) }
   };
@@ -98,7 +100,12 @@ export function compute(ds, st) {
   } else if (st.goal === 'income') {
     const i = st.income;
     const base = { yearFrom: i.yearFrom, yearTo: i.yearTo, ladder: i.ladder, issuerCap: st.basket.issuerCap, tradeoff: i.tradeoff, zainetto };
-    if (i.start === 'target' && i.monthlyTarget > 0) {
+    if (port.holdings.length) {
+      // attorno al portafoglio: le sue cedole sono la base di ogni mese
+      Object.assign(base, { holdings: port.holdings, heldBonus: port.incomeBonus, heldPool: port.pool });
+      out.plan = i.start === 'target' && i.monthlyTarget > 0 ? planIncomeTarget(ds, bonds, base, i.monthlyTarget)
+        : planIncome(ds, bonds, { ...base, capital: Math.max(0, +i.capital || 0) });
+    } else if (i.start === 'target' && i.monthlyTarget > 0) {
       const probe = planIncome(ds, bonds, { ...base, capital: 100000 });
       if (!probe.empty && probe.minMonth > 0) {
         let C = Math.ceil(i.monthlyTarget / probe.minMonth * 100000 / 1000) * 1000;

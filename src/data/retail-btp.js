@@ -31,7 +31,7 @@ const LIST = [
 /** ISIN (di mercato o con premio) → descrizione nello stesso formato dei titoli descritti a mano. */
 export const RETAIL_BTP = {};
 for (const [market, withPremio, name, issued, maturity, freq, rates, premio, extra, kind] of LIST) {
-  const base = { name, issued, maturity, freq, coupon: rates[rates.length - 1][1], steps: rates.map(([from, rate]) => ({ from, rate })),
+  const base = { name, issued, maturity, freq, coupon: rates[0][1], steps: rates.map(([from, rate]) => ({ from, rate })),
     issuePrice: 100, tax: 0.125, market, isinPremio: withPremio, inflation: kind === 'italia' };
   RETAIL_BTP[market] = { ...base, premio: 0, extra: [] };
   if (withPremio) RETAIL_BTP[withPremio] = { ...base, premio, extra: (extra || []).map(([date, perc]) => ({ date, perc })) };

@@ -107,3 +107,27 @@ test('portafoglio dalle impostazioni (engine.compute): titoli non trovati, confr
   st.usePortfolio = false; delete st.holdings;
   assert.equal(compute(ds, st).plan.holdings, undefined, 'senza portafoglio: proposta normale');
 });
+
+test('rendita attorno al portafoglio: cedole dei tuoi titoli come base, prima e dopo, rendita desiderata', async () => {
+  const { planIncome, planIncomeTarget } = await import('../src/core/income.js');
+  const ds = load();
+  const { bonds } = applyBasket(ds, {});
+  const cpn = bonds.filter(b => !b.zc && b.freq && parts(b.maturity).y >= 2029 && parts(b.maturity).y <= 2033);
+  const holdings = held(ds, cpn.slice(0, 3).map(b => ({ isin: b.isin, nominal: 20000, carico: 99 })));
+  const base = { yearFrom: 2028, yearTo: 2036, issuerCap: 1, tradeoff: 1, holdings };
+  const zero = planIncome(ds, bonds, { ...base, capital: 0 });
+  assert.equal(zero.totalCost, 0, 'capitale zero: nessun acquisto');
+  assert.ok(zero.annual > 0 && Math.abs(zero.annual - zero.annualHeld) < 1e-9, 'solo le cedole dei tuoi titoli');
+  const p = planIncome(ds, bonds, { ...base, capital: 30000 });
+  const alone = planIncome(ds, bonds, { yearFrom: 2028, yearTo: 2036, issuerCap: 1, tradeoff: 1, capital: 30000 });
+  assert.ok(p.totalCost <= 30000 + 1e-6);
+  for (let m = 0; m < 12; m++) assert.ok(p.monthly[m] >= p.monthlyHeld[m] - 1e-9, 'i tuoi titoli restano: nessun mese scende');
+  assert.ok(p.minMonth > alone.minMonth, 'con la base dei tuoi titoli il mese più povero sale');
+  assert.ok(p.minAllAfter > p.minAllBefore, 'il mese più povero (anche a zero) sale');
+  const t = planIncomeTarget(ds, bonds, base, p.minMonth + 50);
+  assert.ok(Math.min(...t.coverable.map(m => t.monthly[m - 1])) >= p.minMonth + 50 - 1e-6, 'rendita desiderata raggiunta');
+  assert.ok(t.totalCost > p.totalCost, 'serve più capitale');
+  // senza portafoglio il motore della rendita non cambia
+  const again = planIncome(ds, bonds, { yearFrom: 2028, yearTo: 2036, issuerCap: 1, tradeoff: 1, capital: 30000, holdings: [] });
+  assert.deepEqual(again.positions.map(x => [x.bond.isin, x.nominal]), alone.positions.map(x => [x.bond.isin, x.nominal]));
+});

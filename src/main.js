@@ -17,7 +17,7 @@ import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.4.1';
+const VERSION = '3.5.0';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
 const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'
@@ -161,12 +161,25 @@ function computeInput(st) {
   return JSON.parse(JSON.stringify({ ...st, holdings }));
 }
 
+const COMPUTE_TIMEOUT = 30000;   // oltre, il calcolo si considera bloccato (il risolutore lineare può ciclare)
+
 function computeAsync(st) {
   const input = computeInput(st);
+  const key = JSON.stringify(input);
+  if (app.stuck === key) return Promise.reject(new Error('con queste impostazioni il calcolo si blocca: cambiane una'));
   if (app.worker && app.workerReady) {
     const id = ++app.req;
     return new Promise((resolve, reject) => {
-      app.pending.set(id, { resolve, reject });
+      // Guardiano: se il worker non risponde, lo si ferma e se ne avvia uno nuovo con gli stessi dati
+      const timer = setTimeout(() => {
+        if (!app.pending.has(id)) return;
+        app.stuck = key;
+        const waiting = [...app.pending.values()];
+        app.pending.clear();
+        startWorker(app.text);
+        for (const p of waiting) p.reject(new Error('il calcolo richiedeva troppo tempo ed è stato interrotto: prova a cambiare le impostazioni'));
+      }, COMPUTE_TIMEOUT);
+      app.pending.set(id, { resolve: v => { clearTimeout(timer); resolve(v); }, reject: e => { clearTimeout(timer); reject(e); } });
       app.worker.postMessage({ type: 'compute', id, settings: input });
     });
   }
@@ -442,7 +455,8 @@ function openSave() {
   input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
   openSheet({ title: 'Salva la scala', sub: 'titoli, nominali e prezzi di oggi',
     body: h('div', { class: 'save-name' }, h('label', { class: 'lbl', for: 'saveName', text: 'Nome della scala' }), input,
-      h('p', { class: 'note', text: 'In «Le mie scale» la confronti con i prezzi dei giorni successivi: valore, cedole e rimborsi incassati, risultato.' })),
+      h('p', { class: 'note', text: 'In «Le mie scale» la confronti con i prezzi dei giorni successivi: valore, cedole e rimborsi incassati, risultato.' }),
+      plan.holdings ? h('p', { class: 'note', text: 'Salvo solo i titoli da comprare: il tuo portafoglio resta in questo browser e non va nel cloud.' }) : null),
     foot: [h('button', { type: 'button', class: 'mini', text: 'Annulla', on: { click: () => closeSheet() } }), btn] });
 }
 
@@ -465,8 +479,9 @@ function showBar(on) {
 function updateMobileBar() {
   if (!app.result || !app.result.plan) return;
   const p = app.result.plan;
-  const main = p.mode === 'capital' ? `${fmtEur(p.totalCost)} da investire` : p.empty ? 'Nessuna proposta' : `${fmtEur(p.annual / 12)} al mese`;
-  const sub = p.mode === 'capital' ? `netto ${fmtPct(p.irr * 100)} · ${p.targets.filter(t => t.bond).length}/${p.targets.length} scadenze` : p.empty ? '' : `netto ${fmtPct(p.irr * 100)} · ${p.coveredMonths}/12 mesi`;
+  const main = p.mode === 'capital' ? `${fmtEur(p.totalCost)} ${p.holdings ? 'da comprare' : 'da investire'}` : p.empty ? 'Nessuna proposta' : `${fmtEur(p.annual / 12)} al mese`;
+  const covered = p.mode === 'capital' ? p.targets.filter(t => (t.bond && t.nominal > 0) || t.available + 0.5 >= t.amount).length : 0;
+  const sub = p.mode === 'capital' ? `netto ${fmtPct((p.holdings ? p.irrAll : p.irr) * 100)} · ${covered}/${p.targets.length} scadenze` : p.empty ? '' : `netto ${fmtPct((p.holdings ? p.irrAll : p.irr) * 100)} · ${p.coveredMonths}/12 mesi`;
   $('#mbMain').textContent = main; $('#mbSub').textContent = sub;
 }
 

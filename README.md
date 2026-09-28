@@ -1,4 +1,4 @@
-# Bond Ladder — v3.4.1
+# Bond Ladder — v3.5.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -9,9 +9,13 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
   stessa cifra ogni anno o semestre. Si può partire dagli importi che servono o dal capitale che si ha.
 - **Rendita mensile** — incassare cedole ogni mese nel modo più regolare possibile; il capitale torna man
   mano che i titoli scadono. Si può partire dal capitale o dalla rendita desiderata (€/mese).
+- **Portafoglio** — i titoli che hai già (export della banca, per esempio Fineco in Excel, testo incollato o
+  inserimento a mano). Le due viste costruiscono la scala **attorno** a questi titoli, senza venderli: si compra
+  solo la differenza.
 
 ## Come si usa
-1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile` oppure `3 Le mie scale` (le scale salvate).
+1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile`, `3 Portafoglio` (i titoli che hai già) oppure
+   `4 Le mie scale` (le scale salvate).
 2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
 3. **Titoli ammessi**: aree (area euro, sovranazionali, altri Stati in euro), rating minimo, emittenti uno per uno,
    solo sotto la pari, liquidità minima, quota massima per emittente.
@@ -19,8 +23,8 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
 La proposta si aggiorna mentre modifichi i parametri. Per ogni scadenza puoi **cambiare titolo** (elenco delle
 alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa, si esporta in CSV e si condivide.
 
-Dalla tastiera: `1`–`3` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
-Nella barra comandi: `CAP`, `REN`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
+Dalla tastiera: `1`–`4` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
+Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
 daltonici, `CHIARO` / `SCURO` per il tema, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella
 proposta. Le scorciatoie da un tasto si spengono dalla guida.
 
@@ -57,6 +61,40 @@ testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condi
   posizioni piccole senza mai scoprire un mese, arrotondamento ai lotti con scambi locali.
 - Esclusi dai calcoli: commissioni, imposta di bollo, spread denaro-lettera. BTP Italia/BTP€i esclusi di default
   (rendimento "senza indicizzazione"); step-up stimati con la cedola attuale.
+
+## Il portafoglio che hai già
+- **Caricamento** (vista `3 Portafoglio`): export della banca in Excel (`.xls` binario, `.xlsx`, Excel XML), CSV o
+  tabella HTML salvata come `.xls`, testo incollato da Excel o dalla pagina della banca, oppure ISIN e nominale a
+  mano. Le intestazioni si riconoscono da sole (ISIN, quantità o nominale, prezzo medio di carico, prezzo, valore),
+  anche se non sono alla prima riga; quantità in pezzi convertite in nominale; righe di totale, azioni, fondi e
+  titoli non in euro saltati con il motivo. I file Excel si leggono con SheetJS Community Edition 0.20.3
+  (`vendor/xlsx.mjs`, Apache 2.0, caricato solo quando serve); CSV e testo li legge l'app, con la codifica giusta.
+- **Privacy**: il portafoglio resta **solo in questo browser** (`localStorage`). Non va nel cloud, né nelle scale
+  salvate (che contengono solo i titoli da comprare) né nei link condivisi.
+- **Tasse dei titoli posseduti**: cedole future tassate per intero; plusvalenza sul prezzo di **carico**, non su quello
+  di oggi; scarto di emissione sempre tassato a scadenza (il credito per la parte maturata prima dell'acquisto è
+  arrivato allora). Senza data d'acquisto è il minimo esatto: chi ha comprato dopo l'emissione un titolo emesso sotto
+  la pari può pagare un po' di più.
+- **BTP per i risparmiatori** (`src/data/retail-btp.js`): Valore, Più, Italia, Italia Sì e Futura con calendario delle
+  cedole crescenti e premio fedeltà (fonti: Dipartimento del Tesoro). Ogni emissione ha due ISIN: quello di mercato
+  (nei dati STFI) e quello «con premio», del collocamento, che STFI non ha; il premio vale solo con il secondo.
+  Stime prudenti: inflazione futura zero, premio legato al PIL al minimo garantito.
+- **Capitale a scadenza attorno al portafoglio**: i flussi netti dei titoli posseduti sono fissi (niente vendite); per
+  ogni scadenza si compra solo il fabbisogno residuo, che è anche il peso nella scelta dei titoli. Le eccedenze di una
+  scadenza e i rimborsi che arrivano fuori dai periodi vanno in **cassa** (senza interessi) e pagano le scadenze dopo;
+  l'app misura la **cassa ferma** (euro × anni) e calcola anche la scelta opposta (eccedenze restituite, scadenze
+  scoperte coperte con acquisti di oggi) per confronto. Partendo dal capitale, la somma per scadenza si trova per
+  **bisezione** (il costo non è più proporzionale all'importo). Il limite per emittente vale sul **portafoglio
+  complessivo**. La preferenza per i propri titoli è un piccolo vantaggio di rendimento nella scelta (0,10 punti con
+  «Equilibrato»; «I miei titoli» li preferisce sempre, anche fuori dai filtri del paniere). Il branch & bound usa un
+  limite superiore dinamico (il miglior candidato che ci sta ancora): stesso ottimo, molti meno nodi.
+- **Rendita mensile attorno al portafoglio**: le cedole nette dei titoli posseduti sono una base fissa di ogni mese
+  nel modello lineare (il mese più povero è base + nuovo); quote per emittente e per titolo e distribuzione delle
+  scadenze contano anche i posseduti; i titoli che scadono prima dell'orizzonte non entrano nell'anno tipo. Con la
+  rendita desiderata il capitale si trova per bisezione sul modello lineare, correggendo la perdita dovuta a lotti e
+  pulizia delle posizioni piccole.
+- Senza portafoglio i due motori danno risultati **identici** a prima (verificato su 194 configurazioni del capitale e
+  64 della rendita con i dati reali).
 
 ## Dati: aggiornamento automatico
 Il workflow `.github/workflows/stfi-data.yml` gira ogni sera nei giorni lavorativi. Legge `documentivari.php`,
@@ -96,14 +134,16 @@ dire davvero dalla rete.
 index.html, sw.js, manifest.json, assets/   interfaccia (moduli ES, nessuna build)
 css/terminale.css, fonts/   design system «Terminale ambra» e font IBM Plex (SIL OFL)
 styles/app.css         stili propri dell'app sopra il design system
-src/main.js            avvio, dati, calcolo nel Web Worker, schede e barra comandi, dialoghi
+src/main.js            avvio, dati, calcolo nel Web Worker (con guardiano), schede e barra comandi, dialoghi
 src/engine.js          impostazioni → proposta (usato dal worker)
-src/data/              lettura del CSV STFI, sorgenti dati
+src/portfolio.js       portafoglio posseduto: salvataggio nel browser, flussi netti e tasse dei titoli
+src/data/              lettura del CSV STFI, sorgenti dati, lettura degli export della banca, BTP retail
 src/core/              date, flussi e tasse, paniere, selezione (flusso/B&B), capitale, rendita, LP
 src/ui/                pannello, risultati, grafici SVG, dialoghi, le mie scale, guida
 vendor/lp-solver.mjs   javascript-lp-solver 1.0.3 (Unlicense)
+vendor/xlsx.mjs        SheetJS Community Edition 0.20.3 (Apache 2.0), solo per leggere gli Excel
 scripts/fetch_stfi.py  download giornaliero dei dati
-tests/                 test del motore (node --test) con un file STFI sintetico
+tests/                 test del motore (node --test) con un file STFI sintetico e portafogli inventati
 v2/, v1/               versioni precedenti, congelate
 ```
 

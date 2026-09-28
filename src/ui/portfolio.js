@@ -45,7 +45,7 @@ function paint() {
   const missing = res.filter(r => r.status === 'missing'), matured = res.filter(r => r.status === 'matured');
   const retail = res.filter(r => r.status === 'retail'), manual = res.filter(r => r.status === 'manual');
   if (missing.length) notes.push(['watch', 'Incompleto', `${missing.map(r => r.h.desc || r.h.isin).join(', ')}: ${missing.length === 1 ? 'non è' : 'non sono'} nei dati STFI di oggi. Apri «Modifica» e indica scadenza e cedola, altrimenti ${missing.length === 1 ? 'resta' : 'restano'} fuori dai calcoli.`]);
-  if (retail.length) notes.push(['normal', 'Nota', `${retail.map(r => r.bond.desc).join(', ')}: BTP per i risparmiatori, non quotato da STFI; cedole e premio dalla tabella dell'app, prezzo dal tuo file.`]);
+  if (retail.length) notes.push(['normal', 'Nota', `${retail.map(r => r.bond.desc).join(', ')}: BTP per i risparmiatori. Cedole crescenti e premio fedeltà (solo con l'ISIN «con premio», quello del collocamento) dalla tabella dell'app; il valore di oggi dal prezzo di mercato.`]);
   if (manual.length) notes.push(['normal', 'Nota', `${manual.map(r => r.bond.desc).join(', ')}: caratteristiche inserite a mano.`]);
   if (matured.length) notes.push(['cool', 'Scaduto', `${matured.map(r => r.h.desc || r.h.isin).join(', ')}: già rimborsat${matured.length === 1 ? 'o' : 'i'}, fuori dai calcoli. Toglil${matured.length === 1 ? 'o' : 'i'} dal portafoglio.`]);
   if (!sum.costKnown) notes.push(['watch', 'Attenzione', 'Per alcuni titoli manca il prezzo medio di carico: la tassa a scadenza è stimata sul prezzo di oggi.']);
@@ -185,7 +185,7 @@ function preview(parsed, origin) {
   }
   const by = new Map(C.ds.bonds.map(b => [b.isin, b]));
   const notInData = holdings.filter(x => !by.has(x.isin));
-  const known = notInData.filter(x => RETAIL_BTP[x.isin]);
+  const known = notInData.filter(x => RETAIL_BTP[x.isin]);         // BTP retail «con premio»: STFI ha solo l'ISIN di mercato
   const nom = holdings.reduce((s, x) => s + x.nominal, 0);
   const list = h('div', { class: 'tscroll' }, h('table', { class: 't compact', 'aria-label': 'Titoli letti' },
     h('thead', null, h('tr', null, ['Titolo', 'Nominale', 'Carico', 'Nei dati di oggi'].map((t, i) => h('th', { scope: 'col', class: i === 1 || i === 2 ? 'r' : null, text: t })))),
@@ -193,7 +193,7 @@ function preview(parsed, origin) {
       h('td', null, h('span', { class: 'sym', text: x.isin }), h('span', { class: 'nm', text: (by.get(x.isin) || {}).desc || x.desc || '' })),
       h('td', { class: 'num r', text: eur0(x.nominal) }),
       h('td', { class: 'num r', text: Number.isFinite(x.carico) ? fmtNum(x.carico, 3) : '—' }),
-      h('td', null, by.has(x.isin) ? 'sì' : RETAIL_BTP[x.isin] ? 'BTP retail: dalla tabella dell\'app' : 'no: da completare'))))));
+      h('td', null, RETAIL_BTP[x.isin] ? `BTP retail${RETAIL_BTP[x.isin].premio ? ', con premio' : ''}: dalla tabella dell'app` : by.has(x.isin) ? 'sì' : 'no: da completare'))))));
   const apply = mode => {
     const next = mergeHoldings(C.portfolio.holdings, holdings, mode);
     closeSheet();
@@ -246,11 +246,14 @@ function openEdit(r) {
       h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Tassazione' }), seg([[0.125, '12,5% Stati'], [0.26, '26% altri']], () => tax, v => { tax = v; }, 'Tassazione')),
       field('edSteps', 'Cedole crescenti (facoltativo)', steps, 'Data da cui vale il nuovo tasso e tasso annuo lordo, una riga per cambio.'),
       field('edPrem', 'Premio a scadenza % (facoltativo)', premio, 'Premio fedeltà dei BTP Valore e simili, se lo hai sottoscritto al collocamento.')]);
+  const specNow = () => JSON.stringify([name.value, maturity.value, coupon.value, freq, tax, steps.value, premio.value]);
+  const specStart = specNow();
   const save = () => {
     const n = parseUserNumber(nominal.value), c = parseUserNumber(carico.value);
     if (!(n > 0)) { toast('Indica il valore nominale', 'err'); nominal.focus(); return; }
     const next = { ...hh, nominal: n, carico: c > 0 && c < 1000 ? c : null };
-    if (!inData) {
+    // BTP retail dalla tabella: resta collegato alla tabella finché non se ne cambiano le caratteristiche
+    if (!inData && !(r.status === 'retail' && specNow() === specStart)) {
       const mat = maturity.value;
       if (mat) {
         const stepList = steps.value.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
