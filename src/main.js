@@ -11,7 +11,7 @@ import { renderResults } from './ui/results.js';
 import { openSheet, closeSheet } from './ui/sheet.js';
 import { renderSavedList, renderSavedDetail } from './ui/saved.js';
 import { renderPortfolio } from './ui/portfolio.js';
-import { loadPortfolio, savePortfolio } from './portfolio.js';
+import { loadPortfolio, savePortfolio, resolveHoldings, portfolioSummary } from './portfolio.js';
 import { readSpreadsheet } from './data/xls.js';
 import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
@@ -148,9 +148,16 @@ function startWorker(text) {
   } catch { app.worker = null; }
 }
 
+/** Il portafoglio in breve, per il pannello delle impostazioni: titoli, valore, da completare. */
+function portfolioBrief() {
+  if (!app.ds || !app.portfolio.holdings.length) return null;
+  const s = portfolioSummary(resolveHoldings(app.portfolio.holdings, app.ds), app.ds.settle);
+  return { count: s.count, value: s.value, incomplete: s.incomplete };
+}
+
 /** Impostazioni per il motore: con «costruisci attorno al portafoglio» vanno anche i titoli posseduti. */
 function computeInput(st) {
-  const holdings = st.usePortfolio && app.portfolio.holdings.length ? app.portfolio.holdings : [];
+  const holdings = st.usePortfolio !== false && app.portfolio.holdings.length ? app.portfolio.holdings : [];
   return JSON.parse(JSON.stringify({ ...st, holdings }));
 }
 
@@ -262,7 +269,8 @@ function route() {
   const panel = h('aside', { class: 'side stack', id: 'panel', 'aria-label': 'Impostazioni' });
   const results = h('div', { class: 'results stack', id: 'results', 'aria-live': 'polite' });
   view.replaceChildren(...[store.get(INTRO_KEY) ? null : introBox(), h('div', { class: 'layout' }, panel, results)].filter(Boolean));
-  app.settings = { root: panel, st: app.st, ds: app.ds, changed: settingsChanged, basketMeta: app.settings ? app.settings.basketMeta : '' };
+  app.settings = { root: panel, st: app.st, ds: app.ds, changed: settingsChanged, basketMeta: app.settings ? app.settings.basketMeta : '',
+    portfolio: portfolioBrief(), onEditPortfolio: () => go('portfolio') };
   mountSettings(app.settings);
   if (app.result && app.result.goal === goal) renderBuildResults();
   else results.append(h('p', { class: 'loading note', text: 'Calcolo della proposta…' }));

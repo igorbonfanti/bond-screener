@@ -39,7 +39,9 @@ export function defaults(refDay) {
       includeInflation: false,
       includeStepUp: true
     },
-    fixed: {}                                     // etichetta gradino → ISIN scelto a mano (solo capitale)
+    fixed: {},                                    // etichetta gradino → ISIN scelto a mano (solo capitale)
+    usePortfolio: true,                           // con un portafoglio caricato: costruisci attorno ai titoli posseduti
+    portfolioPref: 'balanced'                     // 'mine' | 'balanced' | 'yield': preferenza per i titoli già posseduti
   };
 }
 

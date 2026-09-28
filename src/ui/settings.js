@@ -3,7 +3,7 @@
    chip per gli emittenti. L'obiettivo si sceglie dalle schede in alto (1 CAPITALE, 2 RENDITA).
    Ogni modifica aggiorna lo stato e fa ricalcolare la proposta; le modifiche "strutturali"
    (cambio di modalità, chip…) ridisegnano il pannello mantenendo il focus. */
-import { h, parseUserNumber, fmtNum } from './dom.js';
+import { h, parseUserNumber, fmtNum, fmtEur } from './dom.js';
 import { AREAS, RATING_SCALE } from '../data/stfi.js';
 import { issuerCatalog } from '../core/basket.js';
 import { ratingScore } from '../data/stfi.js';
@@ -17,7 +17,8 @@ const PRICE_OPTS = [[102, '≤ 102'], [105, '≤ 105'], [110, '≤ 110'], [null,
 let ctx = null;
 let advOpen = false;   // "Opzioni avanzate" resta aperto fra un ridisegno e l'altro
 
-/** ctx: { root, st, ds, changed(structural), basketMeta ("N su M titoli", scritto da main.js dopo ogni calcolo) } */
+/** ctx: { root, st, ds, changed(structural), basketMeta ("N su M titoli", scritto da main.js dopo ogni calcolo),
+    portfolio: { count, value, incomplete } | null, onEditPortfolio() } */
 export function mountSettings(c) { ctx = c; renderSettings(); }
 
 export function renderSettings() {
@@ -25,12 +26,15 @@ export function renderSettings() {
   const active = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.k : null;
   const { st } = ctx;
   const root = ctx.root;
-  root.replaceChildren(
+  const ptf = ctx.portfolio && ctx.portfolio.count ? ctx.portfolio : null;
+  root.replaceChildren(...[
+    ptf ? panel('Il mio portafoglio', `${ptf.count} titoli · ${fmtEur(ptf.value)}`, portfolioSection(st, ptf)) : null,
     panel(st.goal === 'income' ? 'Capitale e scadenze' : 'Importi e scadenze', st.goal === 'income' ? 'rendita mensile' : 'capitale a scadenza',
-      st.goal === 'income' ? incomeSection(st) : capitalSection(st)),
+      [st.goal === 'income' ? incomeSection(st) : capitalSection(st),
+        ptf ? null : h('p', { class: 'note' }, 'Hai già dei titoli? ', h('button', { type: 'button', class: 'linkbtn', text: 'Caricali nel portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } }), ': la scala si costruisce attorno, senza venderli.')]),
     panel('Titoli ammessi', ctx.basketMeta || null, basketSection(st), 'basketMeta'),
     optionsSection(st)
-  );
+  ].filter(Boolean));
   if (active) { const el = root.querySelector(`[data-k="${CSS.escape(active)}"]`); if (el) el.focus({ preventScroll: true }); }
 }
 
@@ -88,6 +92,22 @@ function yearsRow(kPrefix, obj, minYear) {
     yearStepper(kPrefix + 'from', obj.yearFrom, minYear, 2080, v => set(s => { s[key].yearFrom = v; if (s[key].yearTo < v) s[key].yearTo = v; }, true), 'Primo anno'),
     h('span', { class: 'sep', text: 'al' }),
     yearStepper(kPrefix + 'to', obj.yearTo, minYear, 2080, v => set(s => { s[key].yearTo = v; if (s[key].yearFrom > v) s[key].yearFrom = v; }, true), 'Ultimo anno'));
+}
+
+/* ---------- 1. Il mio portafoglio (solo se c'è) ---------- */
+const PREF_NOTES = {
+  mine: 'Dove hai già un titolo che scade in quel periodo ne compro altri pezzi; titoli nuovi solo per le scadenze scoperte.',
+  balanced: 'Un titolo nuovo solo se rende almeno 0,15 punti più del tuo (circa 15 € l\'anno ogni 10.000 €); altrimenti altri pezzi del tuo.',
+  yield: 'Il titolo che rende di più, anche se nuovo: a parità preferisco il tuo.'
+};
+function portfolioSection(st, ptf) {
+  const on = st.usePortfolio !== false, pref = st.portfolioPref || 'balanced';
+  return [
+    sw('ptfon', on, 'Costruisci attorno al mio portafoglio', 'Tengo i titoli che hai e compro solo quello che manca: niente vendite.', v => set(s => { s.usePortfolio = v; }, true)),
+    on ? field('Nuovi acquisti', seg('ptfpref', [['mine', 'I miei titoli'], ['balanced', 'Equilibrato'], ['yield', 'Rendimento']], pref, v => set(s => { s.portfolioPref = v; }, true), 'Nuovi acquisti'), PREF_NOTES[pref]) : null,
+    ptf.incomplete ? h('p', { class: 'note' }, h('b', { text: `${ptf.incomplete} ${ptf.incomplete === 1 ? 'titolo' : 'titoli'} da completare` }), ': finché mancano scadenza e cedola restano fuori dai calcoli.') : null,
+    h('button', { type: 'button', class: 'linkbtn', text: 'Modifica il portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } })
+  ];
 }
 
 /* ---------- 2a. Capitale a scadenza ---------- */
