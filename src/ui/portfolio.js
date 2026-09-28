@@ -8,6 +8,7 @@ import { dataTable, calendarPanel } from './results.js';
 import { fmt, iso, parseDay, MONTHS } from '../core/dates.js';
 import { isinOk, tableToHoldings, textToRows } from '../data/portfolio.js';
 import { resolveHoldings, portfolioSummary, holdingYield, mergeHoldings, monthsFrom } from '../portfolio.js';
+import { htmlRows, loadSheetJS } from '../data/xls.js';
 import { RETAIL_BTP } from '../data/retail-btp.js';
 
 let C = null;   // { root, ds, portfolio, zainetto, onChange(p, msg), onBuild(goal), readFile(file) }
@@ -108,18 +109,29 @@ function emptyView() {
 function addPanel(hasHoldings) {
   const file = h('input', { type: 'file', accept: '.xls,.xlsx,.csv,.txt,.tsv,.htm,.html,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv', hidden: true,
     on: { change: e => { const f = e.target.files[0]; e.target.value = ''; if (f) importFile(f); } } });
+  const prefetch = () => { loadSheetJS().catch(() => { /* riprova al caricamento */ }); };
   const drop = h('div', { class: 'drop', role: 'button', tabindex: 0, 'aria-label': 'Carica l\'export della banca: trascinalo qui oppure premi Invio per sceglierlo', on: {
+    pointerenter: prefetch, focus: prefetch,
     click: () => file.click(), keydown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } },
     dragover: e => { e.preventDefault(); drop.classList.add('drag'); }, dragleave: () => drop.classList.remove('drag'),
     drop: e => { e.preventDefault(); drop.classList.remove('drag'); if (e.dataTransfer.files[0]) importFile(e.dataTransfer.files[0]); } } },
     h('b', { text: 'Carica l\'export della banca' }), h('span', { text: '.xls, .xlsx o .csv con ISIN, quantità o nominale e prezzo medio di carico' }));
 
-  const area = h('textarea', { class: 'input text', id: 'ptfPaste', rows: 4, placeholder: 'Incolla qui la tabella copiata dal sito della banca (con le intestazioni)' });
+  const area = h('textarea', { class: 'input text', id: 'ptfPaste', rows: 4, placeholder: 'Incolla qui la tabella copiata dal sito della banca (con le intestazioni), oppure righe «ISIN nominale prezzo»' });
   const readPaste = () => {
     const rows = textToRows(area.value);
     if (!rows.length) { toast('Incolla prima una tabella', 'err'); return; }
     preview(tableToHoldings(rows), 'testo incollato');
   };
+  // una tabella copiata dal browser arriva anche come HTML: la leggiamo senza metterla nella pagina
+  area.addEventListener('paste', e => {
+    const html = e.clipboardData && e.clipboardData.getData('text/html');
+    if (html && /<table[\s>]/i.test(html)) {
+      const rows = htmlRows(html);
+      if (rows.some(r => r.some(isinOk))) { e.preventDefault(); area.value = rows.map(r => r.join('\t')).join('\n'); preview(tableToHoldings(rows), 'tabella incollata'); return; }
+    }
+    setTimeout(() => { if (/\b[A-Z]{2}[A-Z0-9]{9}\d\b/.test(area.value)) readPaste(); }, 0);
+  });
 
   const isin = h('input', { class: 'input', id: 'ptfIsin', list: 'ptfIsinList', autocomplete: 'off', spellcheck: 'false', placeholder: 'IT0005…', maxlength: 12,
     on: { focus: ensureDatalist, input: () => { isin.value = isin.value.toUpperCase(); } } });

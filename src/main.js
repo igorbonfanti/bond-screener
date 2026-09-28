@@ -148,15 +148,22 @@ function startWorker(text) {
   } catch { app.worker = null; }
 }
 
+/** Impostazioni per il motore: con «costruisci attorno al portafoglio» vanno anche i titoli posseduti. */
+function computeInput(st) {
+  const holdings = st.usePortfolio && app.portfolio.holdings.length ? app.portfolio.holdings : [];
+  return JSON.parse(JSON.stringify({ ...st, holdings }));
+}
+
 function computeAsync(st) {
+  const input = computeInput(st);
   if (app.worker && app.workerReady) {
     const id = ++app.req;
     return new Promise((resolve, reject) => {
       app.pending.set(id, { resolve, reject });
-      app.worker.postMessage({ type: 'compute', id, settings: JSON.parse(JSON.stringify(st)) });
+      app.worker.postMessage({ type: 'compute', id, settings: input });
     });
   }
-  return new Promise(resolve => setTimeout(() => resolve(compute(app.ds, st)), 0));   // ripiego senza worker
+  return new Promise(resolve => setTimeout(() => resolve(compute(app.ds, input)), 0));   // ripiego senza worker
 }
 
 let computeSeq = 0;

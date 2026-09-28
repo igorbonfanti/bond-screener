@@ -22,7 +22,7 @@ export function isinOk(s) {
 export function cellNumber(v, kind = 'amount') {
   if (typeof v === 'number') return Number.isFinite(v) ? v : NaN;
   if (v == null) return NaN;
-  let t = String(v).trim().replace(/[\s €%]/g, '').replace(/^\((.*)\)$/, '-$1').replace(/−/g, '-');
+  let t = String(v).trim().replace(/[\s  €%'’]|EUR|USD/gi, '').replace(/^\((.*)\)$/, '-$1').replace(/−/g, '-');
   if (!t || /^[-–—]$/.test(t) || /^n\.?[da]\.?$/i.test(t)) return NaN;
   const lastDot = t.lastIndexOf('.'), lastComma = t.lastIndexOf(',');
   if (lastDot >= 0 && lastComma >= 0) {                     // entrambi: l'ultimo è il decimale
@@ -43,21 +43,22 @@ const norm = s => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ
 /* Intestazioni riconosciute (confronto su testo normalizzato: minuscole, senza accenti e punteggiatura).
    L'ordine conta: la prima colonna che corrisponde vince. */
 const COLUMNS = {
-  isin: [/^isin$/, /^codice isin$/, /^cod isin$/, /^isin code$/, /\bisin\b/],
-  desc: [/^titolo$/, /^descrizione( titolo)?$/, /^denominazione$/, /^nome( titolo)?$/, /^strumento finanziario$/, /^description$/, /^name$/, /^prodotto$/, /^titolo descrizione$/],
-  nominal: [/^quantita$/, /^q ?ta$/, /^qta$/, /^valore nominale$/, /^nominale$/, /^quantita nominale$/, /^quantity$/, /^qty$/, /^nominal( value)?$/, /^saldo( nominale)?$/, /^quantita\/nominale$/, /^pezzi$/],
-  carico: [/^p ?zo medio di carico$/, /^prezzo medio di carico$/, /^prezzo( di)? carico$/, /^pmc$/, /^p ?m ?c$/, /^prezzo medio( acquisto| ponderato)?$/, /^costo medio( unitario)?$/, /^prz medio carico$/, /^average (cost|price)$/, /^avg (cost|price)$/, /^cost price$/, /^prezzo medio di acquisto$/],
-  price: [/^p ?zo di mercato$/, /^prezzo di mercato$/, /^prezzo( attuale| corrente| ultimo)?$/, /^ultimo prezzo$/, /^quotazione$/, /^market price$/, /^last price$/, /^price$/],
-  value: [/^valore di mercato( €)?$/, /^controvalore( di mercato| €)?$/, /^market value$/, /^valore( attuale)?$/],
+  isin: [/^isin$/, /^codice isin$/, /^cod isin$/, /^isin code$/, /^symbol isin$/, /^codice titolo$/, /\bisin\b/],
+  desc: [/^titolo$/, /^descrizione( titolo)?$/, /^denominazione$/, /^nome( titolo)?$/, /^strumento finanziario$/, /^description$/, /^name$/, /^prodotto$/, /^product$/, /^titolo descrizione$/],
+  nominal: [/^quantita$/, /^q ?ta$/, /^qta$/, /^valore nominale$/, /^nominale$/, /^quantita( valore)? nominale$/, /^quantity$/, /^qty$/, /^nominal( value)?$/, /^face value$/, /^saldo( nominale)?$/, /^consistenza$/, /^pezzi$/, /^amount$/],
+  carico: [/^p ?zo medio di carico$/, /^prezzo medio di carico$/, /^prezzo( di)? carico$/, /^pmc$/, /^p ?m ?c$/, /^prezzo medio( acquisto| ponderato)?$/, /^costo medio( unitario)?$/, /^prz medio carico$/, /^average (cost|price)$/, /^avg (cost|price)$/, /^cost price$/, /^open price$/, /^prezzo medio di acquisto$/],
+  price: [/^p ?zo di mercato$/, /^prezzo di mercato$/, /^prezzo( attuale| corrente| ultimo)?$/, /^ultimo prezzo$/, /^quotazione$/, /^corso$/, /^chiusura$/, /^closing$/, /^market price$/, /^current price$/, /^last price$/, /^price$/],
+  value: [/^valore di mercato( €)?$/, /^controvalore( di mercato| €)?$/, /^market value$/, /^value in eur$/, /^valore( attuale)?$/],
   costValue: [/^valore di carico$/, /^controvalore di carico$/, /^costo( totale)?$/, /^book value$/],
-  type: [/^strumento$/, /^tipo( strumento)?$/, /^tipologia$/, /^asset class$/, /^categoria$/, /^instrument( type)?$/],
+  type: [/^strumento$/, /^tipo( strumento)?$/, /^tipologia$/, /^asset class$/, /^asset type$/, /^categoria$/, /^instrument( type)?$/],
   currency: [/^valuta$/, /^divisa$/, /^currency$/],
-  accrued: [/^rateo( maturato)?$/, /^accrued( interest)?$/]
+  accrued: [/^rateo( maturato)?$/, /^interessi maturati$/, /^accrued( interest)?$/]
 };
 const NOT_BONDS = /azion|equity|share|etf|etc\b|etn|fond|sicav|fund|certificat|warrant|covered|opzion|future|cfd|liquidit|cash/;
 
 function findHeader(rows) {
-  const lim = Math.min(rows.length, 30);
+  const lim = Math.min(rows.length, 40);
+  let best = null;
   for (let r = 0; r < lim; r++) {
     const cells = (rows[r] || []).map(norm);
     const map = {};
@@ -67,9 +68,15 @@ function findHeader(rows) {
         if (c >= 0) { map[key] = c; break; }
       }
     }
-    if (map.isin != null && map.nominal != null) return { row: r, map };
+    const score = Object.keys(map).length;
+    if (map.isin != null && map.nominal != null && (!best || score > best.score)) best = { row: r, map, score };
   }
-  return null;
+  if (best && best.map.type != null && best.map.desc == null) {
+    // «Strumento»: in Fineco è il tipo (pochi valori ripetuti), in Directa il nome del titolo
+    const vals = rows.slice(best.row + 1).map(x => String((x || [])[best.map.type] ?? '').trim()).filter(Boolean);
+    if (vals.length >= 3 && new Set(vals).size / vals.length > 0.6) { best.map.desc = best.map.type; delete best.map.type; }
+  }
+  return best;
 }
 
 /** Colonna ISIN trovata senza intestazione: la colonna con più ISIN validi. */
@@ -116,8 +123,9 @@ export function tableToHoldings(rows, { fileName = '' } = {}) {
     const value = cellNumber(get(row, 'value'), 'amount'), costValue = cellNumber(get(row, 'costValue'), 'amount');
     const implied = Number.isFinite(value) && price > 0 ? value * 100 / price : Number.isFinite(costValue) && carico > 0 ? costValue * 100 / carico : NaN;
     if (Number.isFinite(nominal) && Number.isFinite(implied) && nominal > 0) {
-      const ratio = implied / nominal;
-      for (const k of [10, 100, 1000]) if (Math.abs(ratio / k - 1) < 0.02) { nominal *= k; notes.push(`${isin}: quantità letta come pezzi da ${k} € di nominale.`); break; }
+      let bestK = 1, bestErr = Infinity;
+      for (const k of [1, 100, 1000, 50000, 100000]) { const err = Math.abs(nominal * k / implied - 1); if (err < bestErr) { bestErr = err; bestK = k; } }
+      if (bestK !== 1 && bestErr < 0.15) { nominal *= bestK; notes.push(`${isin}: quantità letta come pezzi da ${String(bestK).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} € di nominale.`); }
     }
     if (!(nominal > 0)) { skipped.push({ row: r + 1, reason: 'nominale mancante', text: isin }); continue; }
     const accrued = cellNumber(get(row, 'accrued'), 'amount');
@@ -125,7 +133,8 @@ export function tableToHoldings(rows, { fileName = '' } = {}) {
     const prev = byIsin.get(isin);
     if (prev) {
       const tot = prev.nominal + nominal;
-      prev.carico = Number.isFinite(prev.carico) && Number.isFinite(carico) ? (prev.carico * prev.nominal + carico * nominal) / tot : (Number.isFinite(prev.carico) ? prev.carico : carico);
+      if (Number.isFinite(prev.carico) && Number.isFinite(carico)) prev.carico = (prev.carico * prev.nominal + carico * nominal) / tot;
+      else if (prev.carico != null || Number.isFinite(carico)) { prev.carico = null; notes.push(`${isin}: su una delle righe manca il prezzo di carico, indicalo a mano.`); }
       prev.nominal = tot;
       prev.rows.push(r + 1);
     } else {
@@ -140,14 +149,30 @@ export function tableToHoldings(rows, { fileName = '' } = {}) {
   return { holdings, skipped, header: head.row >= 0 ? head.row + 1 : null, notes, fileName };
 }
 
-/** Testo incollato o CSV → righe di celle. Separatore: tabulazione, punto e virgola o virgola (il più frequente). */
+/** Testo incollato o CSV → righe di celle (le righe vuote restano, così i numeri di riga tornano).
+    Separatore: tabulazione se c'è, altrimenti ';' o ',' contati fuori dalle virgolette.
+    Righe libere «ISIN nominale [prezzo]» (anche copiate da un PDF) diventano tre colonne con intestazione. */
 export function textToRows(text) {
-  const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n').filter(l => l.trim());
-  if (!lines.length) return [];
-  const sample = lines.slice(0, 20).join('\n');
-  const count = ch => (sample.match(new RegExp(ch === '\t' ? '\\t' : ch, 'g')) || []).length;
-  const sep = ['\t', ';', ','].map(ch => [ch, count(ch)]).sort((a, b) => b[1] - a[1])[0][0];
-  return lines.map(line => splitLine(line, sep));
+  const lines = String(text || '').replace(/^﻿/, '').replace(/\r\n?/g, '\n').split('\n');
+  const filled = lines.filter(l => l.trim());
+  if (!filled.length) return [];
+  const outside = (l, ch) => { let n = 0, q = false; for (const c of l) { if (c === '"') q = !q; else if (!q && c === ch) n++; } return n; };
+  const sample = filled.slice(0, 30);
+  let sep = null;
+  if (sample.some(l => outside(l, '\t') > 0)) sep = '\t';
+  else {
+    const semi = sample.reduce((n, l) => n + outside(l, ';'), 0), comma = sample.reduce((n, l) => n + outside(l, ','), 0);
+    if (semi || comma) sep = semi >= comma ? ';' : ',';
+  }
+  const rows = lines.map(l => (l.trim() ? (sep ? splitLine(l, sep) : [l.trim()]) : []));
+  if (!rows.some(r => r.some(isinOk))) {
+    const free = lines.map(l => {
+      const m = l.match(/\b([A-Z]{2}[A-Z0-9]{9}\d)\b[\s:;,]+([\d.,' ]+)(?:[\s;,]+([\d.,]+))?\s*$/);
+      return m && isinOk(m[1]) ? [m[1], m[2].trim(), m[3] || ''] : [];
+    });
+    if (free.some(r => r.length)) return [['ISIN', 'Nominale', 'Prezzo di carico'], ...free];
+  }
+  return rows;
 }
 
 function splitLine(line, sep) {
