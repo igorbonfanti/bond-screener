@@ -41,7 +41,8 @@ export function defaults(refDay) {
     },
     fixed: {},                                    // etichetta gradino → ISIN scelto a mano (solo capitale)
     usePortfolio: true,                           // con un portafoglio caricato: costruisci attorno ai titoli posseduti
-    portfolioPref: 'balanced'                     // 'mine' | 'balanced' | 'yield': preferenza per i titoli già posseduti
+    portfolioPref: 'balanced',                    // 'mine' | 'balanced' | 'yield': preferenza per i titoli già posseduti
+    portfolioCarry: true                          // eccedenze dei titoli posseduti in cassa per le scadenze dopo
   };
 }
 

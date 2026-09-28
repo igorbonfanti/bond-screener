@@ -1,8 +1,9 @@
 /* Il portafoglio che l'utente possiede già e non vuole vendere.
    Resta solo in questo browser (localStorage): non va mai nel cloud (le scale salvate lì sono
    leggibili da chiunque abbia il link) né nel repository.
-   Ogni posizione si collega ai dati STFI del giorno tramite l'ISIN; i titoli che STFI non ha
-   (BTP Valore, BTP Più, BTP Italia…) si descrivono a mano o con la tabella dei BTP retail. */
+   Ogni posizione si collega ai dati STFI del giorno tramite l'ISIN. I BTP per i risparmiatori (Valore, Più,
+   Italia, Futura) usano la loro tabella: cedole crescenti e premio fedeltà, che STFI non ha. I titoli che
+   mancano del tutto si descrivono a mano. */
 import { couponDates, accrued, xirr } from './core/bond.js';
 import { parseDay, parts, day, daysInMonth, iso } from './core/dates.js';
 import { EUROZONE } from './data/stfi.js';
@@ -61,40 +62,46 @@ export function monthsFrom(maturity, freq) {
   return [...new Set(Array.from({ length: freq }, (_, k) => ((m0 - 1 + k * 12 / freq) % 12) + 1))].sort((a, b) => a - b);
 }
 
-/** Descrizione manuale (o della tabella dei BTP retail) → titolo con gli stessi campi dei dati STFI. */
-function synthBond(h, spec) {
+/** Descrizione manuale (o della tabella dei BTP retail) → titolo con gli stessi campi dei dati STFI.
+    ref = riga STFI dello stesso titolo (o dell'ISIN di mercato), se c'è: prezzo di oggi ed emittente. */
+function synthBond(h, spec, ref, settle) {
   const maturity = parseDay(spec.maturity);
   if (maturity == null) return null;
-  const freq = spec.coupon > 0 || (spec.steps && spec.steps.length) ? (spec.freq || 2) : 0;
-  return {
+  const steps = (spec.steps || []).map(s => ({ from: parseDay(s.from), rate: +s.rate })).filter(s => s.from != null && Number.isFinite(s.rate)).sort((a, b) => a.from - b.from);
+  const freq = spec.coupon > 0 || steps.length ? (spec.freq || 2) : 0;
+  const b = {
     isin: h.isin, desc: spec.name || h.desc || h.isin, maturity, currency: 'EUR',
     ...issuerFromIsin(h.isin),
-    rating: null, ratingScore: null, lot: 1000, price: Number.isFinite(h.price) ? h.price : Number.isFinite(h.carico) ? h.carico : 100,
+    rating: null, ratingScore: null, lot: 1000,
+    price: ref && Number.isFinite(ref.price) ? ref.price : Number.isFinite(h.price) ? h.price : Number.isFinite(h.carico) ? h.carico : 100,
     liquidity: 0, coupon: +spec.coupon || 0, months: freq ? monthsFrom(maturity, freq) : [], freq,
-    issuePrice: Number.isFinite(spec.issuePrice) ? spec.issuePrice : 100, zc: !freq, tax: spec.tax === 0.26 ? 0.26 : 0.125,
-    steps: (spec.steps || []).map(s => ({ from: parseDay(s.from), rate: +s.rate })).filter(s => s.from != null && Number.isFinite(s.rate)).sort((a, b) => a.from - b.from),
-    premio: Number.isFinite(+spec.premio) ? +spec.premio : 0,
-    synthetic: true, stepUp: !!(spec.steps && spec.steps.length > 1), inflation: !!spec.inflation
+    issuePrice: Number.isFinite(+spec.issuePrice) && +spec.issuePrice > 0 ? +spec.issuePrice : 100, zc: !freq, tax: spec.tax === 0.26 ? 0.26 : 0.125,
+    steps, premio: Number.isFinite(+spec.premio) ? +spec.premio : 0,
+    extra: (spec.extra || []).map(x => ({ day: parseDay(x.date), perc: +x.perc })).filter(x => x.day != null && x.perc > 0),
+    synthetic: true, stepUp: steps.length > 1, inflation: !!spec.inflation
   };
+  if (ref) Object.assign(b, { issuer: ref.issuer, issuerName: ref.issuerName, group: ref.group, country: ref.country, area: ref.area,
+    rating: ref.rating, ratingScore: ref.ratingScore, lot: ref.lot || 1000, liquidity: ref.liquidity, tax: ref.tax });
+  if (steps.length) b.coupon = rateAt(b, settle);          // cedola in corso (serve al rateo)
+  return b;
 }
 
 /**
  * Posizioni + dati del giorno → posizioni risolte:
- * { h, bond, status: 'data' | 'manual' | 'missing' | 'matured', value, flows }.
+ * { h, bond, status: 'data' | 'retail' | 'manual' | 'missing' | 'matured', value, flows }.
  * value = valore di mercato oggi (prezzo + rateo); flows = flussi netti futuri in euro.
  */
 export function resolveHoldings(holdings, ds, { zainetto = false } = {}) {
   const by = new Map(ds.bonds.map(b => [b.isin, b]));
   return holdings.map(h => {
-    let bond = by.get(h.isin), status = 'data';
-    if (!bond) {
-      const spec = h.manual || RETAIL_BTP[h.isin] || null;
-      bond = spec ? synthBond(h, spec) : null;
-      status = bond ? 'manual' : 'missing';
-      if (bond && !h.manual && RETAIL_BTP[h.isin]) status = 'retail';
-    }
-    if (bond && bond.maturity <= ds.settle) return { h, bond, status: 'matured', value: 0, flows: [] };
-    if (!bond) return { h, bond: null, status, value: Number.isFinite(h.price) ? h.nominal * h.price / 100 : 0, flows: [] };
+    const retail = RETAIL_BTP[h.isin] || null;
+    const ref = by.get(h.isin) || (retail ? by.get(retail.market) : null) || null;
+    let bond, status;
+    if (h.manual) { bond = synthBond(h, h.manual, ref, ds.settle); status = 'manual'; }
+    else if (retail) { bond = synthBond(h, retail, ref, ds.settle); status = 'retail'; }
+    else { bond = ref; status = 'data'; }
+    if (!bond) return { h, bond: null, status: 'missing', value: Number.isFinite(h.price) ? h.nominal * h.price / 100 : 0, flows: [] };
+    if (bond.maturity <= ds.settle) return { h, bond, status: 'matured', value: 0, flows: [] };
     const flows = holdingFlows(bond, h, ds.settle, { zainetto });
     const cleanPx = Number.isFinite(bond.price) ? bond.price : 100;
     const value = h.nominal * (cleanPx + accrued(bond, ds.settle)) / 100;
@@ -111,10 +118,14 @@ function rateAt(b, d) {
 }
 
 /**
- * Flussi netti futuri di una posizione già posseduta, in euro:
- * cedole intere (il rateo pagato all'acquisto è già alle spalle), rimborso a 100 meno la tassa
- * sulla plusvalenza calcolata sul prezzo di CARICO (non su quello di oggi), più l'eventuale
- * premio fedeltà netto. Con lo "zainetto" resta tassato solo lo scarto di emissione.
+ * Flussi netti futuri di una posizione già posseduta, in euro. Regime amministrato, persona fisica:
+ * - cedole intere, tassate per intero (il credito sul rateo pagato all'acquisto è già alle spalle);
+ * - a scadenza lo scarto di emissione (100 − prezzo di emissione) si tassa sempre tutto: il credito per la
+ *   parte maturata prima dell'acquisto è arrivato allora. La plusvalenza si misura sul prezzo di CARICO,
+ *   non su quello di oggi, rispetto al prezzo di emissione (o a 100 se emesso alla pari o sopra). Senza la
+ *   data d'acquisto è il minimo esatto: chi ha comprato dopo l'emissione paga al più il 12,5% (o 26%) della
+ *   parte di scarto maturata prima del suo acquisto. Con lo "zainetto" la plusvalenza è compensata;
+ * - premio fedeltà (solo ISIN con premio) e premi intermedi, tassati come il titolo.
  */
 export function holdingFlows(b, h, settle, { zainetto = false } = {}) {
   const k = h.nominal / 100, out = [];
@@ -124,13 +135,15 @@ export function holdingFlows(b, h, settle, { zainetto = false } = {}) {
       out.push({ day: d, kind: 'coupon', gross: gross * k, net: gross * (1 - b.tax) * k });
     }
   }
+  for (const x of b.extra || []) if (x.day > settle && x.day < b.maturity) out.push({ day: x.day, kind: 'coupon', premio: true, gross: x.perc * k, net: x.perc * (1 - b.tax) * k });
   const basis = Number.isFinite(h.carico) ? h.carico : (Number.isFinite(b.price) ? b.price : 100);
-  const gain = 100 - basis;
-  const issueDiscount = Number.isFinite(b.issuePrice) ? Math.max(0, 100 - b.issuePrice) : 0;
-  const taxable = gain > 0 ? (zainetto ? Math.min(gain, issueDiscount) : gain) : 0;
-  const premio = b.premio > 0 ? b.premio * (1 - b.tax) : 0;
-  out.push({ day: b.maturity, kind: 'redemption', gross: (100 + (b.premio || 0)) * k, net: (100 - taxable * b.tax + premio) * k, loss: gain < 0 ? -gain * k : 0 });
-  return out;
+  const issue = Number.isFinite(b.issuePrice) && b.issuePrice > 0 ? b.issuePrice : 100;
+  const discount = Math.max(0, 100 - issue);
+  const gain = Math.max(0, Math.min(100, issue) - basis);
+  const premio = b.premio > 0 ? b.premio : 0;
+  const tax = (discount + (zainetto ? 0 : gain) + premio) * b.tax;
+  out.push({ day: b.maturity, kind: 'redemption', gross: (100 + premio) * k, net: (100 + premio) * k - tax * k, loss: Math.max(0, basis - 100) * k });
+  return out.sort((a, c) => a.day - c.day);
 }
 
 /** Rendimento netto annuo dai prezzi di oggi (per confronto con i titoli da comprare). */

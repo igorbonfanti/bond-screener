@@ -96,8 +96,8 @@ function yearsRow(kPrefix, obj, minYear) {
 
 /* ---------- 1. Il mio portafoglio (solo se c'è) ---------- */
 const PREF_NOTES = {
-  mine: 'Dove hai già un titolo che scade in quel periodo ne compro altri pezzi; titoli nuovi solo per le scadenze scoperte.',
-  balanced: 'Un titolo nuovo solo se rende almeno 0,15 punti più del tuo (circa 15 € l\'anno ogni 10.000 €); altrimenti altri pezzi del tuo.',
+  mine: 'Dove hai già un titolo che scade in quel periodo ne compro altri pezzi, anche se i filtri del paniere lo escluderebbero; titoli nuovi solo dove non ne hai.',
+  balanced: 'Un titolo nuovo solo se rende almeno 0,10 punti più del tuo (circa 10 € l\'anno ogni 10.000 €); altrimenti altri pezzi del tuo.',
   yield: 'Il titolo che rende di più, anche se nuovo: a parità preferisco il tuo.'
 };
 function portfolioSection(st, ptf) {
@@ -105,6 +105,9 @@ function portfolioSection(st, ptf) {
   return [
     sw('ptfon', on, 'Costruisci attorno al mio portafoglio', 'Tengo i titoli che hai e compro solo quello che manca: niente vendite.', v => set(s => { s.usePortfolio = v; }, true)),
     on ? field('Nuovi acquisti', seg('ptfpref', [['mine', 'I miei titoli'], ['balanced', 'Equilibrato'], ['yield', 'Rendimento']], pref, v => set(s => { s.portfolioPref = v; }, true), 'Nuovi acquisti'), PREF_NOTES[pref]) : null,
+    on && st.goal !== 'income' ? sw('ptfcarry', st.portfolioCarry !== false, 'Usa le eccedenze per le scadenze dopo', st.portfolioCarry !== false
+      ? 'Quello che i tuoi titoli danno in più in una scadenza (e i rimborsi che arrivano prima della scala) resta da parte, senza interessi, e paga le scadenze successive: oggi compri meno.'
+      : 'Le eccedenze dei tuoi titoli tornano a te, da spendere o reinvestire: le scadenze scoperte le copri con acquisti di oggi.', v => set(s => { s.portfolioCarry = v; }, true)) : null,
     ptf.incomplete ? h('p', { class: 'note' }, h('b', { text: `${ptf.incomplete} ${ptf.incomplete === 1 ? 'titolo' : 'titoli'} da completare` }), ': finché mancano scadenza e cedola restano fuori dai calcoli.') : null,
     h('button', { type: 'button', class: 'linkbtn', text: 'Modifica il portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } })
   ];

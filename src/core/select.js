@@ -78,38 +78,42 @@ export function branchAndBound(slots, { issuerCap = 1, nodeBudget = 300000, perI
 
   // Prima i gradini con meno alternative (potano di più), a parità quelli più pesanti
   const order = C.map((_, i) => i).sort((a, b) => C[a].length - C[b].length || slots[b].weight - slots[a].weight);
-  const sufFill = new Array(N + 1).fill(0), sufVal = new Array(N + 1).fill(0);
-  for (let k = N - 1; k >= 0; k--) {
-    const i = order[k];
-    sufFill[k] = sufFill[k + 1] + (C[i].length ? 1 : 0);
-    sufVal[k] = sufVal[k + 1] + (C[i].length ? Math.max(0, slots[i].weight * C[i][0].score) : 0);
-  }
 
   const used = new Set(preUsedIsins), issW = new Map(preIssuerWeights), cur = new Array(N).fill(null);
   const fits = (b, w) => !used.has(b.isin) && (issW.get(b.issuer) || 0) + w <= capW;
   const take = (k, c, w) => { used.add(c.bond.isin); issW.set(c.bond.issuer, (issW.get(c.bond.issuer) || 0) + w); cur[k] = c; };
   const drop = (k, c, w) => { used.delete(c.bond.isin); issW.set(c.bond.issuer, issW.get(c.bond.issuer) - w); cur[k] = null; };
+  const firstFit = k => { const w = slots[order[k]].weight; for (const c of C[order[k]]) if (fits(c.bond, w)) return c; return null; };
 
   // Soluzione iniziale golosa (buon limite inferiore per potare subito)
   let best = { fill: 0, val: 0, sel: new Array(N).fill(null) };
   {
     let fill = 0, val = 0;
     for (let k = 0; k < N; k++) {
-      const i = order[k], w = slots[i].weight;
-      const c = C[i].find(x => fits(x.bond, w));
+      const c = firstFit(k), w = slots[order[k]].weight;
       if (c) { take(k, c, w); fill++; val += w * c.score; }
     }
     best = { fill, val, sel: cur.slice() };
     for (let k = 0; k < N; k++) if (cur[k]) drop(k, cur[k], slots[order[k]].weight);
   }
 
+  // Limite superiore dinamico: per ogni gradino ancora libero il miglior candidato che ci sta ADESSO
+  // (ISIN non usato, quota dell'emittente non piena). Le scelte successive possono solo togliere spazio,
+  // quindi il limite resta valido ed è molto più stretto del "migliore in assoluto".
   let nodes = 0;
   (function dfs(k, fill, val) {
     if (++nodes > nodeBudget) return;
-    const bf = fill + sufFill[k], bv = val + sufVal[k];
+    let bf = fill, bv = val;
+    for (let j = k; j < N; j++) { const c = firstFit(j); if (c) { bf++; bv += Math.max(0, slots[order[j]].weight * c.score); } }
     if (bf < best.fill || (bf === best.fill && bv <= best.val + EPS)) return;
     if (k === N) { best = { fill, val, sel: cur.slice() }; return; }
     const i = order[k], w = slots[i].weight;
+    if (k === N - 1) {                                  // ultimo gradino: basta il migliore che ci sta
+      const c = firstFit(k);
+      if (c) { take(k, c, w); dfs(k + 1, fill + 1, val + w * c.score); drop(k, c, w); }
+      else dfs(k + 1, fill, val);
+      return;
+    }
     for (const c of C[i]) {
       if (!fits(c.bond, w)) continue;
       take(k, c, w);

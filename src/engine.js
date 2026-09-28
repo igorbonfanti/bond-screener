@@ -1,10 +1,15 @@
 /* Dalle impostazioni dell'utente alla proposta. Funzione pura: gira nel Web Worker
    (interfaccia sempre fluida) o, se il worker non è disponibile, nel thread principale. */
 import { applyBasket, issuerCatalog } from './core/basket.js';
-import { regularTargets, dateTargets, planCapital } from './core/capital.js';
+import { regularTargets, dateTargets, planCapital, ALWAYS } from './core/capital.js';
 import { planIncome } from './core/income.js';
 import { parseDay, day } from './core/dates.js';
 import { scoreYield } from './core/bond.js';
+import { resolveHoldings } from './portfolio.js';
+import { RETAIL_BTP } from './data/retail-btp.js';
+
+/** Preferenza per i titoli già posseduti → vantaggio di rendimento nella scelta (0,001 = 0,10 punti percentuali). */
+export const PREF_BONUS = { mine: ALWAYS, balanced: 0.001, yield: 1e-6 };
 
 export function basketFromSettings(ds, b) {
   const excluded = new Set(b.excluded || []);
@@ -42,6 +47,28 @@ function mapPoints(bonds, from, to, zainetto) {
   })).filter(p => Number.isFinite(p.y));
 }
 
+/** Portafoglio posseduto (st.holdings, solo se l'utente costruisce attorno ai suoi titoli) → dati per il motore. */
+function portfolioInput(ds, st, zainetto, basket) {
+  const list = Array.isArray(st.holdings) ? st.holdings : [];
+  if (!list.length) return { holdings: [], pool: [], bonus: 0, info: null };
+  const res = resolveHoldings(list, ds, { zainetto });
+  const live = res.filter(r => r.bond && r.status !== 'matured');
+  const pref = PREF_BONUS[st.portfolioPref] != null ? st.portfolioPref : 'balanced';
+  const byIsin = new Map(ds.bonds.map(b => [b.isin, b]));
+  // ISIN con cui si comprano altri pezzi: per i BTP retail con premio è quello di mercato
+  const topUpIsin = r => (RETAIL_BTP[r.h.isin] && RETAIL_BTP[r.h.isin].market) || r.h.isin;
+  const holdings = live.map(r => ({ isin: r.h.isin, topUpIsin: topUpIsin(r), bond: r.bond, nominal: r.h.nominal, flows: r.flows, value: r.value, status: r.status }));
+  // «I miei titoli»: si possono ricomprare anche se i filtri del paniere li escludono (non se scadono fra meno di un mese)
+  const inBasket = new Set(basket.map(b => b.isin));
+  const pool = pref === 'mine' ? [...new Set(holdings.map(x => x.topUpIsin))].map(i => byIsin.get(i))
+    .filter(b => b && !inBasket.has(b.isin) && b.currency === 'EUR' && !b.anomaly && b.maturity > ds.settle + 30) : [];
+  return {
+    holdings, pool, bonus: PREF_BONUS[pref],
+    info: { pref, count: res.length, used: live.length, value: live.reduce((s, r) => s + r.value, 0),
+      missing: res.filter(r => r.status === 'missing').map(r => r.h.isin), matured: res.filter(r => r.status === 'matured').map(r => r.h.isin) }
+  };
+}
+
 export function compute(ds, st) {
   const bk = basketFromSettings(ds, st.basket);
   let { bonds, excluded } = applyBasket(ds, bk);
@@ -49,6 +76,8 @@ export function compute(ds, st) {
   if (banned.size) bonds = bonds.filter(b => !banned.has(b.isin));
   const out = { goal: st.goal, basketCount: bonds.length, excluded, refDate: ds.refDate, settle: ds.settle };
   const zainetto = !!st.basket.zainetto;
+  const port = portfolioInput(ds, st, zainetto, bonds);
+  out.portfolio = port.info;
 
   if (st.goal === 'capital') {
     const c = st.capital;
@@ -56,7 +85,15 @@ export function compute(ds, st) {
     const fixed = {};
     targets.forEach((t, i) => { const isin = st.fixed && st.fixed[t.label]; if (isin) fixed[i] = isin; });
     const budget = c.schedule !== 'dates' && c.start === 'budget' ? Math.max(0, +c.budget || 0) : null;
-    out.plan = planCapital(ds, bonds, { targets, useCoupons: c.useCoupons, accumulate: c.accumulate, zainetto, issuerCap: st.basket.issuerCap, budget, fixed, rounding: c.rounding });
+    const cfg = { targets, useCoupons: c.useCoupons, accumulate: c.accumulate, zainetto, issuerCap: st.basket.issuerCap, budget, fixed, rounding: c.rounding,
+      holdings: port.holdings, heldBonus: port.bonus, heldPool: port.pool, carry: st.portfolioCarry !== false };
+    out.plan = planCapital(ds, bonds, cfg);
+    if (port.holdings.length && out.plan.targets.length) {
+      // L'altra scelta sulle eccedenze, per confronto: quanto si comprerebbe oggi (o quanto si riceverebbe)
+      const alt = planCapital(ds, bonds, { ...cfg, carry: !cfg.carry });
+      out.plan.alt = { carry: !cfg.carry, totalCost: alt.totalCost, idleEuroYears: alt.idleEuroYears || 0,
+        perTarget: alt.targets.reduce((s, t) => s + t.amount, 0) / alt.targets.length };
+    }
     if (targets.length) out.map = mapPoints(bonds, Math.min(...targets.map(t => t.start)), Math.max(...targets.map(t => t.end)), zainetto);
   } else if (st.goal === 'income') {
     const i = st.income;

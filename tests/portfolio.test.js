@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import { isinOk, cellNumber, tableToHoldings, textToRows } from '../src/data/portfolio.js';
 import { loadText } from '../src/data/stfi.js';
 import { enrich } from '../src/core/basket.js';
+import { parseDay } from '../src/core/dates.js';
 import { resolveHoldings, holdingFlows, mergeHoldings, portfolioSummary } from '../src/portfolio.js';
 
 const FIX = fs.readFileSync(new URL('./fixtures/stfi-synthetic.csv', import.meta.url), 'utf8');
@@ -82,7 +83,8 @@ test('unione degli import: aggiungere somma, sostituire rimpiazza', () => {
 
 test('flussi di un titolo posseduto: tassa sul prezzo di carico, non su quello di oggi', () => {
   const ds = load();
-  const b = ds.bonds.find(x => !x.zc && x.freq && x.maturity > ds.settle + 400 && x.tax === 0.125);
+  const b0 = ds.bonds.find(x => !x.zc && x.freq && x.maturity > ds.settle + 400 && x.tax === 0.125);
+  const b = { ...b0, issuePrice: 100 };
   const h = { isin: b.isin, nominal: 10000, carico: 95 };
   const flows = holdingFlows(b, h, ds.settle);
   const red = flows[flows.length - 1];
@@ -92,6 +94,13 @@ test('flussi di un titolo posseduto: tassa sul prezzo di carico, non su quello d
   assert.ok(Math.abs(cp.net - (b.coupon / b.freq) * 0.875 * 100) < 1e-6, 'cedola intera netta');
   const loss = holdingFlows(b, { ...h, carico: 103 }, ds.settle);
   assert.equal(loss[loss.length - 1].net, 10000, 'sopra la pari: nessuna tassa, minusvalenza allo zainetto');
+  // emesso sotto la pari (99,5): lo scarto di emissione si tassa sempre per intero, anche con lo zainetto
+  const d = { ...b0, issuePrice: 99.5 };
+  const net = (c, z) => holdingFlows(d, { ...h, carico: c }, ds.settle, { zainetto: z }).at(-1).net / 100;
+  assert.ok(Math.abs(net(98.5, false) - (100 - 1.5 * 0.125)) < 1e-9, 'carico sotto l\'emissione: 0,5 di scarto + 1 di plusvalenza');
+  assert.ok(Math.abs(net(99.8, false) - (100 - 0.5 * 0.125)) < 1e-9, 'carico sopra l\'emissione: resta lo scarto');
+  assert.ok(Math.abs(net(98.5, true) - (100 - 0.5 * 0.125)) < 1e-9, 'zainetto: compensa la plusvalenza, non lo scarto');
+  assert.ok(Math.abs(net(101, true) - (100 - 0.5 * 0.125)) < 1e-9, 'sopra la pari: lo scarto si paga lo stesso');
   // riepilogo e titoli non trovati
   const res = resolveHoldings([h, { isin: 'US0378331005', nominal: 1000, carico: 99, price: 99 }], ds);
   assert.deepEqual(res.map(r => r.status), ['data', 'missing']);
@@ -113,4 +122,18 @@ test('titolo descritto a mano: cedole trimestrali crescenti e premio fedeltà', 
   assert.ok(Math.abs(cps[cps.length - 1].gross - 4.5 / 4 * 100) < 1e-6, 'ultime cedole al 4,50%');
   const red = r.flows[r.flows.length - 1];
   assert.ok(Math.abs(red.net - (100 + 0.8 * 0.875) * 100) < 1e-6, 'rimborso alla pari più il premio netto');
+});
+
+test('BTP retail: premio solo con l\'ISIN con premio, cedole crescenti dalla tabella', () => {
+  const ds = load();
+  const settle = parseDay('2026-09-30'), bonds = [];
+  // BTP Valore 4ª: ISIN con premio e di mercato, cedole trimestrali 3,35% fino al 14/5/2027, poi 3,90%, premio 0,8%
+  const [prem, mkt] = resolveHoldings([{ isin: 'IT0005594491', nominal: 10000, carico: 100 }, { isin: 'IT0005594483', nominal: 10000, carico: 100 }], { ...ds, settle, bonds });
+  assert.deepEqual([prem.status, mkt.status], ['retail', 'retail']);
+  assert.deepEqual(prem.bond.months, [2, 5, 8, 11]);
+  const cps = prem.flows.filter(f => f.kind === 'coupon');
+  assert.ok(Math.abs(cps[2].gross - 3.35 / 4 * 100) < 1e-9, 'cedola del 14/5/2027 ancora al 3,35%');
+  assert.ok(Math.abs(cps[3].gross - 3.90 / 4 * 100) < 1e-9, 'dal 14/8/2027 al 3,90%');
+  assert.ok(Math.abs(prem.flows.at(-1).net - (100 + 0.8 * 0.875) * 100) < 1e-6, 'premio 0,8% netto');
+  assert.equal(mkt.flows.at(-1).net, 10000, 'ISIN di mercato: niente premio');
 });

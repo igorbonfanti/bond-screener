@@ -12,7 +12,7 @@ export function renderResults(root, { st, result, actions }) {
   A = actions || {};
   const plan = result && result.plan;
   if (!plan) { root.replaceChildren(); return; }
-  if (plan.mode === 'capital') root.replaceChildren(...capitalView(st, result, plan));
+  if (plan.mode === 'capital') root.replaceChildren(...(plan.holdings ? portfolioCapitalView(st, result, plan) : capitalView(st, result, plan)));
   else root.replaceChildren(...incomeView(st, result, plan));
 }
 
@@ -112,7 +112,7 @@ function yieldMapPanel(result, sel, bands, onPick, pickable) {
       { type: 'text', label: bands.length ? 'un punto dentro una fascia è un\'alternativa per quella scadenza: clic per usarlo' : 'più in alto rende di più, più a destra scade più tardi' }].filter(Boolean)));
 }
 
-export function calendarPanel(schedule) {
+export function calendarPanel(schedule, meta = 'euro netti, mese per mese') {
   const byYear = new Map();
   for (const f of schedule) {
     const { y, m } = parts(f.day);
@@ -130,7 +130,7 @@ export function calendarPanel(schedule) {
   const table = h('div', { class: 'tscroll' }, h('table', { class: 't heat', 'aria-label': 'Incassi netti per mese e anno, in euro' },
     h('thead', null, h('tr', null, h('th', { scope: 'col', text: 'Anno' }), MONTHS.map(m => h('th', { class: 'r', scope: 'col', text: m })), h('th', { class: 'r', scope: 'col', text: 'Totale' }))),
     h('tbody', null, rows)));
-  return panel('Calendario degli incassi', 'euro netti, mese per mese', table,
+  return panel('Calendario degli incassi', meta, table,
     legend([{ el: h('span', { class: 'ramp' }, [1, 2, 3, 4, 5].map(i => h('i', { class: `h${i}` }))), label: 'incasso del mese, da poco a molto' },
       { el: h('span', { class: 'kb frame' }), label: 'mese con un rimborso' }]));
 }
@@ -147,7 +147,8 @@ function purchasePanel(positions, settle, title = 'Lista d\'acquisto') {
   const table = dataTable({
     label: 'Lista d\'acquisto', sortBy: 1,
     cols: [
-      { label: 'Titolo', sort: p => p.bond.desc, cell: p => [h('span', { class: 'sym', text: p.bond.isin }), h('span', { class: 'nm', text: p.bond.desc })] },
+      { label: 'Titolo', sort: p => p.bond.desc, cell: p => [h('span', { class: 'sym', text: p.bond.isin }), h('span', { class: 'nm', text: p.bond.desc }),
+        p.topUp ? h('span', { class: 'tags' }, h('span', { class: 'tag', title: 'Titolo che hai già: ne compri altri pezzi', text: 'ne hai già' })) : null] },
       { label: 'Scadenza', sort: p => p.bond.maturity, cell: p => h('span', { class: 'num', text: fmt(p.bond.maturity) }) },
       { label: 'Nominale', r: 1, sort: p => p.nominal, cell: p => eur0(p.nominal) },
       { label: 'Prezzo', r: 1, sort: p => p.bond.price, cell: p => fmtNum(p.bond.price, 2) },
@@ -171,12 +172,20 @@ function actionsBar() {
 
 function commonInsights(plan, result) {
   const out = [];
-  const s = plan.summary;
+  const s = plan.summary, ptf = !!plan.holdings;
   if (plan.positions.length) {
-    if (s.belowParShare >= 0.999) out.push(insight('good', `Tutti i titoli sono sotto la pari: a scadenza solo plusvalenze (${fmtEur(s.gainAtMaturity)}, tassate all'aliquota del titolo).`));
-    else if (s.lossAtMaturity > 0) out.push(insight('warn', `Minusvalenza a scadenza di ${fmtEur(s.lossAtMaturity)} sui titoli sopra la pari: finisce nello zainetto fiscale e non si compensa con le cedole.`));
-    const top = s.byIssuer[0];
-    if (top && top.share > 0.5) out.push(insight('info', `${top.name} pesa il ${fmtNum(top.share * 100, 0)}% del capitale: valuta un limite per emittente più stretto.`));
+    if (s.belowParShare >= 0.999) out.push(insight('good', `Tutti i titoli ${ptf ? 'da comprare ' : ''}sono sotto la pari: a scadenza solo plusvalenze (${fmtEur(s.gainAtMaturity)}, tassate all'aliquota del titolo).`));
+    else if (s.lossAtMaturity > 0) out.push(insight('warn', `Minusvalenza a scadenza di ${fmtEur(s.lossAtMaturity)} sui titoli ${ptf ? 'da comprare ' : ''}sopra la pari: finisce nello zainetto fiscale e non si compensa con le cedole.`));
+    // con il portafoglio conta il peso sul totale (titoli posseduti + nuovi), al nominale
+    let top = s.byIssuer[0];
+    if (ptf) {
+      const m = new Map();
+      for (const x of plan.holdings.concat(plan.positions)) { const e = m.get(x.bond.issuer) || { name: x.bond.issuerName, n: 0 }; e.n += x.nominal; m.set(x.bond.issuer, e); }
+      const tot = [...m.values()].reduce((a, e) => a + e.n, 0);
+      const e = [...m.values()].sort((a, b) => b.n - a.n)[0];
+      top = e && tot > 0 && !(plan.issuerOver || []).length ? { name: e.name, share: e.n / tot } : null;
+    }
+    if (top && top.share > 0.5) out.push(insight('info', `${top.name} pesa il ${fmtNum(top.share * 100, 0)}% ${ptf ? 'del portafoglio complessivo (tuoi titoli e nuovi)' : 'del capitale'}: valuta un limite per emittente più stretto.`));
   }
   if (plan.positions.some(p => p.bond.stepUp)) out.push(insight('info', 'Alcuni titoli hanno cedola crescente (step-up): le cedole future saranno più alte di quelle stimate qui.'));
   for (const w of plan.warnings || []) out.push(insight('warn', w));
@@ -277,32 +286,144 @@ function capitalView(st, result, plan) {
     plan.positions.length ? purchasePanel(plan.positions, plan.settle) : null].filter(Boolean);
 }
 
+/* ------------- Capitale a scadenza attorno al portafoglio posseduto ------------- */
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const listText = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1] : a[0] || '';
+
+function portfolioCapitalView(st, result, plan) {
+  const c = st.capital;
+  if (!plan.targets.length) return [notesPanel([insight('warn', 'Nessuna scadenza futura nel periodo scelto: sposta gli anni in avanti.')])];
+  const T = plan.targets.length, first = plan.targets[0].label, last = plan.targets[T - 1].label;
+  const span = first === last ? first : `${first} → ${last}`;
+  const covered = plan.targets.filter(t => t.available + 0.5 >= t.amount).length;
+  const atTargets = plan.targets.reduce((s, t) => s + Math.min(t.available, t.amount), 0);
+  const totalAmount = plan.targets.reduce((s, t) => s + t.amount, 0);
+  const budgetMode = plan.budget != null;
+  const perRung = T ? totalAmount / T : 0;
+  const nHeld = plan.holdings.length;
+  const buys = plan.positions.length
+    ? [plural(plan.newLines, 'titolo nuovo', 'titoli nuovi'), plan.topUps ? plural(plan.topUps, 'rabbocco', 'rabbocchi') : ''].filter(Boolean).join(' + ')
+    : 'niente da comprare';
+  const kpis = h('div', { class: 'kpis' },
+    budgetMode
+      ? kpi(`Somma per ${c.schedule === 'semester' ? 'semestre' : 'anno'}`, fmtEur(perRung), `circa · ${T} somme ${span}`)
+      : kpi('Nuovi acquisti', fmtEur(plan.totalCost), buys),
+    budgetMode
+      ? kpi('Nuovi acquisti', fmtEur(plan.totalCost), `su ${fmtEur(plan.budget)} · ${buys}`)
+      : kpi('Ricevi alle scadenze', fmtEur(atTargets), span),
+    kpi('Dai tuoi titoli', fmtPct(plan.heldCover * 100, 0), `degli importi · ${plural(nHeld, 'titolo', 'titoli')}`),
+    kpi('Rendimento netto', fmtPct(plan.irrAll * 100), plan.positions.length ? `tutta la scala · nuovi ${fmtPct(plan.irr * 100)}` : 'tutta la scala, dai prezzi di oggi'),
+    kpi('Scadenze coperte', String(covered), covered === T ? 'tutte' : `${T - covered} sotto l'obiettivo`, `/ ${T}`),
+    kpi('Senza acquisti', String(plan.coveredByHeld), 'scadenze pagate dai tuoi titoli', `/ ${T}`));
+
+  const b = t => h('b', { text: t });
+  const lead = h('p', { class: 'lead' }, budgetMode
+    ? ['Con i tuoi ', b(plural(nHeld, 'titolo', 'titoli')), plan.totalCost > 0.5 ? [' e ', b(fmtEur(plan.totalCost)), ' di nuovi acquisti'] : ', senza comprare nulla,',
+      ` ricevi ${T} somme da circa `, b(fmtEur(perRung)), ` netti (${span}). Non vendi nulla.`]
+    : ['Con i tuoi ', b(plural(nHeld, 'titolo', 'titoli')), plan.totalCost > 0.5 ? [' e ', b(fmtEur(plan.totalCost)), ' di nuovi acquisti'] : ', senza comprare nulla,',
+      ' ricevi ', b(fmtEur(atTargets)), ` netti in ${plural(T, 'scadenza', 'scadenze')} (${span}). Non vendi nulla.`]);
+
+  const ins = [];
+  if (covered === T) ins.push(insight('good', `Tutte le ${T} scadenze sono coperte.`));
+  const own = plan.targets.filter(t => t.coveredByHeld).map(t => t.label);
+  if (own.length) ins.push(insight('good', `${own.length === 1 ? 'La scadenza' : 'Le scadenze'} ${listText(own)} ${own.length === 1 ? 'è pagata' : 'sono pagate'} dai tuoi titoli: lì non compri nulla.`));
+  if (plan.topUps) ins.push(insight('info', `Per ${plan.topUps === 1 ? 'una scadenza' : `${plan.topUps} scadenze`} compri altri pezzi di titoli che hai già: meno linee da seguire.`));
+  for (const e of plan.issuerOver || []) ins.push(insight('warn', `${e.name} pesa già il ${fmtNum(e.heldShare * 100, 0)}% del portafoglio complessivo, oltre il limite per emittente del ${fmtNum(plan.issuerCap * 100, 0)}%: non compro altri suoi titoli. Il limite si cambia nel paniere.`));
+  if (plan.heldBefore > 0.5) ins.push(insight('info', `${fmtEur(plan.heldBefore)} dai tuoi titoli arrivano prima della scala: restano in cassa e pagano le prime scadenze.`));
+  const y = Number.isFinite(plan.irrAll) && plan.irrAll > 0 ? plan.irrAll : 0.03;
+  const alt = plan.alt, per = c.schedule === 'semester' ? 'semestre' : 'anno';
+  const altText = !alt ? '' : budgetMode ? `circa ${fmtEur(alt.perTarget)} per ${per}` : `${fmtEur(alt.totalCost)} di acquisti oggi`;
+  if (plan.carry && plan.idleEuroYears > 50) {
+    ins.push(insight('info', [`Eccedenze e rimborsi in anticipo restano in cassa, senza interessi, fino alla scadenza che li usa: è come tenere fermi ${fmtEur(plan.idleEuroYears)} per un anno, circa ${fmtEur(plan.idleEuroYears * y)} di interessi persi al ${fmtPct(y * 100)}.`,
+      alt ? ` Se preferisci riaverle e reinvestirle tu, con le stesse scadenze ti servono ${altText}: spegni «Usa le eccedenze per le scadenze dopo».` : ' Quando arrivano puoi parcheggiarli in un titolo breve.'].join('')));
+  }
+  if (!plan.carry) {
+    const back = plan.heldSurplus + plan.heldOutRedemptions;
+    if (back > 0.5) ins.push(insight('info', `${fmtEur(back)} dai tuoi titoli (eccedenze delle scadenze coperte e rimborsi fuori dalla scala) tornano a te, da spendere o reinvestire.${alt ? ` Usandoli per le scadenze dopo ti basterebbero ${altText}, ma resterebbero fermi senza interessi.` : ''}`));
+  }
+  if (plan.heldOutCoupons > 0.5) ins.push(insight('info', `Le cedole dei tuoi titoli incassate prima della scala${c.schedule === 'dates' ? ' o fra una data e l\'altra' : ''} (${fmtEur(plan.heldOutCoupons)}) sono un'entrata in più.${plan.useCoupons ? ' Con «Accantona le cedole di prima» pagano le prime scadenze.' : ''}`));
+  if (plan.heldAfter > 0.5) ins.push(insight('info', `${fmtEur(plan.heldAfter)} dai tuoi titoli (rimborsi e cedole) arrivano dopo l'ultima scadenza: restano a te, fuori dalla scala.`));
+  if (plan.potLeft > 0.5) ins.push(insight('info', `Alla fine della scala avanzano ${fmtEur(plan.potLeft)} in cassa: eccedenze dei tuoi titoli e arrotondamenti ai lotti.`));
+  const info = result.portfolio || {};
+  if (info.missing && info.missing.length) ins.push(insight('warn', `${plural(info.missing.length, 'titolo del portafoglio non è', 'titoli del portafoglio non sono')} nei dati di oggi e ${info.missing.length === 1 ? 'resta' : 'restano'} fuori dal calcolo: ${info.missing.length === 1 ? 'completalo' : 'completali'} nella scheda Portafoglio.`));
+  if (info.matured && info.matured.length) ins.push(insight('info', `${plural(info.matured.length, 'titolo del portafoglio è già scaduto', 'titoli del portafoglio sono già scaduti')}: puoi toglierli dalla scheda Portafoglio.`));
+  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', 'Per i BTP Italia conto la cedola reale senza inflazione futura: incasserai un po\' di più.'));
+  ins.push(...commonInsights(plan, result));
+
+  const chartBox = h('div');
+  const labels = plan.targets.map(t => t.label.length > 12 ? t.label.slice(0, 11) + '…' : t.label);
+  const potUsed = plan.targets.some(t => t.fromPot > 0.5);
+  requestAnimationFrame(() => columnChart(chartBox, {
+    labels, height: 250, yFormat: v => fmtNum(v, 0),
+    series: [{ cls: 's4', values: plan.targets.map(t => t.heldIn) }, { cls: 's1', values: plan.targets.map(t => t.redemption) },
+      { cls: 's2', values: plan.targets.map(t => plan.useCoupons ? t.coupons : 0) }, ...(potUsed ? [{ cls: 's3', values: plan.targets.map(t => t.fromPot) }] : [])],
+    target: plan.targets.map(t => t.amount), ariaLabel: 'Importo disponibile per ogni scadenza: dai tuoi titoli, dai nuovi acquisti e dalla cassa, con l\'obiettivo',
+    tooltip: i => { const t = plan.targets[i]; return { title: t.label, meta: t.bond && t.nominal ? t.bond.desc : t.coveredByHeld ? 'coperta dai tuoi titoli' : 'nessun acquisto', rows: [
+      { key: 'amber-fill', label: 'Dai tuoi titoli', value: fmtEur(t.heldIn) },
+      { key: 'ink', label: 'Rimborso nuovo', value: fmtEur(t.redemption) }, { key: 'chart-trail', label: 'Cedole nuove', value: fmtEur(plan.useCoupons ? t.coupons : 0) },
+      ...(potUsed ? [{ key: 'chart-line', label: 'Dalla cassa', value: fmtEur(t.fromPot) }] : []),
+      { label: 'Disponibile', value: fmtEur(t.available) }, { key: 'blue', label: 'Obiettivo', value: fmtEur(t.amount) }] }; },
+    onClick: i => { const el = document.getElementById('rung-' + i); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }); } }
+  }));
+  const ladder = panel('La tua scala', 'quanto ricevi a ogni scadenza · euro netti', chartBox,
+    legend([{ key: 'amber-fill', label: 'dai tuoi titoli' }, { key: 'ink', label: 'rimborso dei nuovi' }, { key: 'chart-trail', label: plan.useCoupons ? 'cedole dei nuovi' : 'cedole (non usate)' },
+      ...(potUsed ? [{ key: 'chart-line', label: 'dalla cassa' }] : []), { type: 'line', key: 'blue', label: 'obiettivo' },
+      { type: 'text', label: 'clic su una colonna per andare alla riga' }]));
+
+  const sel = new Set(plan.positions.map(p => p.bond.isin));
+  const bands = plan.targets.map(t => ({ from: t.start, to: t.end, label: t.label }));
+  const bandOf = p => plan.targets.findIndex(t => p.maturity > t.start && p.maturity <= t.end);
+  const map = yieldMapPanel(result, sel, bands, p => { const i = bandOf(p); if (i >= 0 && !sel.has(p.isin) && A.onSwap) A.onSwap(plan.targets[i].label, p.isin); }, p => bandOf(p) >= 0 && !sel.has(p.isin));
+  const allFlows = plan.schedule.concat(plan.heldSchedule).sort((a, b2) => a.day - b2.day);
+
+  return [kpis, lead, actionsBar(),
+    h('div', { class: 'grid-2' }, ladder, notesPanel(ins)),
+    rungsPanel(plan),
+    map,
+    allFlows.length ? calendarPanel(allFlows, 'tuoi titoli e nuovi acquisti · euro netti, mese per mese') : null,
+    plan.positions.length ? purchasePanel(plan.positions, plan.settle, 'Da comprare') : null].filter(Boolean);
+}
+
 /** Tabella principale: una riga per scadenza, con il titolo scelto e da dove arriva l'importo. */
 function rungsPanel(plan) {
-  const pooled = plan.accumulate && plan.targets.some(t => t.fromPot > 0.5);
+  const ptf = !!plan.holdings;                                        // proposta costruita attorno al portafoglio
+  const pooled = (plan.accumulate || ptf) && plan.targets.some(t => t.fromPot > 0.5);
+  const potLabel = ptf ? 'Dalla cassa' : 'Accantonate';
   const budgetMode = plan.budget != null;
   // stesso obiettivo per tutte le scadenze (anni o semestri): lo dice l'intestazione, non serve una colonna
   const oneGoal = plan.targets.length > 0 && plan.targets.every(t => Math.abs(t.amount - plan.targets[0].amount) < 0.5);
-  const head = ['Scadenza', 'Titolo', 'Prezzo', 'Netto', 'Rating', 'Nominale', 'Costo', 'Rimborso', plan.useCoupons ? 'Cedole' : 'Cedole (extra)', ...(pooled ? ['Accantonate'] : []), 'Disponibile', ...(oneGoal ? [] : ['Obiettivo']), 'Stato'];
-  const R = new Set(['Prezzo', 'Netto', 'Nominale', 'Costo', 'Rimborso', 'Cedole', 'Cedole (extra)', 'Accantonate', 'Disponibile', 'Obiettivo']);
+  const head = ['Scadenza', 'Titolo', 'Prezzo', 'Netto', 'Rating', 'Nominale', 'Costo', ...(ptf ? ['Tuoi titoli'] : []), 'Rimborso', plan.useCoupons ? 'Cedole' : 'Cedole (extra)', ...(pooled ? [potLabel] : []), 'Disponibile', ...(oneGoal ? [] : ['Obiettivo']), 'Stato'];
+  const R = new Set(['Prezzo', 'Netto', 'Nominale', 'Costo', 'Tuoi titoli', 'Rimborso', 'Cedole', 'Cedole (extra)', 'Accantonate', 'Dalla cassa', 'Disponibile', 'Obiettivo']);
   const rows = plan.targets.map((t, i) => {
     const b = t.bond, cost = b ? t.nominal * b.cost / 100 : 0;
     const ok = t.available + 0.5 >= t.amount;
     const state = !b && t.available < 0.5 ? badge('fail', 'Scoperta') : ok ? badge('trig', 'Coperta') : badge('watch', 'Sotto');
     const rank = b ? t.candidates.findIndex(x => x.bond.isin === b.isin) : -1;
     const better = rank > 0 ? [...new Set(t.candidates.slice(0, rank).map(x => x.bond.issuerName))] : [];
-    const why = rank > 0 && !t.fixed && plan.issuerCap < 1 ? `i più redditizi (${better.slice(0, 3).join(', ')}) sono di emittenti già al limite di quota` : '';
+    const mine = ptf && rank > 0 && t.candidates[rank].held;
+    const why = mine ? 'preferito perché ce l\'hai già (vedi «Nuovi acquisti» nelle impostazioni)'
+      : rank > 0 && !t.fixed && plan.issuerCap < 1 ? `i più redditizi (${better.slice(0, 3).join(', ')}) sono di emittenti già al limite di quota` : '';
     const rankTag = rank >= 0 ? h('span', { class: 'tag', title: why || (rank === 0 ? 'il rendimento più alto della finestra' : ''), text: `${rank + 1}° di ${t.candidates.length}` }) : null;
+    // i tuoi titoli che scadono nel periodo, uno per riga
+    const heldLine = ptf && t.held && t.held.length
+      ? h('span', { class: 'held-list', title: 'tuoi titoli che scadono in questo periodo' }, t.held.map(x => h('span', { class: 'dsub' }, h('span', { class: 'mine', text: 'tuo' }), ` ${x.desc} · ${eur0(x.nominal)}`))) : null;
     let titleCell;
-    if (!b) {
-      titleCell = h('span', { class: 'ttl' }, h('b', { text: t.fromPot > 0.5 ? 'Coperta dalle cedole accantonate' : 'Nessun titolo' }),
-        h('span', { class: 'code', text: t.candidates.length ? 'il limite per emittente impedisce di usare quelli della finestra' : t.need != null ? 'nessun titolo del paniere scade nella finestra' : 'nessun titolo del paniere scade in questo periodo' }));
+    if (ptf && t.coveredByHeld) {
+      titleCell = h('span', { class: 'ttl' }, h('b', { text: t.heldIn > 0.5 ? 'Coperta dai tuoi titoli' : 'Coperta dalla cassa' }),
+        t.fromPot > 0.5 ? h('span', { class: 'code', text: `dalla cassa ${fmtEur(t.fromPot)}: eccedenze e rimborsi arrivati prima` }) : null, heldLine);
+    } else if (!b) {
+      titleCell = h('span', { class: 'ttl' }, h('b', { text: t.fromPot > 0.5 ? (ptf ? 'Coperta in parte dalla cassa' : 'Coperta dalle cedole accantonate') : 'Nessun titolo' }),
+        h('span', { class: 'code', text: t.candidates.length ? 'il limite per emittente impedisce di usare quelli della finestra' : t.need != null ? 'nessun titolo del paniere scade nella finestra' : 'nessun titolo del paniere scade in questo periodo' }), heldLine);
     } else if (!t.nominal) {
       titleCell = h('span', { class: 'ttl' }, h('b', { text: ok ? 'Nessun acquisto: bastano le cedole' : b.desc }),
         h('span', { class: 'code', text: ok ? (t.fromPot > 0.5 ? `cedole accantonate ${fmtEur(t.fromPot)}${t.coupons > 0.5 ? ` e del periodo ${fmtEur(t.coupons)}` : ''}` : `cedole del periodo ${fmtEur(t.coupons)}`)
           : budgetMode ? `il capitale non basta per il lotto minimo (${eur0(b.lot)})` : 'il titolo scelto non scade in questo periodo' }),
-        t.fixed ? h('span', { class: 'tags' }, h('span', { class: 'tag', text: 'scelto da te' })) : null);
-    } else titleCell = bondCell(b, [t.fixed ? h('span', { class: 'tag', text: 'scelto da te' }) : null, rankTag].filter(Boolean));
+        t.fixed ? h('span', { class: 'tags' }, h('span', { class: 'tag', text: 'scelto da te' })) : null, heldLine);
+    } else {
+      titleCell = bondCell(b, [t.topUp ? h('span', { class: 'tag', title: 'Titolo che hai già: ne compri altri pezzi', text: 'ne hai già' }) : null,
+        t.fixed ? h('span', { class: 'tag', text: 'scelto da te' }) : null, rankTag].filter(Boolean));
+      if (heldLine) titleCell.appendChild(heldLine);
+    }
     const n = (v, show = true) => show ? eur0(v) : '—';
     const diff = t.available - t.amount;
     const cells = [
@@ -313,6 +434,7 @@ function rungsPanel(plan) {
       h('td', null, b && t.nominal ? (b.rating || 'NR') : ''),
       h('td', { class: 'num r' }, n(t.nominal, t.nominal > 0)),
       h('td', { class: 'num r' }, n(cost, t.nominal > 0)),
+      ...(ptf ? [h('td', { class: 'num r' }, n(t.heldIn, t.heldIn > 0.5))] : []),
       h('td', { class: 'num r' }, n(t.redemption), b && t.nominal ? h('span', { class: 'dsub', title: 'data del rimborso', text: fmt(b.maturity) }) : null),
       h('td', { class: 'num r' }, n(t.coupons)),
       ...(pooled ? [h('td', { class: 'num r' }, n(t.fromPot))] : []),
@@ -329,16 +451,21 @@ function rungsPanel(plan) {
   const sum = k => plan.targets.reduce((s, t) => s + (t[k] || 0), 0);
   const costTot = plan.positions.reduce((s, p) => s + p.cost, 0);
   const foot = h('tr', { class: 'bench' },
-    h('td', null, h('b', { text: 'Totale' })), h('td', { text: `${plan.positions.length} titoli` }), h('td'), h('td', { class: 'num r', text: fmtPct(plan.irr * 100) }), h('td'),
+    h('td', null, h('b', { text: 'Totale' })), h('td', { text: ptf ? `${plan.positions.length} da comprare` : `${plan.positions.length} titoli` }), h('td'), h('td', { class: 'num r', text: fmtPct(plan.irr * 100) }), h('td'),
     h('td', { class: 'num r', text: eur0(plan.positions.reduce((s, p) => s + p.nominal, 0)) }), h('td', { class: 'num r', text: eur0(costTot) }),
+    ...(ptf ? [h('td', { class: 'num r', text: eur0(sum('heldIn')) })] : []),
     h('td', { class: 'num r', text: eur0(sum('redemption')) }), h('td', { class: 'num r', text: eur0(sum('coupons')) }),
     ...(pooled ? [h('td', { class: 'num r', text: eur0(sum('fromPot')) })] : []),
     h('td', { class: 'num r', text: eur0(sum('available')) }), oneGoal ? null : h('td', { class: 'num r', text: eur0(sum('amount')) }), h('td'));
   const table = h('div', { class: 'tscroll' }, h('table', { class: 't rungs', 'aria-label': 'Scadenze e titoli' },
     h('thead', null, h('tr', null, head.map((x, i) => h('th', { scope: 'col', class: R.has(x) ? 'r' : null, 'aria-sort': i === 0 ? 'ascending' : null, text: x })))),
     h('tbody', null, rows), h('tfoot', null, foot)));
-  return panel('Scadenze e titoli', `${plan.positions.length} titoli · ${oneGoal ? `obiettivo ${fmtEur(plan.targets[0].amount)} a scadenza · ` : ''}euro netti · riga o Cambia per scegliere un altro titolo`, table,
-    h('p', { class: 'note', style: { padding: '6px 10px' } }, 'Netto: rendimento netto annuo del titolo (STFI). Disponibile: rimborso e cedole che arrivano nel periodo della scadenza', pooled ? ', più le cedole accantonate' : '', '. Costo: nominale al prezzo del file più il rateo, valuta ', fmt(plan.settle), '.'));
+  const note = ptf
+    ? ['Netto: rendimento netto annuo del titolo nuovo (STFI). Tuoi titoli: rimborsi e cedole nette dei titoli che hai già, nel periodo della scadenza (la tassa sulla plusvalenza è calcolata sul tuo prezzo di carico). Rimborso e Cedole: dei nuovi acquisti.',
+      pooled ? ' Dalla cassa: eccedenze delle scadenze precedenti e rimborsi arrivati fuori dai periodi, senza interessi.' : '', ' Costo: nominale al prezzo del file più il rateo, valuta ', fmt(plan.settle), '.']
+    : ['Netto: rendimento netto annuo del titolo (STFI). Disponibile: rimborso e cedole che arrivano nel periodo della scadenza', pooled ? ', più le cedole accantonate' : '', '. Costo: nominale al prezzo del file più il rateo, valuta ', fmt(plan.settle), '.'];
+  return panel('Scadenze e titoli', `${ptf ? `${plan.positions.length} da comprare` : `${plan.positions.length} titoli`} · ${oneGoal ? `obiettivo ${fmtEur(plan.targets[0].amount)} a scadenza · ` : ''}euro netti · riga o Cambia per scegliere un altro titolo`, table,
+    h('p', { class: 'note', style: { padding: '6px 10px' } }, ...note));
 }
 
 /* ---------------------------- Rendita mensile ---------------------------- */

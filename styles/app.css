@@ -171,6 +171,9 @@ textarea.input { resize: vertical; min-height: 64px; font: 12.5px/1.45 var(--f-m
 .chart .s1 { fill: var(--ink); }
 .chart .s2 { fill: var(--chart-trail); }
 .chart .s3 { fill: var(--chart-line); }
+.chart .s4 { fill: var(--amber-fill); }                 /* la parte pagata dai titoli che hai già */
+.t .held-list { display: block; margin-top: 2px; }
+.t .held-list .mine { font: 600 9.5px var(--f-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber); }
 .chart .target { stroke: var(--blue); stroke-width: 2; }
 .chart .avg { stroke: var(--amber); stroke-width: 1; }
 .chart .avgtag { fill: var(--amber); }
