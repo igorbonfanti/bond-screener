@@ -131,3 +131,34 @@ test('rendita attorno al portafoglio: cedole dei tuoi titoli come base, prima e 
   const again = planIncome(ds, bonds, { yearFrom: 2028, yearTo: 2036, issuerCap: 1, tradeoff: 1, capital: 30000, holdings: [] });
   assert.deepEqual(again.positions.map(x => [x.bond.isin, x.nominal]), alone.positions.map(x => [x.bond.isin, x.nominal]));
 });
+
+test('cassa: entrate prima della scadenza, prelievi, eccedenze e saldo quadrano', () => {
+  const ds = load();
+  const { bonds } = applyBasket(ds, {});
+  const targets = regularTargets({ yearFrom: 2027, yearTo: 2030, everyMonths: 12, amount: 10000 }, ds.settle);
+  const b27 = inYear(bonds, 2027);
+  const holdings = held(ds, [{ isin: b27.isin, nominal: 25000, carico: 100 }]);
+  const p = planCapital(ds, bonds, { targets, issuerCap: 1, holdings, accumulate: true });
+  let bal = 0;
+  for (const t of p.targets) {
+    bal += t.potInNew + t.potInHeldRed + t.potInHeldCpn - t.fromPot + t.carried;
+    assert.ok(Math.abs(bal - t.potAfter) < 1e-6, `${t.label}: saldo dopo la scadenza`);
+  }
+  assert.ok(p.targets[0].carried > 14000 && p.targets[1].fromPot > 9000, 'l\'eccedenza del 2027 va in cassa e paga il 2028');
+  assert.ok(p.potLeft + 1e-6 >= p.targets[p.targets.length - 1].potAfter, 'avanzo finale: il saldo più le cedole arrivate dopo');
+});
+
+test('annuali «entro fine mese»: come una data precisa ogni anno con 12 mesi di finestra', () => {
+  const ds = load();
+  const st = defaults(ds.refDate);
+  st.goal = 'capital';
+  Object.assign(st.capital, { schedule: 'yearly', byMonth: 8, yearFrom: 2027, yearTo: 2030, amount: 10000, start: 'amounts' });
+  const a = compute(ds, st).plan;
+  assert.deepEqual(a.targets.map(t => [t.label, parts(t.need).m, parts(t.need).d]), [2027, 2028, 2029, 2030].map(y => [String(y), 8, 31]));
+  for (const t of a.targets) assert.ok(!t.bond || !t.nominal || (t.bond.maturity <= t.need && t.bond.maturity > t.start), `${t.label}: il titolo scade entro fine agosto`);
+  Object.assign(st.capital, { schedule: 'dates', flexMonths: 12, dates: [2027, 2028, 2029, 2030].map(y => ({ label: String(y), date: `${y}-08-31`, amount: 10000 })) });
+  const b = compute(ds, st).plan;
+  assert.ok(Math.abs(a.totalCost - b.totalCost) < 1e-6, 'stesso risultato delle date precise');
+  st.capital.schedule = 'yearly'; st.capital.byMonth = 0;
+  assert.equal(compute(ds, st).plan.targets[0].need, null, 'senza mese: anno solare, come prima');
+});

@@ -1,4 +1,4 @@
-# Bond Ladder — v3.5.0
+# Bond Ladder — v3.6.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -17,11 +17,16 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
 1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile`, `3 Portafoglio` (i titoli che hai già) oppure
    `4 Le mie scale` (le scale salvate).
 2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
+   Con le scadenze annuali puoi dire **entro quale mese** ti servono i soldi (rette, affitti, tasse): ogni anno il
+   titolo scade nei 12 mesi prima della fine di quel mese e contano le cedole di quei 12 mesi.
 3. **Titoli ammessi**: aree (area euro, sovranazionali, altri Stati in euro), rating minimo, emittenti uno per uno,
    solo sotto la pari, liquidità minima, quota massima per emittente.
 
 La proposta si aggiorna mentre modifichi i parametri. Per ogni scadenza puoi **cambiare titolo** (elenco delle
-alternative o tocco sulla mappa dei rendimenti). La proposta si salva, si stampa, si esporta in CSV e si condivide.
+alternative o tocco sulla mappa dei rendimenti). **Confronta le alternative** ricalcola la proposta cambiando una
+impostazione alla volta (quota per emittente, eccedenze, cedole di prima, mese delle scadenze…) e la applica con un
+clic. Il pannello **Movimenti di cassa** mostra i soldi che arrivano prima che servano: entrate, prelievi, saldo e
+attesa. La proposta si salva, si stampa, si esporta in CSV e si condivide.
 
 Dalla tastiera: `1`–`4` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
 Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
@@ -43,24 +48,45 @@ per testi e linee (almeno 4,5:1 sul bianco), riempimenti in ambra viva con testo
 testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condivisa con le altre app del sito.
 
 ## Metodo in breve
-- **Flussi e tasse**: calendario cedole dai mesi di stacco del file, rateo ACT/ACT, valuta T+2, ritenuta 12,5%
-  (Stati e sovranazionali) o 26%, credito d'imposta sul rateo pagato, tassa sulla plusvalenza a scadenza
-  (azzerata con l'opzione "zainetto", che usa il rendimento *super netto* di STFI). I rendimenti ricalcolati
-  coincidono con quelli di STFI per oltre il 97% dei titoli entro 0,05 punti (test sui dati reali).
+- **Flussi e tasse** (D.Lgs. 239/1996): calendario cedole dai mesi di stacco del file, rateo ACT/ACT, valuta T+2
+  sul calendario TARGET (T+1 dall'11/10/2027),
+  ritenuta 12,5% (Stati e sovranazionali) o 26%. All'acquisto il credito d'imposta sul rateo e sul disaggio di
+  emissione già maturato riduce il costo; a scadenza si paga l'imposta su tutto il disaggio e sulla plusvalenza
+  rispetto al prezzo teorico (emissione + disaggio maturato; azzerata con l'opzione "zainetto", che usa il rendimento
+  *super netto* di STFI). Il disaggio maturato si ricava dal super netto di STFI (il file non ha la data di
+  emissione). BTP Valore, Più e Futura comprati sul mercato: cedole dal calendario degli scalini (`retail-btp.js`).
+  I rendimenti ricalcolati coincidono con quelli di STFI entro 0,01 punti per oltre il 99% dei titoli di Stato e
+  sovranazionali (test sui dati reali).
 - **Capitale a scadenza**: *cash-flow matching* all'indietro (dall'ultima scadenza alla prima: rimborso + cedole
   del periodo). Il periodo di una scadenza è il suo anno o semestre (con le date precise, i 12 mesi prima della
   data): le cedole incassate prima della scala, o fra due date lontane, non contano per gli importi — resterebbero
   ferme per anni e in una scala che parte tardi toglierebbero il primo titolo — e sono indicate a parte come
   entrata in più. Con l'opzione **"Accantona le cedole di prima"** restano invece da parte (senza interessi) e
   pagano in ordine le prime scadenze, con l'avanzo che passa alla successiva (punto fisso: la cassa dipende dai
-  titoli e i titoli dalla cassa). La scelta dei titoli è **esatta**: flusso a costo minimo con importi uguali, branch & bound
-  altrimenti; prima si coprono tutte le scadenze coperte possibili, poi si massimizza il rendimento netto nel
-  rispetto della quota per emittente. Con le date precise conta il rendimento effettivo alla data.
+  titoli e i titoli dalla cassa). La scelta parte da quella **esatta** per rendimento: flusso a costo minimo con
+  importi uguali, branch & bound altrimenti; prima si coprono tutte le scadenze coperte possibili, poi si massimizza il
+  rendimento netto nel rispetto della quota per emittente (con le date precise conta il rendimento effettivo alla
+  data). Poi la scelta si migliora **per costo**: il rendimento a scadenza presume le cedole reinvestite allo stesso
+  tasso, mentre nella scala quelle che arrivano dove i soldi non servono restano in cassa allo 0%, e i lotti
+  arrotondano. Discesa per coordinate (un titolo alla volta fra i migliori 6-16 candidati della scadenza; nelle scale
+  fino a 8 scadenze anche a coppie e con ripartenze), valutata prima sul costo senza lotti (limite inferiore) e poi a
+  lotti interi; si tiene un cambio solo se tutta la scala costa meno con ogni scadenza coperta come prima. I lotti
+  interi si fissano per eccesso, poi si tolgono quelli di troppo e si scambiano lotti fra scadenze (la cassa porta le
+  eccedenze a quelle dopo, le cedole di un titolo pagano quelle prima). Nessun limite di tempo: stessa proposta su ogni
+  dispositivo. Sui dati del 30/09/2026, 24 scale senza portafoglio: capitale −2,2% in mediana (da −0,2% a −5,1%), mai
+  di più, stesse somme garantite; buona parte del risparmio è denaro che prima tornava come eccedenza alle scadenze.
+  Partendo dal capitale, la somma per scadenza è la più alta che i titoli scelti **garantiscono a ogni scadenza** con i
+  lotti interi (bisezione), poi la scelta si migliora per costo e la somma sale.
+  Il **rendimento alle scadenze** va dal capitale di oggi alle somme alle date che servono, più i soldi che tornano
+  liberi (la cassa ferma rende zero): a parità di somme ordina le proposte come il costo, ed è quello del confronto.
 - **Rendita mensile**: programmazione lineare (javascript-lp-solver) che massimizza la cedola netta del mese più
   povero e poi il rendimento; scadenze distribuite negli anni, quote per emittente e per titolo, pulizia delle
-  posizioni piccole senza mai scoprire un mese, arrotondamento ai lotti con scambi locali.
+  posizioni piccole senza mai scoprire un mese, arrotondamento ai lotti con scambi locali. Ogni soluzione del
+  risolutore si verifica sui vincoli (se non li rispetta non si usa); i BTP a cedola crescente contano nell'anno tipo
+  con la cedola più bassa dell'orizzonte; la rendita si mostra anche anno per anno, fino all'ultima scadenza.
 - Esclusi dai calcoli: commissioni, imposta di bollo, spread denaro-lettera. BTP Italia/BTP€i esclusi di default
-  (rendimento "senza indicizzazione"); step-up stimati con la cedola attuale.
+  (rendimento "senza indicizzazione"); step-up fuori tabella stimati con la cedola attuale (e scelti con il rendimento
+  di quei flussi, per coerenza).
 
 ## Il portafoglio che hai già
 - **Caricamento** (vista `3 Portafoglio`): export della banca in Excel (`.xls` binario, `.xlsx`, Excel XML), CSV o
@@ -83,18 +109,24 @@ testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condi
   ogni scadenza si compra solo il fabbisogno residuo, che è anche il peso nella scelta dei titoli. Le eccedenze di una
   scadenza e i rimborsi che arrivano fuori dai periodi vanno in **cassa** (senza interessi) e pagano le scadenze dopo;
   l'app misura la **cassa ferma** (euro × anni) e calcola anche la scelta opposta (eccedenze restituite, scadenze
-  scoperte coperte con acquisti di oggi) per confronto. Partendo dal capitale, la somma per scadenza si trova per
+  scoperte coperte con acquisti di oggi). Il confronto è un **investimento**: senza la cassa si spende ΔC in più oggi e
+  tornano ΔR più avanti; l'app ne dà il rendimento (TIR) e lo confronta con la mediana dei rendimenti netti dei titoli
+  del paniere che scadono entro 6 mesi dalla data media dei soldi che tornano (soglia ±0,25 punti). Gli «interessi
+  persi» sulla cassa ferma, da soli, ingannano: senza cassa servono più acquisti oggi, che rendono anch'essi.
+  Partendo dal capitale, la somma per scadenza si trova per
   **bisezione** (il costo non è più proporzionale all'importo). Il limite per emittente vale sul **portafoglio
   complessivo**. La preferenza per i propri titoli è un piccolo vantaggio di rendimento nella scelta (0,10 punti con
-  «Equilibrato»; «I miei titoli» li preferisce sempre, anche fuori dai filtri del paniere). Il branch & bound usa un
+  «Equilibrato»; «I miei titoli» li preferisce sempre, anche fuori dai filtri del paniere), che nella scelta per costo
+  diventa uno sconto equivalente (0,10% del costo per anno di durata). Il branch & bound usa un
   limite superiore dinamico (il miglior candidato che ci sta ancora): stesso ottimo, molti meno nodi.
 - **Rendita mensile attorno al portafoglio**: le cedole nette dei titoli posseduti sono una base fissa di ogni mese
   nel modello lineare (il mese più povero è base + nuovo); quote per emittente e per titolo e distribuzione delle
   scadenze contano anche i posseduti; i titoli che scadono prima dell'orizzonte non entrano nell'anno tipo. Con la
   rendita desiderata il capitale si trova per bisezione sul modello lineare, correggendo la perdita dovuta a lotti e
   pulizia delle posizioni piccole.
-- Senza portafoglio i due motori danno risultati **identici** a prima (verificato su 194 configurazioni del capitale e
-  64 della rendita con i dati reali).
+- Senza portafoglio i motori sono quelli di sempre, con le correzioni della v3.6 (scelta per costo nel capitale,
+  verifica delle soluzioni del programma lineare nella rendita): i test confrontano ogni proposta con i vincoli
+  (scadenze coperte, capitale, quote, identità dei flussi) su configurazioni casuali con i dati reali.
 
 ## Dati: aggiornamento automatico
 Il workflow `.github/workflows/stfi-data.yml` gira ogni sera nei giorni lavorativi. Legge `documentivari.php`,

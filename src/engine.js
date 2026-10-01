@@ -4,7 +4,7 @@ import { applyBasket, issuerCatalog } from './core/basket.js';
 import { regularTargets, dateTargets, planCapital, ALWAYS } from './core/capital.js';
 import { planIncome, planIncomeTarget } from './core/income.js';
 import { parseDay, day } from './core/dates.js';
-import { scoreYield } from './core/bond.js';
+import { scoreYield, xirr } from './core/bond.js';
 import { resolveHoldings } from './portfolio.js';
 import { RETAIL_BTP } from './data/retail-btp.js';
 
@@ -35,6 +35,13 @@ export function capitalTargets(ds, c) {
     const list = (c.dates || []).map(d => ({ day: parseDay(d.date), amount: +d.amount, label: (d.label || '').trim() }))
       .filter(x => x.day != null && x.amount > 0);
     return dateTargets(list, c.flexMonths, ds.settle);
+  }
+  // Annuali «entro fine del mese M» (rette, tasse…): una data per anno, il titolo scade nei 12 mesi prima
+  const M = c.schedule === 'yearly' ? +c.byMonth : 0;
+  if (M >= 1 && M <= 11) {
+    const list = [];
+    for (let y = c.yearFrom; y <= c.yearTo; y++) list.push({ day: day(y, M + 1, 1) - 1, amount: c.start === 'budget' ? 1 : c.amount, label: String(y) });
+    return dateTargets(list, 12, ds.settle);
   }
   return regularTargets({
     yearFrom: c.yearFrom, yearTo: c.yearTo, everyMonths: c.schedule === 'semester' ? 6 : 12,
@@ -71,6 +78,25 @@ function portfolioInput(ds, st, zainetto, basket) {
   };
 }
 
+/** Eccedenze in cassa (allo 0%) o restituite? Il piano senza carry costa ΔC in più oggi e restituisce ΔR in più più avanti:
+    è un investimento, con un suo rendimento, da confrontare con quello dei titoli del paniere di pari durata (mediana dei
+    rendimenti netti di chi scade entro 6 mesi dalla data media dei soldi che tornano). Gli «interessi persi» sulla cassa
+    ferma non bastano: senza cassa servono più acquisti oggi, che rendono anch'essi. */
+function carryTradeOff(plan, alt, bonds, zainetto, settle) {
+  const [withCarry, without] = plan.carry ? [plan, alt] : [alt, plan];
+  const dC = without.totalCost - withCarry.totalCost;
+  const flows = without.returned.concat(withCarry.returned.map(f => ({ ...f, amount: -f.amount }))).sort((a, b) => a.day - b.day);
+  const dR = flows.reduce((s, f) => s + f.amount, 0);
+  if (!(dC > 50) || !(dR > 0)) return {};
+  const pos = flows.filter(f => f.amount > 0), w = pos.reduce((s, f) => s + f.amount, 0);
+  const meanDay = Math.round(pos.reduce((s, f) => s + f.amount * f.day, 0) / w);
+  const main = pos.reduce((m, f) => f.amount > m.amount ? f : m, pos[0]);
+  const irr = dR > dC ? xirr([{ day: settle, amount: -dC }].concat(flows)) : NaN;
+  const ys = bonds.filter(b => Math.abs(b.maturity - meanDay) <= 183).map(b => scoreYield(b, zainetto)).filter(Number.isFinite).sort((a, b) => a - b);
+  return { extraToday: dC, extraBack: dR, mainBackDay: main.day, years: (meanDay - settle) / 365.25,
+    diffIrr: irr, benchYield: ys.length ? ys[Math.floor(ys.length / 2)] / 100 : NaN };
+}
+
 export function compute(ds, st) {
   const bk = basketFromSettings(ds, st.basket);
   let { bonds, excluded } = applyBasket(ds, bk);
@@ -94,31 +120,17 @@ export function compute(ds, st) {
       // L'altra scelta sulle eccedenze, per confronto: quanto si comprerebbe oggi (o quanto si riceverebbe)
       const alt = planCapital(ds, bonds, { ...cfg, carry: !cfg.carry });
       out.plan.alt = { carry: !cfg.carry, totalCost: alt.totalCost, idleEuroYears: alt.idleEuroYears || 0,
-        perTarget: alt.targets.reduce((s, t) => s + t.amount, 0) / alt.targets.length };
+        perTarget: alt.targets.reduce((s, t) => s + t.amount, 0) / alt.targets.length,
+        ...(budget == null ? carryTradeOff(out.plan, alt, bonds, zainetto, ds.settle) : {}) };
     }
     if (targets.length) out.map = mapPoints(bonds, Math.min(...targets.map(t => t.start)), Math.max(...targets.map(t => t.end)), zainetto);
   } else if (st.goal === 'income') {
     const i = st.income;
     const base = { yearFrom: i.yearFrom, yearTo: i.yearTo, ladder: i.ladder, issuerCap: st.basket.issuerCap, tradeoff: i.tradeoff, zainetto };
-    if (port.holdings.length) {
-      // attorno al portafoglio: le sue cedole sono la base di ogni mese
-      Object.assign(base, { holdings: port.holdings, heldBonus: port.incomeBonus, heldPool: port.pool });
-      out.plan = i.start === 'target' && i.monthlyTarget > 0 ? planIncomeTarget(ds, bonds, base, i.monthlyTarget)
-        : planIncome(ds, bonds, { ...base, capital: Math.max(0, +i.capital || 0) });
-    } else if (i.start === 'target' && i.monthlyTarget > 0) {
-      const probe = planIncome(ds, bonds, { ...base, capital: 100000 });
-      if (!probe.empty && probe.minMonth > 0) {
-        let C = Math.ceil(i.monthlyTarget / probe.minMonth * 100000 / 1000) * 1000;
-        let res = planIncome(ds, bonds, { ...base, capital: C });
-        for (let k = 0; k < 4 && !res.empty && res.minMonth < i.monthlyTarget; k++) {
-          C = Math.ceil(C * i.monthlyTarget / Math.max(1, res.minMonth) / 1000 + 1) * 1000;
-          res = planIncome(ds, bonds, { ...base, capital: C });
-        }
-        out.plan = { ...res, monthlyTarget: i.monthlyTarget };
-      } else out.plan = probe;
-    } else {
-      out.plan = planIncome(ds, bonds, { ...base, capital: Math.max(0, +i.capital || 0) });
-    }
+    // attorno al portafoglio: le sue cedole sono la base di ogni mese
+    if (port.holdings.length) Object.assign(base, { holdings: port.holdings, heldBonus: port.incomeBonus, heldPool: port.pool });
+    out.plan = i.start === 'target' && i.monthlyTarget > 0 ? planIncomeTarget(ds, bonds, base, i.monthlyTarget)
+      : planIncome(ds, bonds, { ...base, capital: Math.max(0, +i.capital || 0) });
     out.map = mapPoints(bonds, day(i.yearFrom, 1, 1) - 1, day(i.yearTo, 12, 31), zainetto);
   }
   return out;

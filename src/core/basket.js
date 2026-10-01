@@ -1,6 +1,8 @@
 /* Paniere: quali titoli sono ammessi, con il motivo di ogni esclusione (per spiegarlo all'utente). */
 import { ratingScore } from '../data/stfi.js';
-import { costPer100, netYield } from './bond.js';
+import { costPer100, netYield, impliedDiscAccrued } from './bond.js';
+import { parseDay } from './dates.js';
+import { RETAIL_BTP } from '../data/retail-btp.js';
 
 export const DEFAULT_BASKET = {
   groups: { euro: true, extra: false, sov: true, corp: false },   // aree: vedi AREAS in stfi.js
@@ -13,16 +15,36 @@ export const DEFAULT_BASKET = {
   includeStepUp: true
 };
 
+/** Scarto massimo (punti) fra rendimento lordo dai flussi e quello di STFI prima di scartare il titolo. */
+export const ANOMALY_GAP = 0.15;
+
 /** Calcoli per titolo che non dipendono dalle scelte dell'utente (una volta per file). */
 export function enrich(ds) {
   for (const b of ds.bonds) {
+    // Cedole crescenti dei BTP per i risparmiatori comprati sul mercato (ISIN di mercato, senza premio)
+    const retail = RETAIL_BTP[b.isin];
+    if (retail && retail.steps && retail.steps.length > 1 && !b.steps)
+      b.steps = retail.steps.map(s => ({ from: parseDay(s.from), rate: +s.rate })).filter(s => s.from != null).sort((x, y) => x.from - y.from);
+    // Disaggio di emissione già maturato (serve al credito d'imposta all'acquisto e alla plusvalenza)
+    const acc = impliedDiscAccrued(b, ds.settle);
+    if (acc != null) b.discAcc = acc;
     b.cost = costPer100(b, ds.settle);
-    // Controllo di coerenza: se il rendimento lordo ricalcolato dai flussi si discosta molto
-    // da quello di STFI (e il titolo non ha cedole variabili) il dato è anomalo.
-    if (!b.stepUp && !b.inflation && b.maturity > ds.settle + 30 && Number.isFinite(b.ytmGross)) {
+    // Controllo di coerenza: se il rendimento lordo ricalcolato dai flussi si discosta da quello di STFI
+    // (e l'app conosce tutte le cedole) il dato è anomalo. Con flussi e fiscalità allineati a STFI i titoli di
+    // Stato coincidono entro 0,01 punti: 0,15 basta a scartare gli errori del file (es. una cedola sbagliata
+    // nel piano STFI, EU 12/03/2030: 3,75% invece di 3,375%, rendimento +0,33 punti).
+    const known = !b.inflation && (!b.stepUp || b.steps);
+    if (known && b.maturity > ds.settle + 30 && Number.isFinite(b.ytmGross)) {
       const own = netYield({ ...b, tax: 0 }, ds.settle);
-      b.anomaly = !Number.isFinite(own) || Math.abs(own - b.ytmGross) > 1;
+      b.anomaly = !Number.isFinite(own) || Math.abs(own - b.ytmGross) > ANOMALY_GAP;
     } else b.anomaly = false;
+    // Cedole variabili che l'app non conosce (step-up fuori tabella): la scelta usa il rendimento dei flussi
+    // stimati con la cedola di oggi, gli stessi del dimensionamento, se si discosta da quello di STFI.
+    delete b.flowYield;
+    if (b.stepUp && !b.steps && b.maturity > ds.settle + 30 && Number.isFinite(b.ytmNet)) {
+      const net = netYield(b, ds.settle), superNet = netYield(b, ds.settle, { zainetto: true });
+      if (Number.isFinite(net) && Math.abs(net - b.ytmNet) > 0.05) b.flowYield = { net, superNet };
+    }
   }
   return ds;
 }

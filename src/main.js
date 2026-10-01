@@ -17,7 +17,7 @@ import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.5.0';
+const VERSION = '3.6.0';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
 const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'
@@ -355,7 +355,9 @@ function renderBuildResults() {
     onExclude: (isin, desc) => { app.st.basket.excludedIsins = [...new Set([...(app.st.basket.excludedIsins || []), isin])]; settingsChanged(); renderSettings(); toast(`Escluso: ${desc}`, 'ok'); },
     onAlternatives: openAlternatives,
     onSave: openSave,
-    onShare: shareConfig
+    onShare: shareConfig,
+    onPatch: patchSettings,
+    onCompare: openCompare
   } });
   const meta = `${fmtNum(app.result.basketCount, 0)} su ${fmtNum(app.ds.bonds.length, 0)} titoli`;
   if (app.settings) app.settings.basketMeta = meta;
@@ -408,6 +410,94 @@ function openAlternatives(t) {
     sub: `${t.candidates.length} titoli · ${eff ? 'rendimento effettivo alla data (conta anche l\'attesa)' : 'rendimento netto'}${t.candidates.length > list.length ? ` · i primi ${list.length}` : ''}`,
     body,
     foot: t.fixed ? [h('button', { type: 'button', class: 'mini', text: 'Torna alla scelta automatica', on: { click: () => { closeSheet(); const f = { ...app.st.fixed }; delete f[t.label]; app.st.fixed = f; settingsChanged(); } } })] : null });
+}
+
+/** Cambia un'impostazione dai risultati (pulsanti «Prova», «Usa»): ricalcola e ridisegna il pannello impostazioni. */
+function patchSettings(fn, msg) {
+  fn(app.st);
+  settingsChanged();
+  renderSettings();
+  if (msg) toast(msg, 'ok');
+}
+
+/* ---------------- Confronto rapido fra scelte ---------------- */
+const CAP_NAMES = [[1, 'libera'], [0.5, 'fino al 50%'], [1 / 3, 'fino al 33%'], [0.25, 'fino al 25%']];
+const PREF_NAMES = [['mine', 'I miei titoli'], ['balanced', 'Equilibrato'], ['yield', 'Rendimento']];
+/** La proposta di adesso con una sola impostazione cambiata: le scelte che contano di più per chi ha già un portafoglio. */
+function scenarios(st) {
+  const ptf = st.usePortfolio !== false && app.portfolio.holdings.length > 0, c = st.capital, out = [];
+  if (ptf) out.push(st.portfolioCarry !== false
+    ? { name: 'Senza usare le eccedenze', note: 'tornano a te', apply: s => { s.portfolioCarry = false; } }
+    : { name: 'Usando le eccedenze', note: 'restano in cassa', apply: s => { s.portfolioCarry = true; } });
+  for (const [v, n] of CAP_NAMES) if (Math.abs(v - st.basket.issuerCap) > 1e-6) out.push({ name: `Quota per emittente ${n}`, apply: s => { s.basket.issuerCap = v; } });
+  if (ptf) for (const [k, n] of PREF_NAMES) if (k !== (st.portfolioPref || 'balanced')) out.push({ name: `Nuovi acquisti: ${n}`, apply: s => { s.portfolioPref = k; } });
+  if (c.useCoupons) out.push(c.accumulate
+    ? { name: 'Senza accantonare le cedole di prima', apply: s => { s.capital.accumulate = false; } }
+    : { name: 'Accantonando le cedole di prima', apply: s => { s.capital.accumulate = true; } });
+  if (c.schedule === 'yearly') out.push(c.byMonth >= 1 && c.byMonth <= 11
+    ? { name: 'In qualsiasi mese dell\'anno', note: 'anche a dicembre', apply: s => { s.capital.byMonth = 0; s.fixed = {}; } }
+    : { name: 'Entro fine agosto di ogni anno', note: 'per esempio per le rette', apply: s => { s.capital.byMonth = 8; s.fixed = {}; } });
+  return out;
+}
+
+/** Numeri di una proposta per il confronto. */
+function scenarioFacts(plan) {
+  const ptf = !!plan.holdings;
+  const m = new Map();
+  for (const x of (plan.holdings || []).concat(plan.positions)) m.set(x.bond.issuerName, (m.get(x.bond.issuerName) || 0) + x.nominal);
+  const tot = [...m.values()].reduce((a, b) => a + b, 0), top = [...m.entries()].sort((a, b) => b[1] - a[1])[0];
+  return {
+    cost: plan.totalCost, per: plan.targets.length ? plan.targets.reduce((s, t) => s + t.amount, 0) / plan.targets.length : 0,
+    // rendimento alle scadenze: dal capitale di oggi alle somme alle date che servono (la cassa ferma rende zero), ordina
+    // le proposte come il costo; il rendimento dei titoli premierebbe anche chi compra più del necessario
+    irr: plan.goalIrr, covered: plan.targets.filter(t => t.available + 0.5 >= t.amount).length, T: plan.targets.length,
+    idle: plan.idleEuroYears || 0,
+    top: top && tot > 0 ? `${top[0]} ${fmtNum(top[1] / tot * 100, 0)}%` : '—'
+  };
+}
+
+/** Dialogo: la proposta di adesso e le alternative (calcolate su richiesta nel worker, una alla volta), con «Usa». */
+async function openCompare() {
+  const r0 = app.result && app.result.plan;
+  if (!r0 || r0.mode !== 'capital' || !r0.targets.length) { toast('Niente da confrontare', 'err'); return; }
+  const st0 = JSON.parse(JSON.stringify(app.st)), base = scenarioFacts(r0), budget = r0.budget != null, ptf = !!r0.holdings;
+  const list = scenarios(st0);
+  const per = st0.capital.schedule === 'semester' ? 'semestre' : 'anno';
+  const cell = (v, d) => [h('span', { text: v }), d ? h('span', { class: 'dsub', text: d }) : null];
+  const facts = (f, isBase) => [
+    h('td', { class: 'num r' }, budget ? cell(fmtEur(f.per), isBase ? `per ${per}` : trendText(f.per - base.per, 0, ' €')) : cell(fmtEur(f.cost), isBase ? 'oggi' : trendText(f.cost - base.cost, 0, ' €'))),
+    h('td', { class: 'num r' }, cell(fmtPct(f.irr * 100), isBase ? 'alle scadenze' : trendText((f.irr - base.irr) * 100, 2, ' pt'))),
+    h('td', { class: 'num r', text: `${f.covered}/${f.T}` }),
+    ...(ptf ? [h('td', { class: 'num r', title: 'soldi fermi in cassa senza interessi, in euro per un anno', text: fmtEur(f.idle) })] : []),
+    h('td', { text: f.top })];
+  // «Usa» sotto il nome della scelta: sul telefono resta visibile anche se la tabella scorre di lato
+  const rows = list.map(sc => {
+    sc.name0 = h('td', { class: 'wrap' }, h('b', { text: sc.name }), sc.note ? h('span', { class: 'dsub', text: sc.note }) : null);
+    sc.tr = h('tr', null, sc.name0, h('td', { class: 'num', colspan: ptf ? 5 : 4, text: 'calcolo…' }));
+    return sc.tr;
+  });
+  const head = ['Scelta', budget ? `Somma per ${per}` : 'Da comprare', 'Rendimento', 'Coperte', ...(ptf ? ['Cassa ferma'] : []), 'Emittente più pesante'];
+  const body = h('div', { class: 'stack' },
+    h('p', { class: 'note', text: `Ogni riga cambia una sola impostazione rispetto alla proposta di adesso. Sotto i numeri la differenza (${budget ? 'più alto è meglio' : 'più basso costa meno'}). «Rendimento»: dal capitale di oggi alle somme alle date che ti servono, con la cassa ferma a zero${ptf ? '; «Cassa ferma»: soldi in attesa delle scadenze, senza interessi, in euro per un anno' : ''}. «Usa» applica la scelta.` }),
+    h('div', { class: 'tscroll' }, h('table', { class: 't compact cmp' },
+      h('caption', { class: 'sr', text: 'Confronto fra la proposta di adesso e le alternative' }),
+      h('thead', null, h('tr', null, head.map((x, i) => h('th', { scope: 'col', class: i > 0 && i < head.length - 1 ? 'r' : null, text: x })))),
+      h('tbody', null, h('tr', { class: 'sel' }, h('td', { class: 'wrap' }, h('b', { text: 'Come adesso' }), h('span', { class: 'dsub', text: 'la proposta che vedi' })), facts(base, true)), rows))));
+  openSheet({ title: 'Confronta le alternative', sub: 'stesse scadenze e importi, una scelta diversa alla volta', wide: true, body });
+  for (const sc of list) {
+    const st = JSON.parse(JSON.stringify(st0));
+    sc.apply(st);
+    try {
+      const p = (await computeAsync(st)).plan;
+      if (!sc.tr.isConnected) return;                         // dialogo chiuso: basta calcoli
+      sc.name0.appendChild(h('span', { class: 'row-acts' }, h('button', { type: 'button', class: 'mini', text: 'Usa', 'aria-label': `Usa: ${sc.name}`,
+        on: { click: () => { closeSheet(); patchSettings(sc.apply, `Impostazione cambiata: ${sc.name.toLowerCase()}`); } } })));
+      sc.tr.replaceChildren(sc.name0, ...facts(scenarioFacts(p), false));
+    } catch (e) {
+      if (!sc.tr.isConnected) return;
+      sc.tr.replaceChildren(sc.name0, h('td', { class: 'muted', colspan: ptf ? 5 : 4, text: `non calcolata: ${e.message}` }));
+    }
+  }
 }
 
 function buildDoc(name) {
@@ -756,6 +846,8 @@ async function boot() {
     (inResults ? panel : res).scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' });
   });
   window.addEventListener('scroll', debounce(updateBarButton, 80), { passive: true });
+  // in stampa gli elenchi chiusi (i tuoi titoli di ogni scadenza) si aprono: sulla carta non si clicca
+  window.addEventListener('beforeprint', () => document.querySelectorAll('details.held-list').forEach(d => { d.open = true; }));
   window.addEventListener('hashchange', route);
   wireKeys();
   wireLogin();

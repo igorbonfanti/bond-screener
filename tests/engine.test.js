@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { day, parseDay, addMonths, addBusinessDays, fmt, iso, parts } from '../src/core/dates.js';
 import { num, parseCSV, loadText } from '../src/data/stfi.js';
-import { couponDates, accrued, cashflows, xirr, netYield, gainTax } from '../src/core/bond.js';
+import { couponDates, accrued, cashflows, xirr, netYield, gainTax, costPer100 } from '../src/core/bond.js';
 import { enrich, applyBasket } from '../src/core/basket.js';
 import { selectPerSlot, assignByFlow, branchAndBound } from '../src/core/select.js';
 import { regularTargets, dateTargets, planCapital } from '../src/core/capital.js';
@@ -50,16 +50,23 @@ test('normalizzazione export STFI', () => {
   assert.throws(() => loadText('a;b\n1;2\n'), /simpletoolsforinvestors/);
 });
 
-test('flussi di un titolo: calendario, rateo, credito sul rateo, plusvalenza', () => {
+test('flussi di un titolo: calendario, rateo, crediti d\'imposta all\'acquisto, disaggio e plusvalenza', () => {
   const ds = load();
-  const b = ds.bonds.find(x => x.desc.startsWith('BTP 01/02/2027'));
+  const b0 = ds.bonds.find(x => x.desc.startsWith('BTP 01/02/2027'));
+  const b = { ...b0, discAcc: 0.4 };                        // emesso a 99,5: 0,4 di disaggio già maturato → teorico 99,9
   assert.deepEqual(couponDates(b, ds.settle, b.maturity).map(fmt), ['01/02/2027']);
   const acc = accrued(b, ds.settle);                       // 1,25 × 58/184 (dal 01/08 al 28/09)
   assert.ok(Math.abs(acc - 1.25 * 58 / 184) < 1e-9);
+  // D.Lgs. 239/1996: all'acquisto si riceve il credito dell'imposta su rateo e disaggio maturato (li paga il venditore)
+  assert.ok(Math.abs(costPer100(b, ds.settle) - (99.4 + acc - 0.125 * (acc + 0.4))) < 1e-9, 'costo netto dei crediti');
   const fl = cashflows(b, ds.settle);
-  assert.ok(Math.abs(fl[0].tax - 0.125 * (1.25 - acc)) < 1e-9, 'tassata solo la parte maturata dopo l\'acquisto');
-  assert.ok(Math.abs(fl.at(-1).net - (100 - 0.125 * (100 - 99.4))) < 1e-9, 'rimborso netto della tassa sulla plusvalenza');
-  assert.ok(gainTax(b, true) <= gainTax(b, false), 'lo zainetto riduce la tassa');
+  assert.ok(Math.abs(fl[0].tax - 0.125 * 1.25) < 1e-9, 'cedola tassata per intero: il credito sul rateo è già arrivato');
+  // a scadenza: disaggio intero (0,5) + plusvalenza sul teorico (99,9 − 99,4)
+  assert.ok(Math.abs(fl.at(-1).net - (100 - 0.125 * (0.5 + 0.5))) < 1e-9, 'rimborso netto di disaggio e plusvalenza');
+  assert.ok(Math.abs(gainTax(b, true) - 0.125 * 0.5) < 1e-9, 'lo zainetto toglie solo la plusvalenza, non il disaggio');
+  // prezzo sopra il teorico: niente plusvalenza, ma il disaggio residuo si paga comunque (prima l'app non lo tassava)
+  const above = { ...b, price: 100.2 };
+  assert.ok(Math.abs(gainTax(above, false) - 0.125 * 0.5) < 1e-9);
   const r = xirr([{ day: day(2026, 1, 1), amount: -100 }, { day: day(2027, 1, 1), amount: 104 }]);
   assert.ok(Math.abs(r - 0.04) < 0.001);
 });
@@ -222,8 +229,12 @@ test('capitale a scadenza: opzione "accantona le cedole di prima"', () => {
     assert.equal(t.nominal % t.bond.lot, 0);
   }
   assert.ok(acc.targets[0].fromPot > 1000, 'le cedole accantonate pagano la prima scadenza');
-  const firstGap = acc.targets.findIndex(t => t.fromPot < 0.5);
-  if (firstGap >= 0) assert.ok(acc.targets.slice(firstGap).every(t => t.fromPot < 0.5), 'la cassa va prima alle scadenze più vicine');
+  // la cassa paga solo le scadenze che non bastano da sole, e solo quanto manca (una scadenza già coperta dal suo
+  // titolo, per l'arrotondamento al lotto, la lascia alle scadenze dopo)
+  for (const t of acc.targets) if (t.fromPot > 0.5) {
+    assert.ok(t.available - t.fromPot < t.amount, `${t.label}: preleva solo se serve`);
+    assert.ok(Math.abs(t.available - t.amount) < 1e-6, `${t.label}: preleva solo quanto manca`);
+  }
   assert.ok(acc.targets[0].nominal < base.targets[0].nominal, 'il primo titolo si riduce');
   assert.ok(acc.totalCost < base.totalCost - 1000, `serve meno capitale: ${acc.totalCost} < ${base.totalCost}`);
   const flows = acc.schedule.reduce((s, f) => s + f.net, 0);

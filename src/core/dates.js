@@ -54,12 +54,33 @@ export function addMonths(dn, n) {
   return day(ny, nm, Math.min(d, daysInMonth(ny, nm)));
 }
 
-/** Aggiunge n giorni lavorativi (sabato e domenica esclusi; festività ignorate). */
+/** Domenica di Pasqua (calendario gregoriano). */
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25),
+    g = Math.floor((b - f + 1) / 3), x = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4,
+    l = (32 + 2 * e + 2 * i - x - k) % 7, m = Math.floor((a + 11 * x + 22 * l) / 451), n = x + l - 7 * m + 114;
+  return day(y, Math.floor(n / 31), (n % 31) + 1);
+}
+
+/** Giorno di apertura di T2 (TARGET): non sabato, domenica, 1/1, Venerdì Santo, Lunedì dell'Angelo, 1/5, 25 e 26/12.
+    È il calendario della liquidazione (Borsa Italiana, Istruzioni art. IA.6.1.1) e dei pagamenti dei titoli di Stato. */
+export function isTargetDay(dn) {
+  const w = weekday(dn);
+  if (w === 0 || w === 6) return false;
+  const { y, m, d } = parts(dn), e = easter(y);
+  if (dn === e - 2 || dn === e + 1) return false;
+  return !((m === 1 && d === 1) || (m === 5 && d === 1) || (m === 12 && (d === 25 || d === 26)));
+}
+
+/** Aggiunge n giorni lavorativi del calendario TARGET (fine settimana e chiusure di T2 esclusi). */
 export function addBusinessDays(dn, n) {
   let out = dn, left = n;
-  while (left > 0) { out += 1; const w = weekday(out); if (w !== 0 && w !== 6) left -= 1; }
+  while (left > 0) { out += 1; if (isTargetDay(out)) left -= 1; }
   return out;
 }
+
+/** Giorni di liquidazione dopo la negoziazione: T+2, T+1 dall'11/10/2027 (Reg. UE 2025/2075 che modifica la CSDR). */
+export function settlementLag(tradeDay) { return tradeDay >= day(2027, 10, 11) ? 1 : 2; }
 
 /** Anni (frazione) tra due giorni, base ACT/365.25. */
 export function years(from, to) { return (to - from) / 365.25; }

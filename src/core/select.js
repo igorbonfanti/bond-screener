@@ -63,7 +63,7 @@ export function branchAndBound(slots, { issuerCap = 1, nodeBudget = 300000, perI
   totalWeight = null, preUsedIsins = [], preIssuerWeights = new Map() } = {}) {
   const N = slots.length;
   const W = totalWeight ?? slots.reduce((s, x) => s + x.weight, 0);
-  const maxW = slots.reduce((m, x) => Math.max(m, x.weight), 0);
+  const maxW = slots.reduce((m, x) => x.cands.length ? Math.max(m, x.weight) : m, 0);   // le scadenze senza candidati non contano
   const capW = issuerCap >= 1 ? Infinity : Math.max(issuerCap * W, maxW) * (1 + 1e-9);
 
   // Candidati: i migliori per emittente (dominanza), in ordine di punteggio

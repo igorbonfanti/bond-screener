@@ -1,7 +1,7 @@
 /* Lettura del CSV giornaliero di simpletoolsforinvestors.eu (STFI).
    Separatore ';', virgola decimale, date gg/mm/aaaa, cedola in frazione (0,0625 = 6,25%),
    couponmonths = mesi di stacco ("5,11"). */
-import { parseDay, addBusinessDays } from '../core/dates.js';
+import { parseDay, addBusinessDays, settlementLag } from '../core/dates.js';
 
 export const RATING_SCALE = ['AAA', 'AA+', 'AA', 'AA-', 'A+', 'A', 'A-', 'BBB+', 'BBB', 'BBB-',
   'BB+', 'BB', 'BB-', 'B+', 'B', 'B-', 'CCC+', 'CCC', 'CCC-', 'CC', 'C', 'D'];
@@ -154,7 +154,7 @@ export function normalize(rawRows) {
   let refDate = null, best = 0;
   for (const [d, n] of refCount) if (n > best) { best = n; refDate = d; }
   if (refDate == null) throw new Error('Data di riferimento non trovata nel file.');
-  return { bonds, refDate, settle: addBusinessDays(refDate, 2), rowCount: rawRows.length };
+  return { bonds, refDate, settle: addBusinessDays(refDate, settlementLag(refDate)), rowCount: rawRows.length };
 }
 
 export function loadText(text) { return normalize(parseCSV(text)); }

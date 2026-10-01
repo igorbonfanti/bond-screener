@@ -5,7 +5,7 @@
 import { h, fmtEur, fmtPct, fmtNum, toast, badge, deltaEl, downloadFile, MINUS, parseUserNumber } from './dom.js';
 import { openSheet, closeSheet } from './sheet.js';
 import { dataTable, calendarPanel } from './results.js';
-import { fmt, iso, parseDay, MONTHS } from '../core/dates.js';
+import { fmt, iso, parseDay, parts, MONTHS } from '../core/dates.js';
 import { isinOk, tableToHoldings, textToRows } from '../data/portfolio.js';
 import { resolveHoldings, portfolioSummary, holdingYield, mergeHoldings, monthsFrom } from '../portfolio.js';
 import { htmlRows, loadSheetJS } from '../data/xls.js';
@@ -41,6 +41,16 @@ function paint() {
     kpi('Rendimento netto', fmtPct(sum.irr * 100), 'dai prezzi di oggi, tasse sul tuo carico'),
     kpi('Prossimo rimborso', next ? fmt(next.day) : '—', next ? `${fmtEur(next.net)} netti` : 'nessuno'));
 
+  // la forma della tua scala in una frase: rimborsi per anno, anni vuoti, dopo l'ultimo nulla (da lì si allunga)
+  const red = new Map();
+  for (const f of sum.schedule) if (f.kind === 'redemption') { const y = parts(f.day).y; red.set(y, (red.get(y) || 0) + f.net); }
+  const ys = [...red.keys()].sort((a, b) => a - b);
+  const holes = ys.length ? Array.from({ length: ys[ys.length - 1] - ys[0] + 1 }, (_, k) => ys[0] + k).filter(y => !red.has(y)) : [];
+  const lead = ys.length ? h('p', { class: 'lead' }, 'I tuoi titoli rimborsano ', h('b', { text: fmtEur([...red.values()].reduce((a, b) => a + b, 0)) }),
+    ` netti ${ys.length > 1 ? `dal ${ys[0]} al ${ys[ys.length - 1]}` : `nel ${ys[0]}`}: `, ys.map(y => `${y} ${fmtEur(red.get(y))}`).join(' · '),
+    holes.length ? `; nessun rimborso nel ${holes.join(', ')}` : '', `. Dopo il ${ys[ys.length - 1]} non arriva più capitale: `,
+    h('a', { href: '#/capitale', text: 'allunga la scala', on: { click: e => { e.preventDefault(); C.onBuild('capital'); } } }), ' senza vendere nulla.') : null;
+
   const notes = [];
   const missing = res.filter(r => r.status === 'missing'), matured = res.filter(r => r.status === 'matured');
   const retail = res.filter(r => r.status === 'retail'), manual = res.filter(r => r.status === 'manual');
@@ -56,6 +66,7 @@ function paint() {
       mini('Costruisci una scala attorno →', () => C.onBuild('capital')),
       mini('Rendita mensile attorno →', () => C.onBuild('income'))),
     kpis,
+    lead,
     panel('Da sapere', `${notes.length} ${notes.length === 1 ? 'nota' : 'note'}`, h('div', { class: 'pb' }, h('div', { class: 'states' },
       notes.map(([st, w, t]) => h('div', { class: 'srow' }, badge(st, w), h('span', { text: t })))))),
     holdingsPanel(res),
@@ -78,10 +89,12 @@ function holdingsPanel(res) {
       { label: 'Prezzo oggi', r: 1, sort: x => x.r.bond ? x.r.bond.price : -1, cell: x => x.r.bond && Number.isFinite(x.r.bond.price)
         ? [fmtNum(x.r.bond.price, 2), Number.isFinite(x.r.h.carico) ? h('span', { class: 'dsub' }, deltaEl((x.r.bond.price / x.r.h.carico - 1) * 100, 2, '%')) : null] : '—' },
       { label: 'Cedola', r: 1, sort: x => x.r.bond ? x.r.bond.coupon : -1, cell: x => x.r.bond ? (x.r.bond.zc ? '—' : fmtPct(x.r.bond.coupon, 2)) : '—' },
-      { label: 'Netto', r: 1, sort: x => Number.isFinite(x.y) ? x.y : -99, dir: -1, cell: x => h('span', { title: 'rendimento netto annuo da oggi a scadenza, con la tassa calcolata sul tuo prezzo di carico', text: fmtPct(x.y) }) },
+      { label: 'Netto', r: 1, sort: x => Number.isFinite(x.y) ? x.y : -99, dir: -1, cell: x => [h('span', { title: 'rendimento netto annuo da oggi a scadenza, con la tassa calcolata sul tuo prezzo di carico', text: fmtPct(x.y) }),
+        x.r.bond && x.r.bond.inflation ? h('span', { class: 'dsub', title: 'BTP Italia: cedola reale, senza l\'inflazione futura che si aggiunge a cedole e capitale', text: 'senza inflaz.' }) : null] },
       { label: 'Valore oggi', r: 1, sort: x => x.r.value, dir: -1, cell: x => eur0(x.r.value) },
       { label: 'Rimborso netto', r: 1, sort: x => x.redemption ? x.redemption.net : 0, cell: x => x.redemption ? eur0(x.redemption.net) : '—' },
-      { label: 'Stato', cls: 'acts', cell: x => [badge(...(STATUS[x.r.status] || STATUS.data)),
+      // badge solo per i casi particolari: «nei dati» è la normalità e su ogni riga sarebbe rumore
+      { label: 'Stato', cls: 'acts', cell: x => [x.r.status === 'data' ? null : badge(...(STATUS[x.r.status] || STATUS.data)),
         h('span', { class: 'row-acts' }, mini('Modifica', () => openEdit(x.r), { 'aria-label': `Modifica ${x.r.h.isin}` }))] }],
     rows
   });

@@ -17,7 +17,7 @@ export function renderResults(root, { st, result, actions }) {
 }
 
 /* ------------------------------ comuni ------------------------------ */
-const kpi = (k, v, sub, small) => h('div', { class: 'kpi' }, h('span', { class: 'k', text: k }),
+const kpi = (k, v, sub, small, title) => h('div', { class: 'kpi', title }, h('span', { class: 'k', text: k }),
   h('span', { class: 'v num' }, v, small ? [' ', h('small', { text: small })] : null), sub ? h('span', { class: 's', text: sub }) : null);
 
 /** Osservazione: tipo → badge di stato (forma + parola) e motivo accanto. */
@@ -92,7 +92,7 @@ export function dataTable({ cols, rows, sortBy = null, dir = 1, rowAttrs = () =>
 
 /** Riga cliccabile (Invio o clic), senza scattare quando si preme un pulsante al suo interno. */
 function clickable(fn, label) {
-  const go = e => { if (e.target.closest('button, a, input, [role="button"]')) return; fn(); };
+  const go = e => { if (e.target.closest('button, a, input, summary, details, [role="button"]')) return; fn(); };
   return { tabindex: 0, 'aria-label': label, on: { click: go, keydown: e => { if (e.key === 'Enter' && e.target === e.currentTarget) { e.preventDefault(); fn(); } } } };
 }
 
@@ -163,11 +163,12 @@ function purchasePanel(positions, settle, title = 'Lista d\'acquisto') {
       miniBtn('Stampa', () => window.print()))), table);
 }
 
-function actionsBar() {
+function actionsBar(compare = false) {
   return h('div', { class: 'actions' },
     miniBtn('Salva la scala', () => A.onSave && A.onSave()),
     miniBtn('Condividi il link', () => A.onShare && A.onShare()),
-    miniBtn('Stampa', () => window.print()));
+    miniBtn('Stampa', () => window.print()),
+    compare && A.onCompare ? miniBtn('Confronta le alternative', () => A.onCompare(), { 'aria-haspopup': 'dialog' }) : null);
 }
 
 function commonInsights(plan, result) {
@@ -187,7 +188,8 @@ function commonInsights(plan, result) {
     }
     if (top && top.share > 0.5) out.push(insight('info', `${top.name} pesa il ${fmtNum(top.share * 100, 0)}% ${ptf ? 'del portafoglio complessivo (tuoi titoli e nuovi)' : 'del capitale'}: valuta un limite per emittente più stretto.`));
   }
-  if (plan.positions.some(p => p.bond.stepUp)) out.push(insight('info', 'Alcuni titoli hanno cedola crescente (step-up): le cedole future saranno più alte di quelle stimate qui.'));
+  if (plan.positions.some(p => p.bond.stepUp && !p.bond.steps)) out.push(insight('info', 'Alcuni titoli hanno cedola crescente (step-up) con scalini che l\'app non conosce: le cedole future sono stimate con quella di oggi e saranno più alte.'));
+  else if (plan.mode === 'income' && plan.positions.some(p => p.bond.steps)) out.push(insight('info', 'Alcuni titoli hanno cedola crescente (step-up): i flussi seguono il loro calendario; nell\'anno tipo conta la cedola più bassa dell\'orizzonte.'));
   for (const w of plan.warnings || []) out.push(insight('warn', w));
   if (result.basketCount < 10) out.push(insight('warn', `Solo ${result.basketCount} titoli rispettano i filtri: allarga il paniere per avere più scelta.`));
   return out;
@@ -278,7 +280,7 @@ function capitalView(st, result, plan) {
   const bandOf = p => plan.targets.findIndex(t => p.maturity > t.start && p.maturity <= t.end);
   const map = yieldMapPanel(result, sel, bands, p => { const i = bandOf(p); if (i >= 0 && !sel.has(p.isin) && A.onSwap) A.onSwap(plan.targets[i].label, p.isin); }, p => bandOf(p) >= 0 && !sel.has(p.isin));
 
-  return [kpis, lead, actionsBar(),
+  return [kpis, lead, actionsBar(true),
     h('div', { class: 'grid-2' }, ladder, notesPanel(ins)),
     rungsPanel(plan),
     map,
@@ -289,6 +291,112 @@ function capitalView(st, result, plan) {
 /* ------------- Capitale a scadenza attorno al portafoglio posseduto ------------- */
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const listText = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1] : a[0] || '';
+/** Attesa in parole: mesi fino a un anno e mezzo, poi anni (a mezzo anno). */
+const waitText = days => {
+  const m = Math.max(0, Math.round(days / 30.44));
+  if (m < 18) return plural(m, 'mese', 'mesi');
+  const y = Math.round(m / 6) / 2;
+  return `${fmtNum(y, Number.isInteger(y) ? 0 : 1)} anni`;
+};
+const monthSpan = (a, b) => {
+  const pa = parts(a), pb = parts(b);
+  return pa.y === pb.y ? (pa.m === pb.m ? `${MONTHS[pa.m - 1]} ${pa.y}` : `${MONTHS[pa.m - 1]}–${MONTHS[pb.m - 1]} ${pa.y}`) : `${fmtMonthYear(a)} – ${fmtMonthYear(b)}`;
+};
+
+/** La cassa, letta dal piano: soldi arrivati prima che servano (cedole e rimborsi fuori dai periodi, eccedenze di una
+    scadenza), fermi sul conto senza interessi finché una scadenza li preleva. Entrate, prelievi e saldi sono quelli del
+    motore (potIn…, fromPot, carried, potAfter); qui si aggiunge solo, per spiegare, l'origine di ogni prelievo (prima
+    entrata, prima uscita) e quanto è rimasta ferma, da una scadenza all'altra come nel conto della cassa ferma. */
+function cashMoves(plan) {
+  const T = plan.targets, end = t => t.need ?? t.end;
+  const moves = [], lots = [], src = T.map(() => []);
+  let bal = 0, peak = null;
+  const add = m => { bal += m.in - m.out; m.bal = bal; moves.push(m); if (!peak || bal > peak.bal + 0.5) peak = m; };
+  T.forEach((t, i) => {
+    const hc = t.potInHeldCpn || 0, hr = t.potInHeldRed || 0, nc = t.potInNew || 0;
+    if (hc + hr + nc > 0.5) {
+      // incassi fuori dai periodi (prima della scala o fra due date): quando arrivano, per dire quanto aspettano
+      const lo = i ? end(T[i - 1]) : plan.settle, hi = t.periodFrom;
+      const fl = (plan.heldSchedule || []).filter(f => f.kind === 'redemption' ? plan.carry : plan.accumulate)
+        .concat(plan.accumulate ? plan.schedule.filter(f => f.kind === 'coupon') : []).filter(f => f.day > lo && f.day <= hi);
+      const w = fl.reduce((s, f) => s + f.net, 0);
+      const day = w > 0 ? fl.reduce((s, f) => s + f.day * f.net, 0) / w : hi;
+      const when = fl.length ? monthSpan(Math.min(...fl.map(f => f.day)), Math.max(...fl.map(f => f.day))) : (i ? `prima del ${t.label}` : 'prima della scala');
+      const what = [hc > 0.5 ? `cedole dei tuoi titoli ${eur0(hc)}` : '', hr > 0.5 ? `rimborsi dei tuoi titoli ${eur0(hr)}` : '', nc > 0.5 ? `cedole dei nuovi ${eur0(nc)}` : ''].filter(Boolean);
+      add({ at: when, in: hc + hr + nc, out: 0, desc: `${i ? `fra ${T[i - 1].label} e ${t.label}` : 'prima della scala'}: ${what.join(' · ')}` });
+      lots.push({ name: i ? `incassi fra ${T[i - 1].label} e ${t.label}` : 'incassi prima della scala', year: String(parts(Math.round(day)).y), v: hc + hr + nc, day });
+    }
+    if (t.fromPot > 0.5) {
+      let need = t.fromPot;
+      while (need > 0.005 && lots.length) {
+        const l = lots[0], take = Math.min(l.v, need);
+        src[i].push({ name: l.name, year: l.year, v: take, wait: end(t) - l.day });
+        l.v -= take; need -= take;
+        if (l.v < 0.005) lots.shift();
+      }
+      add({ at: t.label, in: 0, out: t.fromPot, desc: `completa la scadenza ${t.label}: ${src[i].map(s => `${s.name} ${eur0(s.v)}, fermi ${waitText(s.wait)}`).join(' · ')}` });
+    }
+    if (t.carried > 0.5) {
+      add({ at: t.label, in: t.carried, out: 0, desc: t.nominal > 0 ? 'eccedenza: arrotondamento ai lotti del titolo nuovo'
+        : `eccedenza: arrivano ${eur0(t.available)}, ne servono ${eur0(t.amount)}` });
+      lots.push({ name: `eccedenza ${t.label}`, year: t.label, v: t.carried, day: end(t) });
+    }
+  });
+  return { moves, src, peak, bal, left: plan.potLeft || 0 };
+}
+
+/** Eccedenze in cassa o restituite, detto come un investimento: senza la cassa si spende di più oggi e tornano soldi più
+    avanti; il loro rendimento si confronta con quello dei titoli del paniere di pari durata (engine.js, carryTradeOff). */
+function tradeText(plan, alt) {
+  const dC = alt.extraToday, dR = alt.extraBack;
+  if (!(dC > 0) || !(dR > 0)) return plan.carry ? 'Le eccedenze tornerebbero a te.' : 'Le eccedenze resterebbero ferme in cassa.';
+  const when = d => `${MONTHS_LONG[parts(d).m - 1]} ${parts(d).y}`;
+  if (dR <= dC) return plan.carry
+    ? `Ti tornerebbero solo ${fmtEur(dR)}: tenerle in cassa conviene.`
+    : `Rinunceresti solo a ${fmtEur(dR)} che ora ti tornano: conviene usarle.`;
+  const head = plan.carry
+    ? `Ti tornerebbero ${fmtEur(dR)}, soprattutto a ${when(alt.mainBackDay)}: è come investire ${fmtEur(dC)}`
+    : `Rinunceresti a ${fmtEur(dR)} che ora ti tornano, soprattutto a ${when(alt.mainBackDay)}. Restituirle è come investire ${fmtEur(dC)}`;
+  const rate = Number.isFinite(alt.diffIrr) ? ` al ${fmtPct(alt.diffIrr * 100)} netto per ${fmtNum(alt.years, 1)} anni` : '';
+  if (!Number.isFinite(alt.diffIrr) || !Number.isFinite(alt.benchYield)) return `${head}${rate}.`;
+  const gap = alt.diffIrr - alt.benchYield;
+  const verdict = gap > 0.0025 ? (plan.carry ? 'restituirle conviene, se oggi hai il capitale in più e reinvesti subito quello che torna.' : 'restituirle conviene, se reinvesti subito quello che torna.')
+    : gap < -0.0025 ? (plan.carry ? 'tenerle in cassa conviene.' : 'conviene usarle per le scadenze dopo.')
+    : 'la differenza è piccola: scegli in base al capitale che hai oggi.';
+  return `${head}${rate}, contro il ${fmtPct(alt.benchYield * 100)} dei titoli del paniere di pari durata: ${verdict}`;
+}
+
+/** Pannello «Movimenti di cassa»: entrate, prelievi e saldo, poi il costo dell'attesa e l'altra scelta. */
+function cashPanel(plan, cash, c) {
+  if (!cash.moves.length) return null;
+  const maxBal = Math.max(...cash.moves.map(m => m.bal), 1);
+  const rows = cash.moves.map(m => h('tr', null,
+    h('td', { class: 'wrap' }, h('span', { class: 'sym', text: m.at }), h('span', { class: 'dsub', text: m.desc })),
+    h('td', { class: 'num r' }, m.in > 0.5 ? eur0(m.in) : ''),
+    h('td', { class: 'num r' }, m.out > 0.5 ? eur0(m.out) : ''),
+    h('td', { class: 'num r' }, h('span', { class: 'wbar' }, h('i', { style: { width: `${Math.max(0, m.bal) / maxBal * 100}%` } })), eur0(m.bal))));
+  const tin = cash.moves.reduce((s, m) => s + m.in, 0), tout = cash.moves.reduce((s, m) => s + m.out, 0);
+  const tail = cash.left - cash.bal;                       // cedole dei nuovi accantonate dopo l'ultima scadenza
+  const foot = h('tr', { class: 'bench' }, h('td', { class: 'wrap' }, h('b', { text: 'Alla fine' }), h('span', { class: 'dsub', text: cash.left > 0.5 ? `resta a te, da spendere o reinvestire${tail > 0.5 ? ` (con ${eur0(tail)} di cedole dei nuovi arrivate dopo)` : ''}` : 'la cassa è vuota' })),
+    h('td', { class: 'num r', text: eur0(tin) }), h('td', { class: 'num r', text: eur0(tout) }), h('td', { class: 'num r', text: eur0(cash.left) }));
+  const table = h('div', { class: 'tscroll' }, h('table', { class: 't compact cash', 'aria-label': 'Movimenti di cassa' },
+    h('thead', null, h('tr', null, h('th', { scope: 'col', text: 'Quando e perché' }), h('th', { scope: 'col', class: 'r', text: 'Entra' }), h('th', { scope: 'col', class: 'r', text: 'Esce' }), h('th', { scope: 'col', class: 'r', text: 'Saldo' }))),
+    h('tbody', null, rows), h('tfoot', null, foot)));
+  const per = c.schedule === 'semester' ? 'semestre' : 'anno';
+  const alt = plan.alt;
+  const facts = h('dl', { class: 'facts cash-facts' },
+    h('dt', { text: 'Saldo più alto' }), h('dd', { text: `${fmtEur(cash.peak.bal)} (${cash.peak.at})` }),
+    plan.idleEuroYears > 50 ? [h('dt', { text: 'Cassa ferma, in tutto' }), h('dd', { text: `come ${fmtEur(plan.idleEuroYears)} fermi per un anno, senza interessi` })] : null,
+    Number.isFinite(plan.goalIrr) ? [h('dt', { text: 'Rendimento alle scadenze' }), h('dd', { text: `${fmtPct(plan.goalIrr * 100)} netto: dal capitale di oggi alle somme alle date che ti servono, con la cassa ferma a zero` })] : null,
+    // l'altra scelta sulle eccedenze, provabile con un clic (il motore la calcola già, plan.alt)
+    alt ? [h('dt', { text: plan.carry ? 'Senza usare le eccedenze' : 'Usando le eccedenze' }), h('dd', null,
+      plan.budget != null ? `circa ${fmtEur(alt.perTarget)} per ${per}` : `${fmtEur(alt.totalCost)} di acquisti oggi (${fmtSigned(alt.totalCost - plan.totalCost)}). ${tradeText(plan, alt)}`,
+      A.onPatch ? [' ', miniBtn('Prova', () => A.onPatch(s => { s.portfolioCarry = !plan.carry; }, plan.carry ? 'Eccedenze spente: tornano a te' : 'Eccedenze accese: pagano le scadenze dopo'))] : null)] : null);
+  return panel('Movimenti di cassa', 'soldi in attesa sul conto, senza interessi · euro netti',
+    h('p', { class: 'note', style: { padding: '8px 10px 0' } }, 'La cassa sono i soldi che arrivano prima che servano: restano sul conto, senza interessi, finché una scadenza li usa. ',
+      'Entrano le cedole incassate prima della scala, quello che una scadenza riceve oltre l\'obiettivo e i rimborsi dei tuoi titoli che arrivano fuori dai periodi; escono quando una scadenza da sola non basta.'),
+    table, h('div', { class: 'pb' }, facts));
+}
 
 function portfolioCapitalView(st, result, plan) {
   const c = st.capital;
@@ -304,6 +412,9 @@ function portfolioCapitalView(st, result, plan) {
   const buys = plan.positions.length
     ? [plural(plan.newLines, 'titolo nuovo', 'titoli nuovi'), plan.topUps ? plural(plan.topUps, 'rabbocco', 'rabbocchi') : ''].filter(Boolean).join(' + ')
     : 'niente da comprare';
+  // la cassa: soldi fermi fra un incasso e la scadenza che li usa (pannello dedicato, una cifra nei KPI)
+  const cash = cashMoves(plan);
+  const bigCash = cash.peak && cash.peak.bal >= 0.05 * Math.max(...plan.targets.map(t => t.amount));
   const kpis = h('div', { class: 'kpis' },
     budgetMode
       ? kpi(`Somma per ${c.schedule === 'semester' ? 'semestre' : 'anno'}`, fmtEur(perRung), `circa · ${T} somme ${span}`)
@@ -311,17 +422,23 @@ function portfolioCapitalView(st, result, plan) {
     budgetMode
       ? kpi('Nuovi acquisti', fmtEur(plan.totalCost), `su ${fmtEur(plan.budget)} · ${buys}`)
       : kpi('Ricevi alle scadenze', fmtEur(atTargets), span),
-    kpi('Dai tuoi titoli', fmtPct(plan.heldCover * 100, 0), `degli importi · ${plural(nHeld, 'titolo', 'titoli')}`),
-    kpi('Rendimento netto', fmtPct(plan.irrAll * 100), plan.positions.length ? `tutta la scala · nuovi ${fmtPct(plan.irr * 100)}` : 'tutta la scala, dai prezzi di oggi'),
+    kpi('Dai tuoi titoli', fmtPct(plan.heldCover * 100, 0), `${fmtEur(plan.heldCover * totalAmount)} su ${fmtEur(totalAmount)}`, null,
+      `Rimborsi e cedole dei tuoi ${plural(nHeld, 'titolo', 'titoli')} che pagano le scadenze (cassa compresa): il resto arriva dai nuovi acquisti.`),
+    kpi('Rendimento netto', fmtPct(plan.irrAll * 100), plan.positions.length ? `tutta la scala · nuovi ${fmtPct(plan.irr * 100)}` : 'tutta la scala, dai prezzi di oggi', null,
+      'Tutta la scala: i tuoi titoli valutati ai prezzi di oggi (non a quelli di carico) più i nuovi acquisti, con tutti i loro flussi netti futuri.'),
     kpi('Scadenze coperte', String(covered), covered === T ? 'tutte' : `${T - covered} sotto l'obiettivo`, `/ ${T}`),
-    kpi('Senza acquisti', String(plan.coveredByHeld), 'scadenze pagate dai tuoi titoli', `/ ${T}`));
+    bigCash
+      ? kpi('Cassa', fmtEur(cash.peak.bal), `al massimo (${cash.peak.at}) · senza interessi`)
+      : kpi('Pagate dai tuoi titoli', String(plan.coveredByHeld), plan.coveredByHeld ? 'scadenze senza acquisti' : 'ogni scadenza compra qualcosa', `/ ${T}`));
 
   const b = t => h('b', { text: t });
+  const by = c.schedule === 'yearly' && c.byMonth >= 1 && c.byMonth <= 11 ? `, entro fine ${MONTHS_LONG[c.byMonth - 1]}` : '';
   const lead = h('p', { class: 'lead' }, budgetMode
     ? ['Con i tuoi ', b(plural(nHeld, 'titolo', 'titoli')), plan.totalCost > 0.5 ? [' e ', b(fmtEur(plan.totalCost)), ' di nuovi acquisti'] : ', senza comprare nulla,',
-      ` ricevi ${T} somme da circa `, b(fmtEur(perRung)), ` netti (${span}). Non vendi nulla.`]
+      ` ricevi ${T} somme da circa `, b(fmtEur(perRung)), ` netti (${span}${by}). Non vendi nulla.`]
     : ['Con i tuoi ', b(plural(nHeld, 'titolo', 'titoli')), plan.totalCost > 0.5 ? [' e ', b(fmtEur(plan.totalCost)), ' di nuovi acquisti'] : ', senza comprare nulla,',
-      ' ricevi ', b(fmtEur(atTargets)), ` netti in ${plural(T, 'scadenza', 'scadenze')} (${span}). Non vendi nulla.`]);
+      ' ricevi ', b(fmtEur(atTargets)), ` netti in ${plural(T, 'scadenza', 'scadenze')} (${span}${by}). Non vendi nulla.`],
+    bigCash ? [' In attesa delle scadenze restano in cassa fino a ', b(fmtEur(cash.peak.bal)), ', senza interessi: vedi «Movimenti di cassa».'] : null);
 
   const ins = [];
   if (covered === T) ins.push(insight('good', `Tutte le ${T} scadenze sono coperte.`));
@@ -329,25 +446,26 @@ function portfolioCapitalView(st, result, plan) {
   if (own.length) ins.push(insight('good', `${own.length === 1 ? 'La scadenza' : 'Le scadenze'} ${listText(own)} ${own.length === 1 ? 'è pagata' : 'sono pagate'} dai tuoi titoli: lì non compri nulla.`));
   if (plan.topUps) ins.push(insight('info', `Per ${plan.topUps === 1 ? 'una scadenza' : `${plan.topUps} scadenze`} compri altri pezzi di titoli che hai già: meno linee da seguire.`));
   for (const e of plan.issuerOver || []) ins.push(insight('warn', `${e.name} pesa già il ${fmtNum(e.heldShare * 100, 0)}% del portafoglio complessivo, oltre il limite per emittente del ${fmtNum(plan.issuerCap * 100, 0)}%: non compro altri suoi titoli. Il limite si cambia nel paniere.`));
-  if (plan.heldBefore > 0.5) ins.push(insight('info', `${fmtEur(plan.heldBefore)} dai tuoi titoli arrivano prima della scala: restano in cassa e pagano le prime scadenze.`));
-  const y = Number.isFinite(plan.irrAll) && plan.irrAll > 0 ? plan.irrAll : 0.03;
+  // quota nominale finale oltre il limite (il limite si applica agli importi da ricevere; ogni emittente può avere almeno una scadenza)
+  for (const e of plan.issuerAbove || []) ins.push(insight('warn', `Con i nuovi acquisti ${e.name} arriva al ${fmtNum(e.share * 100, 0)}% del portafoglio complessivo (al nominale), oltre il limite del ${fmtNum(plan.issuerCap * 100, 0)}%: il limite vale sugli importi da ricevere e lascia sempre almeno una scadenza a ogni emittente.`));
+  // cassa (cedole di prima, eccedenze, avanzo finale, costo dell'attesa, l'altra scelta): tutto nel pannello «Movimenti di cassa»
+  if (!cash.moves.length && plan.heldBefore > 0.5) ins.push(insight('info', `${fmtEur(plan.heldBefore)} dai tuoi titoli arrivano prima della scala: restano in cassa e pagano le prime scadenze.`));
   const alt = plan.alt, per = c.schedule === 'semester' ? 'semestre' : 'anno';
   const altText = !alt ? '' : budgetMode ? `circa ${fmtEur(alt.perTarget)} per ${per}` : `${fmtEur(alt.totalCost)} di acquisti oggi`;
-  if (plan.carry && plan.idleEuroYears > 50) {
-    ins.push(insight('info', [`Eccedenze e rimborsi in anticipo restano in cassa, senza interessi, fino alla scadenza che li usa: è come tenere fermi ${fmtEur(plan.idleEuroYears)} per un anno, circa ${fmtEur(plan.idleEuroYears * y)} di interessi persi al ${fmtPct(y * 100)}.`,
-      alt ? ` Se preferisci riaverle e reinvestirle tu, con le stesse scadenze ti servono ${altText}: spegni «Usa le eccedenze per le scadenze dopo».` : ' Quando arrivano puoi parcheggiarli in un titolo breve.'].join('')));
-  }
   if (!plan.carry) {
     const back = plan.heldSurplus + plan.heldOutRedemptions;
     if (back > 0.5) ins.push(insight('info', `${fmtEur(back)} dai tuoi titoli (eccedenze delle scadenze coperte e rimborsi fuori dalla scala) tornano a te, da spendere o reinvestire.${alt ? ` Usandoli per le scadenze dopo ti basterebbero ${altText}, ma resterebbero fermi senza interessi.` : ''}`));
   }
   if (plan.heldOutCoupons > 0.5) ins.push(insight('info', `Le cedole dei tuoi titoli incassate prima della scala${c.schedule === 'dates' ? ' o fra una data e l\'altra' : ''} (${fmtEur(plan.heldOutCoupons)}) sono un'entrata in più.${plan.useCoupons ? ' Con «Accantona le cedole di prima» pagano le prime scadenze.' : ''}`));
   if (plan.heldAfter > 0.5) ins.push(insight('info', `${fmtEur(plan.heldAfter)} dai tuoi titoli (rimborsi e cedole) arrivano dopo l'ultima scadenza: restano a te, fuori dalla scala.`));
-  if (plan.potLeft > 0.5) ins.push(insight('info', `Alla fine della scala avanzano ${fmtEur(plan.potLeft)} in cassa: eccedenze dei tuoi titoli e arrotondamenti ai lotti.`));
   const info = result.portfolio || {};
   if (info.missing && info.missing.length) ins.push(insight('warn', `${plural(info.missing.length, 'titolo del portafoglio non è', 'titoli del portafoglio non sono')} nei dati di oggi e ${info.missing.length === 1 ? 'resta' : 'restano'} fuori dal calcolo: ${info.missing.length === 1 ? 'completalo' : 'completali'} nella scheda Portafoglio.`));
   if (info.matured && info.matured.length) ins.push(insight('info', `${plural(info.matured.length, 'titolo del portafoglio è già scaduto', 'titoli del portafoglio sono già scaduti')}: puoi toglierli dalla scheda Portafoglio.`));
-  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', 'Per i BTP Italia conto la cedola reale senza inflazione futura: incasserai un po\' di più.'));
+  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', plan.inflationExtra > 0.5
+    ? `Per i BTP Italia conto la cedola reale, il minimo garantito (inflazione zero). Con un'inflazione del 2% l'anno incasseresti circa ${fmtEur(plan.inflationExtra)} netti in più l'anno, ogni sei mesi con la cedola.`
+    : 'Per i BTP Italia conto la cedola reale, il minimo garantito (inflazione zero): con l\'inflazione incasserai di più.'));
+  const dropP = dropYear(plan);
+  if (dropP) ins.push(insight('warn', `L'anno tipo vale finché tutti i titoli, tuoi e nuovi, sono in vita: dal ${dropP.year}, senza reinvestire i rimborsi, il mese più basso scende a ${fmtEur(dropP.min)}${dropP.zeroMonths ? ` (${plural(dropP.zeroMonths, 'mese', 'mesi')} senza cedole)` : ''}.`));
   ins.push(...commonInsights(plan, result));
 
   const chartBox = h('div');
@@ -362,13 +480,15 @@ function portfolioCapitalView(st, result, plan) {
       { key: 'amber-fill', label: 'Dai tuoi titoli', value: fmtEur(t.heldIn) },
       { key: 'ink', label: 'Rimborso nuovo', value: fmtEur(t.redemption) }, { key: 'chart-trail', label: 'Cedole nuove', value: fmtEur(plan.useCoupons ? t.coupons : 0) },
       ...(potUsed ? [{ key: 'chart-line', label: 'Dalla cassa', value: fmtEur(t.fromPot) }] : []),
-      { label: 'Disponibile', value: fmtEur(t.available) }, { key: 'blue', label: 'Obiettivo', value: fmtEur(t.amount) }] }; },
+      { label: 'Disponibile', value: fmtEur(t.available) }, { key: 'blue', label: 'Obiettivo', value: fmtEur(t.amount) },
+      ...(t.carried > 0.5 ? [{ label: 'Va in cassa', value: fmtEur(t.carried) }] : [])] }; },
     onClick: i => { const el = document.getElementById('rung-' + i); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }); } }
   }));
+  const over = plan.carry && plan.targets.some(t => t.carried > 0.02 * t.amount);
   const ladder = panel('La tua scala', 'quanto ricevi a ogni scadenza · euro netti', chartBox,
     legend([{ key: 'amber-fill', label: 'dai tuoi titoli' }, { key: 'ink', label: 'rimborso dei nuovi' }, { key: 'chart-trail', label: plan.useCoupons ? 'cedole dei nuovi' : 'cedole (non usate)' },
       ...(potUsed ? [{ key: 'chart-line', label: 'dalla cassa' }] : []), { type: 'line', key: 'blue', label: 'obiettivo' },
-      { type: 'text', label: 'clic su una colonna per andare alla riga' }]));
+      { type: 'text', label: over ? 'quello che supera la linea blu va in cassa · clic su una colonna per la riga' : 'clic su una colonna per andare alla riga' }]));
 
   const sel = new Set(plan.positions.map(p => p.bond.isin));
   const bands = plan.targets.map(t => ({ from: t.start, to: t.end, label: t.label }));
@@ -376,16 +496,18 @@ function portfolioCapitalView(st, result, plan) {
   const map = yieldMapPanel(result, sel, bands, p => { const i = bandOf(p); if (i >= 0 && !sel.has(p.isin) && A.onSwap) A.onSwap(plan.targets[i].label, p.isin); }, p => bandOf(p) >= 0 && !sel.has(p.isin));
   const allFlows = plan.schedule.concat(plan.heldSchedule).sort((a, b2) => a.day - b2.day);
 
-  return [kpis, lead, actionsBar(),
+  return [kpis, lead, actionsBar(true),
     h('div', { class: 'grid-2' }, ladder, notesPanel(ins)),
-    rungsPanel(plan),
+    rungsPanel(plan, cash),
+    cashPanel(plan, cash, c),
     map,
     allFlows.length ? calendarPanel(allFlows, 'tuoi titoli e nuovi acquisti · euro netti, mese per mese') : null,
     plan.positions.length ? purchasePanel(plan.positions, plan.settle, 'Da comprare') : null].filter(Boolean);
 }
 
-/** Tabella principale: una riga per scadenza, con il titolo scelto e da dove arriva l'importo. */
-function rungsPanel(plan) {
+/** Tabella principale: una riga per scadenza, con il titolo scelto e da dove arriva l'importo.
+    cash (facoltativo, con il portafoglio): movimenti di cassa, per dire da dove arriva il prelievo e dove va l'eccedenza. */
+function rungsPanel(plan, cash = null) {
   const ptf = !!plan.holdings;                                        // proposta costruita attorno al portafoglio
   const pooled = (plan.accumulate || ptf) && plan.targets.some(t => t.fromPot > 0.5);
   const potLabel = ptf ? 'Dalla cassa' : 'Accantonate';
@@ -397,20 +519,24 @@ function rungsPanel(plan) {
   const rows = plan.targets.map((t, i) => {
     const b = t.bond, cost = b ? t.nominal * b.cost / 100 : 0;
     const ok = t.available + 0.5 >= t.amount;
-    const state = !b && t.available < 0.5 ? badge('fail', 'Scoperta') : ok ? badge('trig', 'Coperta') : badge('watch', 'Sotto');
+    // stato solo quando c'è un problema: «coperta» lo dicono già il KPI e la colonna Disponibile (meno rumore, la tabella sta nello schermo)
+    const state = !b && t.available < 0.5 ? badge('fail', 'Scoperta') : ok ? null : badge('watch', 'Sotto');
     const rank = b ? t.candidates.findIndex(x => x.bond.isin === b.isin) : -1;
     const better = rank > 0 ? [...new Set(t.candidates.slice(0, rank).map(x => x.bond.issuerName))] : [];
     const mine = ptf && rank > 0 && t.candidates[rank].held;
     const why = mine ? 'preferito perché ce l\'hai già (vedi «Nuovi acquisti» nelle impostazioni)'
-      : rank > 0 && !t.fixed && plan.issuerCap < 1 ? `i più redditizi (${better.slice(0, 3).join(', ')}) sono di emittenti già al limite di quota` : '';
+      : rank > 0 && !t.fixed ? `scelto perché la scala costa meno: contano i lotti e quando arrivano le cedole (quelle che arrivano prima che servano restano ferme)${plan.issuerCap < 1 ? `, oltre al limite per emittente (più redditizi: ${better.slice(0, 3).join(', ')})` : ''}` : '';
     const rankTag = rank >= 0 ? h('span', { class: 'tag', title: why || (rank === 0 ? 'il rendimento più alto della finestra' : ''), text: `${rank + 1}° di ${t.candidates.length}` }) : null;
-    // i tuoi titoli che scadono nel periodo, uno per riga
-    const heldLine = ptf && t.held && t.held.length
-      ? h('span', { class: 'held-list', title: 'tuoi titoli che scadono in questo periodo' }, t.held.map(x => h('span', { class: 'dsub' }, h('span', { class: 'mine', text: 'tuo' }), ` ${x.desc} · ${eur0(x.nominal)}`))) : null;
+    // i tuoi titoli che scadono nel periodo, uno per riga; più di due: elenco chiuso (la riga resta bassa, anche sul telefono)
+    const heldItems = ptf && t.held ? t.held.map(x => h('span', { class: 'dsub' }, h('span', { class: 'mine', text: 'tuo' }), ` ${x.desc} · ${eur0(x.nominal)}`)) : [];
+    // nel riassunto anche quando scadono (da … a …): conta se i soldi servono a una data
+    const heldLine = heldItems.length > 2
+      ? h('details', { class: 'held-list' }, h('summary', { title: 'tuoi titoli che scadono in questo periodo' }, h('span', { class: 'mine', text: 'tuoi' }),
+        ` ${heldItems.length} titoli · ${eur0(t.held.reduce((s, x) => s + x.nominal, 0))} · ${monthSpan(Math.min(...t.held.map(x => x.maturity)), Math.max(...t.held.map(x => x.maturity)))}`), heldItems)
+      : heldItems.length ? h('span', { class: 'held-list', title: 'tuoi titoli che scadono in questo periodo' }, heldItems) : null;
     let titleCell;
     if (ptf && t.coveredByHeld) {
-      titleCell = h('span', { class: 'ttl' }, h('b', { text: t.heldIn > 0.5 ? 'Coperta dai tuoi titoli' : 'Coperta dalla cassa' }),
-        t.fromPot > 0.5 ? h('span', { class: 'code', text: `dalla cassa ${fmtEur(t.fromPot)}: eccedenze e rimborsi arrivati prima` }) : null, heldLine);
+      titleCell = h('span', { class: 'ttl' }, h('b', { text: t.heldIn > 0.5 ? (t.fromPot > 0.5 ? 'Coperta dai tuoi titoli e dalla cassa' : 'Coperta dai tuoi titoli') : 'Coperta dalla cassa' }), heldLine);
     } else if (!b) {
       titleCell = h('span', { class: 'ttl' }, h('b', { text: t.fromPot > 0.5 ? (ptf ? 'Coperta in parte dalla cassa' : 'Coperta dalle cedole accantonate') : 'Nessun titolo' }),
         h('span', { class: 'code', text: t.candidates.length ? 'il limite per emittente impedisce di usare quelli della finestra' : t.need != null ? 'nessun titolo del paniere scade nella finestra' : 'nessun titolo del paniere scade in questo periodo' }), heldLine);
@@ -426,8 +552,14 @@ function rungsPanel(plan) {
     }
     const n = (v, show = true) => show ? eur0(v) : '—';
     const diff = t.available - t.amount;
+    // cassa: da dove arriva il prelievo (anni delle entrate) e quanto avanza per le scadenze dopo
+    const from = cash && cash.src[i].length ? [...new Set(cash.src[i].map(s => s.year))] : [];
+    const fromSub = from.length ? h('span', { class: 'dsub wrapsub', title: cash.src[i].map(s => `${s.name}: ${eur0(s.v)}`).join(' · '), text: `dal ${listText(from)}` }) : null;
+    const toCash = ptf && t.carried > 0.5 ? h('span', { class: 'dsub wrapsub', title: 'quello che supera l\'obiettivo resta in cassa e paga le scadenze dopo', text: `${eur0(t.carried)} in cassa` }) : null;
     const cells = [
-      h('td', null, h('span', { class: 'sym', text: t.label }), t.need != null ? h('span', { class: 'dsub', text: `entro il ${fmt(t.need)}` }) : null),
+      // «entro il …»: se l'etichetta è già l'anno basta giorno e mese (la colonna resta stretta)
+      h('td', null, h('span', { class: 'sym', text: t.label }), t.need != null ? h('span', { class: 'dsub wrapsub', title: `entro il ${fmt(t.need)}`,
+        text: `entro il ${t.label === String(parts(t.need).y) ? fmt(t.need).slice(0, 5) : fmt(t.need)}` }) : null),
       h('td', null, titleCell),
       h('td', { class: 'num r' }, b && t.nominal ? fmtNum(b.price, 2) : ''),
       h('td', { class: 'num r' }, b && t.nominal ? fmtPct(b.ytmNet) : ''),
@@ -437,8 +569,8 @@ function rungsPanel(plan) {
       ...(ptf ? [h('td', { class: 'num r' }, n(t.heldIn, t.heldIn > 0.5))] : []),
       h('td', { class: 'num r' }, n(t.redemption), b && t.nominal ? h('span', { class: 'dsub', title: 'data del rimborso', text: fmt(b.maturity) }) : null),
       h('td', { class: 'num r' }, n(t.coupons)),
-      ...(pooled ? [h('td', { class: 'num r' }, n(t.fromPot))] : []),
-      h('td', { class: 'num r' }, eur0(t.available), !ok && t.available > 0.5 ? h('span', { class: 'dsub', title: 'differenza rispetto all\'obiettivo', text: fmtNum(diff, 0) }) : null),
+      ...(pooled ? [h('td', { class: 'num r' }, n(t.fromPot), fromSub)] : []),
+      h('td', { class: 'num r' }, eur0(t.available), !ok && t.available > 0.5 ? h('span', { class: 'dsub', title: 'differenza rispetto all\'obiettivo', text: fmtNum(diff, 0) }) : toCash),
       oneGoal ? null : h('td', { class: 'num r' }, eur0(t.amount)),
       h('td', { class: 'acts' }, state,
         h('span', { class: 'row-acts' },
@@ -456,19 +588,54 @@ function rungsPanel(plan) {
     ...(ptf ? [h('td', { class: 'num r', text: eur0(sum('heldIn')) })] : []),
     h('td', { class: 'num r', text: eur0(sum('redemption')) }), h('td', { class: 'num r', text: eur0(sum('coupons')) }),
     ...(pooled ? [h('td', { class: 'num r', text: eur0(sum('fromPot')) })] : []),
-    h('td', { class: 'num r', text: eur0(sum('available')) }), oneGoal ? null : h('td', { class: 'num r', text: eur0(sum('amount')) }), h('td'));
+    // con le eccedenze in cassa lo stesso euro passerebbe due volte (quando arriva e quando la cassa lo preleva): conta una volta
+    h('td', { class: 'num r', title: ptf ? 'ricevuto alle scadenze: le eccedenze che vanno in cassa contano una volta sola' : null, text: eur0(sum('available') - (ptf ? sum('carried') : 0)) }),
+    oneGoal ? null : h('td', { class: 'num r', text: eur0(sum('amount')) }), h('td'));
+  // spiegazione di ogni colonna nell'intestazione (passandoci sopra); la nota sotto resta corta
+  const TIP = { Netto: 'rendimento netto annuo del titolo (STFI)', 'Tuoi titoli': 'rimborsi e cedole nette dei titoli che hai già, nel periodo della scadenza; tassa sulla plusvalenza dal tuo prezzo di carico',
+    Rimborso: 'rimborso netto del titolo nuovo, e la sua data', Cedole: 'cedole nette dei titoli nuovi incassate nel periodo', 'Dalla cassa': 'prelevato dalla cassa: soldi arrivati prima (vedi Movimenti di cassa)',
+    Accantonate: 'cedole incassate prima della scala, tenute da parte', Disponibile: 'tutto quello che arriva per la scadenza; sotto, quello che va in cassa', Costo: 'nominale al prezzo del file più il rateo, meno i crediti d\'imposta' };
   const table = h('div', { class: 'tscroll' }, h('table', { class: 't rungs', 'aria-label': 'Scadenze e titoli' },
-    h('thead', null, h('tr', null, head.map((x, i) => h('th', { scope: 'col', class: R.has(x) ? 'r' : null, 'aria-sort': i === 0 ? 'ascending' : null, text: x })))),
+    h('thead', null, h('tr', null, head.map((x, i) => h('th', { scope: 'col', class: R.has(x) ? 'r' : null, 'aria-sort': i === 0 ? 'ascending' : null, title: TIP[x] || null, text: x })))),
     h('tbody', null, rows), h('tfoot', null, foot)));
   const note = ptf
-    ? ['Netto: rendimento netto annuo del titolo nuovo (STFI). Tuoi titoli: rimborsi e cedole nette dei titoli che hai già, nel periodo della scadenza (la tassa sulla plusvalenza è calcolata sul tuo prezzo di carico). Rimborso e Cedole: dei nuovi acquisti.',
-      pooled ? ' Dalla cassa: eccedenze delle scadenze precedenti e rimborsi arrivati fuori dai periodi, senza interessi.' : '', ' Costo: nominale al prezzo del file più il rateo, valuta ', fmt(plan.settle), '.']
-    : ['Netto: rendimento netto annuo del titolo (STFI). Disponibile: rimborso e cedole che arrivano nel periodo della scadenza', pooled ? ', più le cedole accantonate' : '', '. Costo: nominale al prezzo del file più il rateo, valuta ', fmt(plan.settle), '.'];
+    ? ['Tuoi titoli: rimborsi e cedole nette di quelli che hai già, nel periodo della scadenza (tassa sul tuo prezzo di carico). Rimborso, Cedole e Netto: dei nuovi acquisti.',
+      pooled || (cash && cash.moves.length) ? ' Dalla cassa: soldi arrivati prima, fermi senza interessi; da dove vengono e dove vanno è in «Movimenti di cassa».' : '', ' Costo: prezzo del file più il rateo, meno il credito d\'imposta su rateo e disaggio maturato, valuta ', fmt(plan.settle), '.']
+    : ['Netto: rendimento netto annuo del titolo (STFI). Disponibile: rimborso e cedole che arrivano nel periodo della scadenza', pooled ? ', più le cedole accantonate' : '', '. Costo: nominale al prezzo del file più il rateo, meno il credito d\'imposta su rateo e disaggio maturato, valuta ', fmt(plan.settle), '.'];
   return panel('Scadenze e titoli', `${ptf ? `${plan.positions.length} da comprare` : `${plan.positions.length} titoli`} · ${oneGoal ? `obiettivo ${fmtEur(plan.targets[0].amount)} a scadenza · ` : ''}euro netti · riga o Cambia per scegliere un altro titolo`, table,
     h('p', { class: 'note', style: { padding: '6px 10px' } }, ...note));
 }
 
 /* ---------------------------- Rendita mensile ---------------------------- */
+/** Primo anno in cui il mese più basso scende sotto l'anno tipo (titoli scaduti, senza reinvestire). */
+const dropYear = plan => (plan.byYear || []).find(r => r.year >= (plan.yearFrom || 0) && r.min < plan.minMonth * 0.95 - 0.5);
+
+/** Rendita vera anno per anno, senza reinvestire i rimborsi (plan.byYear del motore). */
+function yearsPanel(plan) {
+  const rows = plan.byYear || [];
+  if (!rows.length) return null;
+  const ptf = !!plan.holdings, drop = dropYear(plan);
+  const box = h('div');
+  requestAnimationFrame(() => columnChart(box, {
+    labels: rows.map(r => String(r.year)), height: 200, yFormat: v => fmtNum(v, 0), average: plan.annual, averageLabel: `ANNO TIPO ${fmtNum(plan.annual, 0)} €`,
+    series: ptf ? [{ cls: 's4', values: rows.map(r => r.held) }, { cls: 's1', values: rows.map(r => r.fresh) }] : [{ cls: 's1', values: rows.map(r => r.annual) }],
+    ariaLabel: 'Cedole nette per anno, senza reinvestire i rimborsi',
+    tooltip: i => ({ title: String(rows[i].year), meta: fmtEur(rows[i].annual), rows: [
+      ...(ptf ? [{ key: 'amber-fill', label: 'dai tuoi titoli', value: fmtEur(rows[i].held) }, { key: 'ink', label: 'dai nuovi', value: fmtEur(rows[i].fresh) }] : []),
+      { label: 'mese più basso', value: fmtEur(rows[i].min) }, { label: 'mesi senza cedole', value: String(rows[i].zeroMonths) }] })
+  }));
+  const table = dataTable({ label: 'Rendita anno per anno', cls: 'compact', cols: [
+    { label: 'Anno', cell: r => String(r.year) },
+    { label: 'Cedole', r: 1, cell: r => eur0(r.annual) },
+    { label: 'Al mese', r: 1, cell: r => eur0(r.annual / 12) },
+    { label: 'Mese min.', r: 1, cell: r => eur0(r.min) },
+    { label: 'Mesi a zero', r: 1, cell: r => String(r.zeroMonths) }], rows });
+  return panel('Rendita anno per anno', 'senza reinvestire i rimborsi · euro netti', box,
+    legend(ptf ? [{ key: 'amber-fill', label: 'dai tuoi titoli' }, { key: 'ink', label: 'dai nuovi acquisti' }, { type: 'line', key: 'amber', label: 'anno tipo' }]
+      : [{ key: 'ink', label: 'cedole nette dell\'anno' }, { type: 'line', key: 'amber', label: 'anno tipo' }]), table,
+    h('p', { class: 'note', style: { padding: '6px 10px' } }, `Ogni titolo paga fino alla sua scadenza, poi il capitale torna (vedi «Capitale che torna»). L'anno tipo (${fmtEur(plan.annual)} l'anno, mese più basso ${fmtEur(plan.minMonth)}) vale finché tutti i titoli sono in vita${drop ? `: dal ${drop.year} il mese più basso scende a ${fmtEur(drop.min)}` : ''}. Se reinvesti i rimborsi in titoli che pagano negli stessi mesi a rendimenti come quelli di oggi, la rendita resta vicina all'anno tipo: è un'ipotesi, non una promessa.`));
+}
+
 function incomeView(st, result, plan) {
   if (plan.empty) return [notesPanel((plan.warnings || []).map(w => insight('warn', w)))];
   const avg = plan.annual / 12;
@@ -487,6 +654,8 @@ function incomeView(st, result, plan) {
 
   const ins = [];
   if (plan.coveredMonths === 12) ins.push(insight('good', 'Cedole in tutti i 12 mesi dell\'anno.'));
+  const drop = dropYear(plan);
+  if (drop) ins.push(insight('warn', `L'anno tipo vale finché tutti i titoli sono in vita: dal ${drop.year}, senza reinvestire i rimborsi, il mese più basso scende a ${fmtEur(drop.min)}${drop.zeroMonths ? ` (${plural(drop.zeroMonths, 'mese', 'mesi')} senza cedole)` : ''}.`));
   ins.push(insight('info', `Il capitale torna man mano: ${plan.capitalByYear.map(([y, v]) => `${y} ${fmtEur(v)}`).join(' · ')}.`));
   ins.push(...commonInsights(plan, result));
 
@@ -497,7 +666,7 @@ function incomeView(st, result, plan) {
     series: [{ cls: 's1', values: plan.monthly }], ariaLabel: 'Cedole nette per mese',
     tooltip: m => ({ title: MONTHS_LONG[m], meta: fmtEur(plan.monthly[m]), rows: payers[m].map(p => ({ label: p.bond.desc.length > 30 ? p.bond.desc.slice(0, 29) + '…' : p.bond.desc, value: fmtEur(p.netPerPayment) })), note: payers[m].length ? null : 'nessuna cedola' })
   }));
-  const monthsPanel = panel('Cedole nette mese per mese', 'anno tipo, dopo le tasse', monthsBox,
+  const monthsPanel = panel('Cedole nette mese per mese', 'anno tipo: tutti i titoli in vita, dopo le tasse', monthsBox,
     legend([{ key: 'ink', label: 'cedole nette del mese' }, { type: 'line', key: 'amber', label: 'media' }, { type: 'text', label: 'passa sopra un mese per vedere chi paga' }]));
 
   const capBox = h('div');
@@ -531,9 +700,10 @@ function incomeView(st, result, plan) {
     h('div', { class: 'grid-2' }, monthsPanel, notesPanel(ins)),
     panel('I titoli', `${plan.positions.length} titoli · euro · Escludi toglie un titolo e ricalcola`, table,
       h('p', { class: 'note', style: { padding: '6px 10px' } }, 'Sotto la scadenza, i mesi in cui arriva la cedola; sotto il rating, la liquidità STFI (da ○○○○ a ●●●●). Netto: rendimento netto annuo. Stacco netto: quanto incassi, dopo le tasse, a ogni pagamento della cedola.')),
+    yearsPanel(plan),
     panel('Capitale che torna', 'rimborsi netti per anno · euro', capBox, legend([{ key: 'ink', label: 'rimborsi dell\'anno' }])),
     yieldMapPanel(result, sel, [], null, null),
-    calendarPanel(plan.schedule), purchasePanel(plan.positions, plan.settle)];
+    calendarPanel(plan.schedule), purchasePanel(plan.positions, plan.settle)].filter(Boolean);
 }
 
 /* ---------------- Rendita mensile attorno al portafoglio posseduto ---------------- */
@@ -543,7 +713,11 @@ function portfolioIncomeView(st, result, plan) {
   const kpis = h('div', { class: 'kpis' },
     kpi('Rendita al mese', fmtEur(avg), `media netta · prima ${fmtEur(plan.annualHeld / 12)}`),
     kpi('Mese più basso', fmtEur(plan.minMonth), plan.zeroMonthsBefore ? `prima ${plural(plan.zeroMonthsBefore, 'mese', 'mesi')} a zero` : `prima ${fmtEur(plan.minAllBefore)}`),
-    kpi('Dai tuoi titoli', fmtPct(plan.heldShare * 100, 0), `delle cedole · ${plural(nHeld, 'titolo', 'titoli')}`),
+    kpi('Dai tuoi titoli', fmtPct(plan.heldShare * 100, 0), (() => {
+      // contano solo i tuoi titoli che arrivano all'orizzonte: dirlo, altrimenti «15 titoli» sembra tutto il portafoglio
+      const n = plan.holdings.filter(x => x.counted).length;
+      return n < nHeld ? `delle cedole · ${n} titoli su ${nHeld}` : `delle cedole · ${plural(nHeld, 'titolo', 'titoli')}`;
+    })()),
     kpi('Rendimento netto', fmtPct(plan.irrAll * 100), plan.positions.length ? `tutto il portafoglio · nuovi ${fmtPct(plan.irr * 100)}` : 'tutto il portafoglio'),
     kpi('Nuovi acquisti', fmtEur(plan.totalCost), target ? `per almeno ${fmtEur(target)} al mese` : plan.positions.length ? `${plural(plan.newLines, 'titolo nuovo', 'titoli nuovi')}${plan.topUps ? ` + ${plural(plan.topUps, 'rabbocco', 'rabbocchi')}` : ''}` : 'niente da comprare'),
     kpi('Mesi pagati', String(plan.coveredMonths), plan.coveredMonths === 12 ? 'tutti' : `${12 - plan.coveredMonths} senza cedole`, '/ 12'));
@@ -569,7 +743,11 @@ function portfolioIncomeView(st, result, plan) {
   }
   const info = result.portfolio || {};
   if (info.missing && info.missing.length) ins.push(insight('warn', `${plural(info.missing.length, 'titolo del portafoglio non è', 'titoli del portafoglio non sono')} nei dati di oggi e ${info.missing.length === 1 ? 'resta' : 'restano'} fuori dal calcolo: ${info.missing.length === 1 ? 'completalo' : 'completali'} nella scheda Portafoglio.`));
-  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', 'Per i BTP Italia conto la cedola reale senza inflazione futura: incasserai un po\' di più.'));
+  if (plan.holdings.some(x => x.bond && x.bond.inflation)) ins.push(insight('info', plan.inflationExtra > 0.5
+    ? `Per i BTP Italia conto la cedola reale, il minimo garantito (inflazione zero). Con un'inflazione del 2% l'anno incasseresti circa ${fmtEur(plan.inflationExtra)} netti in più l'anno, ogni sei mesi con la cedola.`
+    : 'Per i BTP Italia conto la cedola reale, il minimo garantito (inflazione zero): con l\'inflazione incasserai di più.'));
+  const dropP = dropYear(plan);
+  if (dropP) ins.push(insight('warn', `L'anno tipo vale finché tutti i titoli, tuoi e nuovi, sono in vita: dal ${dropP.year}, senza reinvestire i rimborsi, il mese più basso scende a ${fmtEur(dropP.min)}${dropP.zeroMonths ? ` (${plural(dropP.zeroMonths, 'mese', 'mesi')} senza cedole)` : ''}.`));
   if (plan.capitalByYear.length || plan.heldCapitalByYear.length) {
     const years = [...new Set(plan.capitalByYear.map(([y]) => y).concat(plan.heldCapitalByYear.map(([y]) => y)))].sort((a, c) => a - c);
     const tot = y => (plan.capitalByYear.find(([k]) => k === y) || [0, 0])[1] + (plan.heldCapitalByYear.find(([k]) => k === y) || [0, 0])[1];
@@ -589,7 +767,7 @@ function portfolioIncomeView(st, result, plan) {
       ...payers[m].map(p => ({ key: 'ink', label: p.bond.desc.length > 30 ? p.bond.desc.slice(0, 29) + '…' : p.bond.desc, value: fmtEur(p.netPerPayment) }))],
     note: payers[m].length || heldPayers[m].length ? null : 'nessuna cedola' })
   }));
-  const monthsPanel = panel('Cedole nette mese per mese', 'anno tipo, dopo le tasse', monthsBox,
+  const monthsPanel = panel('Cedole nette mese per mese', 'anno tipo: tutti i titoli in vita, dopo le tasse', monthsBox,
     legend([{ key: 'amber-fill', label: 'dai tuoi titoli' }, { key: 'ink', label: 'dai nuovi acquisti' }, { type: 'line', key: 'amber', label: 'media' }, { type: 'text', label: 'passa sopra un mese per vedere chi paga' }]));
 
   const years = [...new Set(plan.capitalByYear.map(([y]) => y).concat(plan.heldCapitalByYear.map(([y]) => y)))].sort((a, c) => a - c);
@@ -634,6 +812,8 @@ function portfolioIncomeView(st, result, plan) {
       { label: 'Nella rendita', cell: x => x.counted ? badge('trig', 'Conta') : badge('normal', 'Scade prima') }],
     rows: plan.holdings
   })));
+  const yp = yearsPanel(plan);
+  if (yp) out.push(yp);
   out.push(panel('Capitale che torna', 'rimborsi netti per anno · euro', capBox, legend([{ key: 'amber-fill', label: 'tuoi titoli' }, { key: 'ink', label: 'nuovi acquisti' }])));
   out.push(yieldMapPanel(result, new Set(plan.positions.map(p => p.bond.isin)), [], null, null));
   const allFlows = plan.schedule.concat(plan.heldSchedule).sort((a, c) => a.day - c.day);

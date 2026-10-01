@@ -49,7 +49,7 @@ const set = (fn, structural = false) => { fn(ctx.st); ctx.changed(structural); i
 let uid = 0;
 /** Campo con etichetta collegata al controllo (for/id) e nota facoltativa. */
 function field(label, control, note, extra) {
-  const inp = control && (control.tagName === 'INPUT' ? control : control.querySelector && control.querySelector('input'));
+  const inp = control && (control.tagName === 'INPUT' || control.tagName === 'SELECT' ? control : control.querySelector && control.querySelector('input'));
   const id = inp ? (inp.id || (inp.id = `f${++uid}`)) : null;
   return h('div', { class: 'field' },
     h(id ? 'label' : 'span', { class: 'lbl', for: id }, h('span', { text: label }), extra || null),
@@ -106,7 +106,7 @@ function portfolioSection(st, ptf) {
     sw('ptfon', on, 'Costruisci attorno al mio portafoglio', 'Tengo i titoli che hai e compro solo quello che manca: niente vendite.', v => set(s => { s.usePortfolio = v; }, true)),
     on ? field('Nuovi acquisti', seg('ptfpref', [['mine', 'I miei titoli'], ['balanced', 'Equilibrato'], ['yield', 'Rendimento']], pref, v => set(s => { s.portfolioPref = v; }, true), 'Nuovi acquisti'), PREF_NOTES[pref]) : null,
     on && st.goal !== 'income' ? sw('ptfcarry', st.portfolioCarry !== false, 'Usa le eccedenze per le scadenze dopo', st.portfolioCarry !== false
-      ? 'Quello che i tuoi titoli danno in più in una scadenza (e i rimborsi che arrivano prima della scala) resta da parte, senza interessi, e paga le scadenze successive: oggi compri meno.'
+      ? 'Quello che i tuoi titoli danno in più in una scadenza (e i rimborsi che arrivano prima della scala) resta in cassa, senza interessi, e paga le scadenze successive: oggi compri meno.'
       : 'Le eccedenze dei tuoi titoli tornano a te, da spendere o reinvestire: le scadenze scoperte le copri con acquisti di oggi.', v => set(s => { s.portfolioCarry = v; }, true)) : null,
     ptf.incomplete ? h('p', { class: 'note' }, h('b', { text: `${ptf.incomplete} ${ptf.incomplete === 1 ? 'titolo' : 'titoli'} da completare` }), ': finché mancano scadenza e cedola restano fuori dai calcoli.') : null,
     h('button', { type: 'button', class: 'linkbtn', text: 'Modifica il portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } })
@@ -120,7 +120,18 @@ function capitalSection(st) {
   out.push(field('Scadenze', seg('sched', [['yearly', 'Annuali'], ['semester', 'Semestrali'], ['dates', 'Date precise']], c.schedule, v => set(s => { s.capital.schedule = v; }, true), 'Tipo di scadenze')));
   if (c.schedule !== 'dates') {
     out.push(field('Parto da', seg('cstart', [['amounts', 'Importo che mi serve'], ['budget', 'Capitale che ho']], c.start, v => set(s => { s.capital.start = v; }, true), 'Parto da')));
-    out.push(field('Scadenze dal', yearsRow('c', c, minYear), `Per ogni ${c.schedule === 'semester' ? 'semestre' : 'anno'} l'app sceglie il titolo migliore che scade in quel periodo.`));
+    out.push(field('Scadenze dal', yearsRow('c', c, minYear), `Per ogni ${c.schedule === 'semester' ? 'semestre' : 'anno'} l'app sceglie, fra i titoli che scadono in quel periodo, quello che rende più economica tutta la scala.`));
+    if (c.schedule === 'yearly') {
+      // rette, tasse, rate: i soldi devono arrivare prima di un mese preciso, non in un momento qualsiasi dell'anno
+      const M = c.byMonth >= 1 && c.byMonth <= 11 ? c.byMonth : 0;
+      const sel = h('select', { class: 'input', data: { k: 'bymonth' }, on: { change: e => set(s => { s.capital.byMonth = +e.target.value; s.fixed = {}; }, true) } },
+        h('option', { value: '0', text: 'in qualsiasi mese dell\'anno' }),
+        MONTHS_LONG.slice(0, 11).map((m, i) => h('option', { value: String(i + 1), text: `entro fine ${m}` })));
+      sel.value = String(M);
+      out.push(field('Mi servono', sel, M
+        ? `Il titolo di ogni anno scade fra ${MONTHS_LONG[M % 12]} dell'anno prima e fine ${MONTHS_LONG[M - 1]}: i soldi arrivano in tempo.`
+        : 'Il titolo può scadere anche a dicembre. Se ti servono prima (rette, tasse), scegli il mese.'));
+    }
     out.push(c.start === 'budget'
       ? field('Capitale da investire', moneyInput('cbudget', c.budget, '€', v => set(s => { s.capital.budget = v; })), 'Diviso in modo da ricevere la stessa somma a ogni scadenza.')
       : field(`Importo per ogni ${c.schedule === 'semester' ? 'semestre' : 'anno'}`, moneyInput('camount', c.amount, '€', v => set(s => { s.capital.amount = v; }))));
@@ -148,7 +159,7 @@ function capitalSection(st) {
     ? 'Per ogni scadenza contano le cedole del suo periodo (anno, semestre o 12 mesi prima della data): serve meno capitale. Quelle incassate prima sono un\'entrata in più.'
     : 'Gli importi arrivano solo dai rimborsi; le cedole sono un\'entrata in più.', v => set(s => { s.capital.useCoupons = v; }, true)));
   if (c.useCoupons) out.push(sw('accumulate', !!c.accumulate, 'Accantona le cedole di prima', c.accumulate
-    ? 'Le cedole incassate prima della scala (o fra una data e l\'altra) restano da parte, senza interessi, e pagano le prime scadenze: serve meno capitale, i primi titoli si riducono o non servono.'
+    ? 'Le cedole incassate prima della scala (o fra una data e l\'altra) restano in cassa, senza interessi, e pagano le prime scadenze: serve meno capitale, i primi titoli si riducono o non servono.'
     : 'Le cedole incassate prima della scala sono un\'entrata in più da spendere o reinvestire: ogni scadenza ha il suo titolo.', v => set(s => { s.capital.accumulate = v; }, true)));
   return out;
 }
@@ -219,7 +230,7 @@ function optionsSection(st) {
   const b = st.basket;
   const items = [
     sw('zainetto', b.zainetto, 'Ho minusvalenze da recuperare', 'Usa il rendimento "super netto" di STFI: la plusvalenza a scadenza compensa lo zainetto fiscale e non viene tassata.', v => set(s => { s.basket.zainetto = v; })),
-    sw('stepup', b.includeStepUp, 'Includi titoli step-up', 'BTP Valore, Futura, Più: cedola crescente. I flussi sono stimati con la cedola attuale (prudente).', v => set(s => { s.basket.includeStepUp = v; })),
+    sw('stepup', b.includeStepUp, 'Includi titoli step-up', 'BTP Valore, Futura, Più: cedola crescente, flussi con il calendario degli scalini del Tesoro.', v => set(s => { s.basket.includeStepUp = v; })),
     sw('infl', b.includeInflation, 'Includi BTP Italia e BTP€i', 'Nel file il loro rendimento è "senza indicizzazione": non è confrontabile con gli altri.', v => set(s => { s.basket.includeInflation = v; }))
   ];
   if (st.goal === 'capital' && st.capital.start !== 'budget') items.push(field('Arrotondamento ai lotti',

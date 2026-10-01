@@ -10,6 +10,7 @@ export function defaults(refDay) {
     capital: {
       start: 'amounts',                           // 'amounts' (importi che mi servono) | 'budget' (capitale che ho)
       schedule: 'yearly',                         // 'yearly' | 'semester' | 'dates'
+      byMonth: 0,                                 // annuali: 0 = in qualsiasi mese, 1–11 = entro la fine di quel mese
       yearFrom: y + 1, yearTo: y + 10,
       amount: 10000, budget: 100000,
       dates: [

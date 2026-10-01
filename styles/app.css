@@ -174,6 +174,29 @@ textarea.input { resize: vertical; min-height: 64px; font: 12.5px/1.45 var(--f-m
 .chart .s4 { fill: var(--amber-fill); }                 /* la parte pagata dai titoli che hai già */
 .t .held-list { display: block; margin-top: 2px; }
 .t .held-list .mine { font: 600 9.5px var(--f-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber); }
+/* più di due titoli tuoi in una scadenza: elenco chiuso, si apre con un clic (la riga resta bassa) */
+.t details.held-list > summary { list-style: none; cursor: pointer; font: 11px var(--f-mono); color: var(--ink-3); margin-top: 1px; }
+.t details.held-list > summary::-webkit-details-marker { display: none; }
+.t details.held-list > summary::after { content: ' ▸'; color: var(--amber); }
+.t details.held-list[open] > summary::after { content: ' ▾'; }
+.t details.held-list > summary:hover { color: var(--ink-2); }
+.t details.held-list > summary:focus-visible { outline: 1px solid var(--amber); outline-offset: 1px; }
+@media (pointer: coarse) { .t details.held-list > summary { padding: 6px 0; } }
+
+/* sotto i numeri della tabella delle scadenze: da dove arriva la cassa, quanto ci va (può andare a capo) */
+.t td .dsub.wrapsub { white-space: normal; }
+/* movimenti di cassa: il perché sotto la data, va a capo; barra del saldo; riepilogo in due colonne */
+.t.cash td.wrap { min-width: 150px; max-width: 520px; }
+.t.cash td.wrap .dsub { white-space: normal; font: 12px/1.4 var(--f-ui); }
+.t.cash .wbar { width: 70px; }
+.cash-facts { grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; }
+.cash-facts dd { text-align: left; }
+.cash-facts dd .mini { margin-left: 4px; }
+@media (max-width: 600px) {
+  .t.cash .wbar { display: none; }
+  .cash-facts { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .cash-facts dd { margin-bottom: 6px; }
+}
 .chart .target { stroke: var(--blue); stroke-width: 2; }
 .chart .avg { stroke: var(--amber); stroke-width: 1; }
 .chart .avgtag { fill: var(--amber); }

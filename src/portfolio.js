@@ -4,7 +4,7 @@
    Ogni posizione si collega ai dati STFI del giorno tramite l'ISIN. I BTP per i risparmiatori (Valore, Più,
    Italia, Futura) usano la loro tabella: cedole crescenti e premio fedeltà, che STFI non ha. I titoli che
    mancano del tutto si descrivono a mano. */
-import { couponDates, accrued, xirr } from './core/bond.js';
+import { couponDates, accrued, xirr, rateAt } from './core/bond.js';
 import { parseDay, parts, day, daysInMonth, iso } from './core/dates.js';
 import { EUROZONE } from './data/stfi.js';
 import { RETAIL_BTP } from './data/retail-btp.js';
@@ -90,6 +90,8 @@ function synthBond(h, spec, ref, settle) {
  * Posizioni + dati del giorno → posizioni risolte:
  * { h, bond, status: 'data' | 'retail' | 'manual' | 'missing' | 'matured', value, flows }.
  * value = valore di mercato oggi (prezzo + rateo); flows = flussi netti futuri in euro.
+ * Chi ha già il titolo incassa anche le cedole pagate fra la data dei dati e il regolamento (il prezzo del file è già
+ * «ex cedola»): restano nei flussi con pre: true (contano per la cassa, non per il rendimento dai prezzi di oggi).
  */
 export function resolveHoldings(holdings, ds, { zainetto = false } = {}) {
   const by = new Map(ds.bonds.map(b => [b.isin, b]));
@@ -102,19 +104,12 @@ export function resolveHoldings(holdings, ds, { zainetto = false } = {}) {
     else { bond = ref; status = 'data'; }
     if (!bond) return { h, bond: null, status: 'missing', value: Number.isFinite(h.price) ? h.nominal * h.price / 100 : 0, flows: [] };
     if (bond.maturity <= ds.settle) return { h, bond, status: 'matured', value: 0, flows: [] };
-    const flows = holdingFlows(bond, h, ds.settle, { zainetto });
+    const start = ds.refDate != null && ds.refDate < ds.settle ? ds.refDate : ds.settle;
+    const flows = holdingFlows(bond, h, start, { zainetto }).map(f => f.day <= ds.settle ? { ...f, pre: true } : f);
     const cleanPx = Number.isFinite(bond.price) ? bond.price : 100;
     const value = h.nominal * (cleanPx + accrued(bond, ds.settle)) / 100;
     return { h, bond, status, value, flows };
   });
-}
-
-/** Tasso della cedola alla data (step-up dei BTP retail; altrimenti la cedola attuale). */
-function rateAt(b, d) {
-  if (!b.steps || !b.steps.length) return b.coupon;
-  let r = b.steps[0].rate;
-  for (const s of b.steps) if (s.from <= d) r = s.rate;
-  return r;
 }
 
 /**
@@ -148,8 +143,9 @@ export function holdingFlows(b, h, settle, { zainetto = false } = {}) {
 
 /** Rendimento netto annuo dai prezzi di oggi (per confronto con i titoli da comprare). */
 export function holdingYield(r, settle) {
-  if (!r.bond || !r.flows.length || !(r.value > 0)) return NaN;
-  const y = xirr([{ day: settle, amount: -r.value }].concat(r.flows.map(f => ({ day: f.day, amount: f.net }))));
+  const fl = r.bond ? r.flows.filter(f => !f.pre) : [];
+  if (!fl.length || !(r.value > 0)) return NaN;
+  const y = xirr([{ day: settle, amount: -r.value }].concat(fl.map(f => ({ day: f.day, amount: f.net }))));
   return Number.isFinite(y) ? y * 100 : NaN;
 }
 
@@ -165,7 +161,7 @@ export function portfolioSummary(resolved, settle) {
   const cleanValue = live.reduce((s, r) => s + r.h.nominal * (Number.isFinite(r.bond.price) ? r.bond.price : 100) / 100, 0);
   const schedule = live.flatMap(r => r.flows.map(f => ({ ...f, isin: r.h.isin })));
   const liveValue = live.reduce((s, r) => s + r.value, 0);
-  const all = [{ day: settle, amount: -liveValue }].concat(schedule.map(f => ({ day: f.day, amount: f.net })));
+  const all = [{ day: settle, amount: -liveValue }].concat(schedule.filter(f => !f.pre).map(f => ({ day: f.day, amount: f.net })));
   const irr = live.length ? xirr(all.sort((a, b) => a.day - b.day)) : NaN;
   return { count: held.length, incomplete, nominal, cost, costKnown, value, cleanValue, pnl: costKnown ? cleanValue - cost : NaN, schedule, irr };
 }
