@@ -1,4 +1,4 @@
-# Bond Ladder — v3.6.0
+# Bond Ladder — v3.7.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -14,8 +14,8 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
   solo la differenza.
 
 ## Come si usa
-1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile`, `3 Portafoglio` (i titoli che hai già) oppure
-   `4 Le mie scale` (le scale salvate).
+1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile`, `3 Portafoglio` (i titoli che hai già),
+   `4 Le mie scale` (le scale salvate) oppure `5 Un titolo` (cerca il singolo titolo migliore, senza scala).
 2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
    Con le scadenze annuali puoi dire **entro quale mese** ti servono i soldi (rette, affitti, tasse): ogni anno il
    titolo scade nei 12 mesi prima della fine di quel mese e contano le cedole di quei 12 mesi.
@@ -28,10 +28,18 @@ impostazione alla volta (quota per emittente, eccedenze, cedole di prima, mese d
 clic. Il pannello **Movimenti di cassa** mostra i soldi che arrivano prima che servano: entrate, prelievi, saldo e
 attesa. La proposta si salva, si stampa, si esporta in CSV e si condivide.
 
-Dalla tastiera: `1`–`4` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
-Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
+Dalla tastiera: `1`–`5` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
+Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE`, `TIT` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
 daltonici, `CHIARO` / `SCURO` per il tema, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella
 proposta. Le scorciatoie da un tasto si spengono dalla guida.
+
+## Un titolo solo
+La scheda `5 Un titolo` (comando `TIT`) serve a comprare un titolo secco: si sceglie l'emittente (o le aree), gli anni
+di scadenza, il tipo di cedola (fissa, zero coupon, step-up, indicizzati), rating, prezzo massimo, liquidità minima e
+un testo da cercare, e si ordina per rendimento netto o super netto, cedola, prezzo, scadenza, durata o liquidità. Il
+primo è «il migliore»; per il titolo scelto l'app mostra quanto nominale si compra con l'importo indicato (lotti
+interi), il costo vero (prezzo + rateo meno il credito d'imposta) e il calendario degli incassi netti. Filtri salvati
+nel browser; elenco esportabile in CSV.
 
 ## Aspetto: design system «Terminale ambra»
 L'interfaccia segue il design system «Terminale ambra»: `css/terminale.css` (il kit, da non modificare) più gli

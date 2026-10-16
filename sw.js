@@ -3,7 +3,7 @@
 // alzare a mano come nella v2), offline si usa la copia salvata. I dati del giorno (data/)
 // non passano di qui: arrivano sempre dalla rete e la copia offline la tiene l'app nel
 // browser, così "scaricato ora" vuol dire davvero scaricato ora.
-const CACHE = 'bond-ladder-v3.6.0';
+const CACHE = 'bond-ladder-v3.7.0';
 const DATA_PATH = new URL('./data/', self.location.href).pathname;
 const SHELL = [
   './', './index.html', './manifest.json', './css/terminale.css', './styles/app.css', './assets/icon.svg', './assets/icon-192.png',
@@ -15,7 +15,7 @@ const SHELL = [
   './src/data/stfi.js', './src/data/source.js', './src/data/portfolio.js', './src/data/xls.js', './src/data/retail-btp.js',
   './src/core/dates.js', './src/core/bond.js', './src/core/basket.js', './src/core/select.js', './src/core/flow.js',
   './src/core/capital.js', './src/core/income.js', './src/core/lp.js',
-  './src/ui/dom.js', './src/ui/charts.js', './src/ui/settings.js', './src/ui/results.js', './src/ui/sheet.js', './src/ui/saved.js', './src/ui/help.js',
+  './src/ui/finder.js', './src/ui/dom.js', './src/ui/charts.js', './src/ui/settings.js', './src/ui/results.js', './src/ui/sheet.js', './src/ui/saved.js', './src/ui/help.js',
   './src/ui/portfolio.js'
 ];
 

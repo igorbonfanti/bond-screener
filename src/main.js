@@ -11,13 +11,14 @@ import { renderResults } from './ui/results.js';
 import { openSheet, closeSheet } from './ui/sheet.js';
 import { renderSavedList, renderSavedDetail } from './ui/saved.js';
 import { renderPortfolio } from './ui/portfolio.js';
+import { renderFinder } from './ui/finder.js';
 import { loadPortfolio, savePortfolio, resolveHoldings, portfolioSummary } from './portfolio.js';
 import { readSpreadsheet } from './data/xls.js';
 import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.6.0';
+const VERSION = '3.7.0';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
 const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'
@@ -208,7 +209,7 @@ function settingsChanged() {
 }
 
 /* ---------------- Schede e indirizzi ---------------- */
-const TABS = { capital: '#/capitale', income: '#/rendita', portfolio: '#/portafoglio', saved: '#/scale' };
+const TABS = { capital: '#/capitale', income: '#/rendita', portfolio: '#/portafoglio', saved: '#/scale', finder: '#/titolo' };
 
 function currentRoute() {
   const hsh = location.hash || '#/';
@@ -216,6 +217,7 @@ function currentRoute() {
   if ((m = hsh.match(/^#\/l\/(.+)$/))) return { name: 'ladder', id: decodeURIComponent(m[1]) };
   if ((m = hsh.match(/^#\/s\/(.+)$/))) return { name: 'shared', data: m[1] };
   if (hsh.startsWith('#/scale')) return { name: 'saved' };
+  if (hsh.startsWith('#/titolo')) return { name: 'finder' };
   if (hsh.startsWith('#/portafoglio')) return { name: 'portfolio' };
   if (hsh.startsWith('#/rendita')) return { name: 'build', goal: 'income' };
   if (hsh.startsWith('#/capitale')) return { name: 'build', goal: 'capital' };
@@ -264,6 +266,14 @@ function route() {
       },
       onBuild: goal => { app.st.usePortfolio = true; saveSettings(app.st); go(goal); }
     });
+    return;
+  }
+  if (r.name === 'finder') {
+    selectTab('finder');
+    const box = h('div', { class: 'stack' });
+    view.replaceChildren(box);
+    if (!app.ds) { box.append(app.booting ? h('p', { class: 'loading note', text: 'Caricamento dei dati…' }) : noDataView()); return; }
+    renderFinder(box, { ds: app.ds });
     return;
   }
   if (r.name === 'saved' || r.name === 'ladder') {
@@ -711,7 +721,7 @@ function openDataDialog() {
 
 /* ---------------- Barra comandi ---------------- */
 const NARROW = matchMedia('(max-width: 600px)');   // sul telefono il segnaposto intero non ci sta
-const cmdHint = () => NARROW.matches ? 'CAP, REN, PTF, ISIN, HELP' : 'Comando: CAP, REN, PTF, SCALE, DATI, un ISIN, HELP · poi Invio';
+const cmdHint = () => NARROW.matches ? 'CAP, REN, PTF, TIT, HELP' : 'Comando: CAP, REN, PTF, SCALE, TIT, DATI, un ISIN, HELP · poi Invio';
 let cmdTimer = 0;
 /** Comando non riconosciuto: messaggio nel segnaposto, in rosso, per 4 secondi (e letto dai lettori di schermo). */
 function cmdError(msg, short) {
@@ -743,7 +753,8 @@ function findIsin(isin) {
 }
 
 const VIEW_CMDS = { 1: 'capital', CAP: 'capital', CAPITALE: 'capital', 2: 'income', REN: 'income', RENDITA: 'income',
-  3: 'portfolio', PTF: 'portfolio', PORT: 'portfolio', PORTAFOGLIO: 'portfolio', 4: 'saved', SCALE: 'saved', SCALA: 'saved', SALVATE: 'saved' };
+  3: 'portfolio', PTF: 'portfolio', PORT: 'portfolio', PORTAFOGLIO: 'portfolio', 4: 'saved', SCALE: 'saved', SCALA: 'saved', SALVATE: 'saved',
+  5: 'finder', TIT: 'finder', TITOLO: 'finder', CERCA: 'finder', BOND: 'finder' };
 function runCommand(raw) {
   const text = String(raw || '').trim();
   const q = text.toUpperCase().replace(/\s+/g, ' ');
@@ -756,7 +767,7 @@ function runCommand(raw) {
   if (q === 'CVD') { done(); toggleCvd(); return; }
   if (['CHIARO', 'SCURO', 'TEMA'].includes(q)) { done(); setTheme(q === 'TEMA' ? !isLight() : q === 'CHIARO'); return; }
   if (/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(q)) { done(); findIsin(q); return; }
-  cmdError(`«${text.slice(0, 24)}»: comando non trovato. Prova CAP, REN, SCALE, DATI, CHIARO, HELP o un ISIN`, `«${text.slice(0, 10)}»: non trovato`);
+  cmdError(`«${text.slice(0, 24)}»: comando non trovato. Prova CAP, REN, SCALE, TIT, DATI, CHIARO, HELP o un ISIN`, `«${text.slice(0, 10)}»: non trovato`);
 }
 
 /** Tema chiaro o scuro: attributo su <html> (i colori li cambia il CSS), interruttore, colore della barra del browser. */
@@ -798,7 +809,7 @@ function wireLogin() {
   obs.observe(document.body, { childList: true });
 }
 
-/** Schede con frecce, Home e Fine; tasti 1–4, / e ? (si spengono dalla guida). */
+/** Schede con frecce, Home e Fine; tasti 1–5, / e ? (si spengono dalla guida). */
 function wireKeys() {
   const tabs = [...document.querySelectorAll('#tabs [role="tab"]')];
   tabs.forEach((t, i) => {
@@ -817,9 +828,9 @@ function wireKeys() {
     if (document.querySelector('dialog[open]')) return;
     const tg = e.target;
     if (tg && tg.closest && tg.closest('input, textarea, select, [contenteditable="true"], #accessoForm')) return;
-    if (e.key >= '1' && e.key <= '4') {
+    if (e.key >= '1' && e.key <= '5') {
       e.preventDefault();
-      const v = ['capital', 'income', 'portfolio', 'saved'][+e.key - 1];
+      const v = ['capital', 'income', 'portfolio', 'saved', 'finder'][+e.key - 1];
       go(v);
       $('#tab-' + v).focus({ preventScroll: true });
     } else if (e.key === '/') { e.preventDefault(); $('#cmdInput').focus(); }
