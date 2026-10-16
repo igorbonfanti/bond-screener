@@ -32,3 +32,16 @@ test('un titolo: con un importo si compra a lotti interi, mai oltre l\'importo',
   assert.ok(p.flows.at(-1).kind === 'redemption' && p.gain > 0);
   assert.equal(purchase(b, ds.settle, 1).nominal, b.lot >= 1000 ? 0 : purchase(b, ds.settle, 1).nominal);
 });
+
+test('un titolo: al prezzo a cui compri rendimento, costo e incassi si ricalcolano', async () => {
+  const { atPrice } = await import('../src/ui/finder.js');
+  const b = findBonds(ds, { ...finderDefaults(2026), from: 2028, to: 2035, minRating: '', minLiq: 0, type: 'fixed' })[0];
+  const same = atPrice(b, ds.settle, b.price);
+  assert.ok(!same.own && same.bond === b, 'stesso prezzo: i dati del file');
+  const up = atPrice(b, ds.settle, b.price + 1), down = atPrice(b, ds.settle, b.price - 1);
+  assert.ok(up.own && up.y < up.yFile && down.y > down.yFile, 'prezzo più alto, rendimento più basso');
+  assert.ok(Math.abs(up.bond.cost - b.cost - 1) < 1e-9, 'il costo sale esattamente di un punto (rateo e credito invariati)');
+  assert.ok(Math.abs(up.yFile - scoreYield(b, false)) < 0.03, 'al prezzo del file i flussi dell\'app danno il rendimento STFI');
+  const p0 = purchase(b, ds.settle, 20000), p1 = purchase(up.bond, ds.settle, 20000);
+  assert.ok(p1.nominal <= p0.nominal && p1.cost <= 20000);
+});

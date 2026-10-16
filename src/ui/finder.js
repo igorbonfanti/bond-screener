@@ -7,7 +7,7 @@ import { h, fmtEur, fmtPct, fmtNum, parseUserNumber, copyText, toast, downloadFi
 import { calendarPanel, dataTable } from './results.js';
 import { issuerCatalog } from '../core/basket.js';
 import { ratingScore } from '../data/stfi.js';
-import { cashflows, scoreYield } from '../core/bond.js';
+import { cashflows, scoreYield, costPer100, netYield } from '../core/bond.js';
 import { fmt, parts } from '../core/dates.js';
 
 const KEY = 'bondladder.finder.v1';
@@ -62,6 +62,15 @@ export function findBonds(ds, f) {
   return out.sort((a, b) => (s.v(a) - s.v(b)) * s.dir || scoreYield(b, false) - scoreYield(a, false));
 }
 
+/** Il titolo al prezzo a cui compri davvero (la lettera del book): costo, tassa a scadenza e rendimento netto
+    ricalcolati con i flussi dell'app (il disaggio di emissione maturato non dipende dal prezzo e resta quello del file). */
+export function atPrice(b, settle, price, zainetto = false) {
+  if (!(price > 0) || Math.abs(price - b.price) < 1e-9) return { bond: b, y: scoreYield(b, zainetto), own: false };
+  const nb = { ...b, price, priceType: 'USER' };
+  nb.cost = costPer100(nb, settle);
+  return { bond: nb, y: netYield(nb, settle, { zainetto }), yFile: netYield(b, settle, { zainetto }), own: true };
+}
+
 /** Acquisto di un titolo con un importo: nominale a lotti interi, costo vero, incassi netti. */
 export function purchase(b, settle, amount, zainetto = false) {
   const per100 = b.cost;
@@ -79,7 +88,7 @@ export function purchase(b, settle, amount, zainetto = false) {
 let C = null;   // { root, ds, zainetto }
 
 export function renderFinder(root, ctx) {
-  C = { ...ctx, root, sel: null };
+  C = { ...ctx, root, sel: null, px: {} };   // px: prezzo a cui compri, per ISIN (solo per questa visita)
   const saved = store.get();
   const y = ctx.ds ? parts(ctx.ds.settle).y : new Date().getFullYear();
   C.f = { ...finderDefaults(y), ...(saved || {}), areas: { ...finderDefaults(y).areas, ...((saved && saved.areas) || {}) } };
@@ -165,15 +174,19 @@ function paintResults() {
       text: 'Nessun titolo passa tutti i filtri: allarga gli anni di scadenza, abbassa il rating o la liquidità minima, togli il limite di prezzo.' })));
     return;
   }
-  const b = C.sel && list.find(x => x.isin === C.sel) || list[0];
-  const best = b === list[0];
-  const p = purchase(b, ds.settle, f.amount, f.sort === 'super');
-  const y = scoreYield(b, f.sort === 'super');
+  const b0 = C.sel && list.find(x => x.isin === C.sel) || list[0];
+  const best = b0 === list[0];
+  const zn = f.sort === 'super';
+  const ap = atPrice(b0, ds.settle, C.px[b0.isin], zn);
+  const b = ap.bond;
+  const p = purchase(b, ds.settle, f.amount, zn);
+  // con il tuo prezzo: stesso calcolo dell'app anche per il confronto (la differenza col file è solo il prezzo)
+  const y = ap.y, yDelta = ap.own ? ap.y - ap.yFile : 0;
   const kpis = h('div', { class: 'kpis' },
     kpi(best ? 'Il migliore' : 'Scelto', b.desc, `${b.isin} · ${b.issuerName}${b.rating ? ' · ' + b.rating : ''}`),
-    kpi(f.sort === 'super' ? 'Rend. super netto' : 'Rendimento netto', fmtPct(y), 'annuo a scadenza, dopo le tasse'),
+    kpi(zn ? 'Rend. super netto' : 'Rendimento netto', fmtPct(y), ap.own ? `al tuo prezzo (${yDelta >= 0 ? '+' : MINUS}${fmtNum(Math.abs(yDelta), 2)} punti sul file)` : 'annuo a scadenza, dopo le tasse'),
     kpi('Cedola', b.zc ? 'zero coupon' : fmtPct(b.coupon), b.zc ? 'guadagno solo a scadenza' : `lorda annua${b.stepUp ? ' (cresce: step-up)' : ''}`),
-    kpi('Prezzo', fmtNum(b.price, 2), `scade il ${fmt(b.maturity)}`),
+    kpi(ap.own ? 'Il tuo prezzo' : 'Prezzo', fmtNum(b.price, 3), ap.own ? `file ${fmtNum(b0.price, 2)} · scade il ${fmt(b.maturity)}` : `del file · scade il ${fmt(b.maturity)}`),
     kpi('Con ' + fmtEur(f.amount), p.nominal ? fmtEur(p.nominal) : '—', p.nominal ? `di nominale · costo ${fmtEur(p.cost, 2)}` : `il lotto minimo costa ${fmtEur(p.lotCost)}`),
     kpi('Incassi netti', p.nominal ? fmtEur(p.received) : '—', p.nominal ? `guadagno netto ${fmtEur(p.gain)}` : 'aumenta l\'importo'));
   const lead = h('p', { class: 'lead' }, `${list.length} ${list.length === 1 ? 'titolo passa' : 'titoli passano'} i filtri; ordinati per ${s.label.toLowerCase()}. `,
@@ -183,14 +196,35 @@ function paintResults() {
   const notes = [];
   if (b.inflation) notes.push('Titolo indicizzato all\'inflazione: rendimento e flussi sono senza indicizzazione (minimo garantito), quindi prudenti.');
   if (b.stepUp && !b.steps) notes.push('Cedola crescente non in tabella: i flussi usano la cedola di oggi (prudente).');
-  if (b.priceType === 'RP') notes.push('Nessuno scambio oggi: il prezzo è di riferimento, quello vero può essere diverso.');
-  if (b.liquidity < 2) notes.push('Titolo poco scambiato: in acquisto lo spread denaro-lettera può pesare.');
+  if (ap.own) notes.push(`Calcoli al tuo prezzo di ${fmtNum(b.price, 3)} invece di ${fmtNum(b0.price, 3)} del file STFI: rendimento, costo, tassa a scadenza e incassi sono ricalcolati con i flussi dell'app.`);
+  if (b0.priceType === 'RP') notes.push('Nessuno scambio oggi: il prezzo è di riferimento, quello vero può essere diverso.');
+  if (b0.liquidity < 2) notes.push('Titolo poco scambiato: in acquisto lo spread denaro-lettera può pesare.');
   if (b.price > 100) notes.push('Sopra la pari: a scadenza una minusvalenza (recuperabile con plusvalenze entro 4 anni).');
   notes.push('Costo = prezzo + rateo, meno il credito d\'imposta sul rateo e sul disaggio maturato; esclusi commissioni e bollo.');
   const actions = h('div', { class: 'actions' },
     h('button', { type: 'button', class: 'mini', text: 'Copia ISIN', on: { click: async () => toast(await copyText(b.isin) ? `ISIN ${b.isin} copiato` : b.isin, 'ok') } }),
     h('button', { type: 'button', class: 'mini', text: 'Esporta elenco CSV', on: { click: () => downloadFile(`titoli-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(list)) } }),
     best ? null : h('button', { type: 'button', class: 'mini', text: 'Torna al migliore', on: { click: () => { C.sel = null; paintResults(); } } }));
+  const pxIn = h('input', { class: 'input', inputmode: 'decimal', placeholder: fmtNum(b0.price, 2), value: ap.own ? fmtNum(b.price, 3) : '', data: { k: 'px' }, 'aria-label': 'Prezzo a cui compri', style: { width: '9em' } });
+  let applied = false;   // Invio ridisegna e il campo esce dalla pagina: il «change» del blur non deve ricalcolare ancora
+  const applyPx = () => {
+    if (applied || !pxIn.isConnected) return;
+    applied = true;
+    const v = parseUserNumber(pxIn.value);
+    if (!pxIn.value.trim()) delete C.px[b0.isin];
+    else if (v > 1 && v < 300) C.px[b0.isin] = v;
+    else { applied = false; toast('Prezzo non valido: scrivilo come sul book, per esempio 95,32', 'err'); return; }
+    paintResults();
+    const el = C.res.querySelector('[data-k="px"]'); if (el) el.focus({ preventScroll: true });
+  };
+  pxIn.addEventListener('change', applyPx);
+  pxIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyPx(); } });
+  const pxPanel = panel('Prezzo a cui compri', b0.isin,
+    h('div', { class: 'pb form' },
+      h('div', { class: 'row', style: { display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' } }, pxIn,
+        h('button', { type: 'button', class: 'mini', text: 'Ricalcola', on: { click: applyPx } }),
+        ap.own ? h('button', { type: 'button', class: 'mini', text: 'Usa il prezzo del file', on: { click: () => { delete C.px[b0.isin]; paintResults(); } } }) : null),
+      h('p', { class: 'note', text: `Scrivi la lettera che vedi sul book (MOT, Vorvel…), per 100 di nominale, secco: senza rateo. Il prezzo del file STFI è ${fmtNum(b0.price, 3)}${b0.priceType === 'RP' ? ' (di riferimento: oggi nessuno scambio)' : ''}. Vale per questo titolo finché resti nella scheda.` })));
   const rows = list.slice(0, 100);
   const cols = [
     { label: '#', cell: x => String(list.indexOf(x) + 1) },
@@ -206,9 +240,9 @@ function paintResults() {
     { label: 'Lotto', r: true, sort: x => x.lot, cell: x => fmtNum(x.lot, 0) }
   ];
   const table = dataTable({ cols, rows, label: 'Titoli che passano i filtri', cls: 'compact',
-    rowAttrs: x => ({ class: x === b ? 'sel' : null, tabindex: 0, 'aria-label': `${x.desc}: usa questo`,
+    rowAttrs: x => ({ class: x === b0 ? 'sel' : null, tabindex: 0, 'aria-label': `${x.desc}: usa questo`,
       on: { click: () => { C.sel = x.isin; paintResults(); }, keydown: e => { if (e.key === 'Enter') { C.sel = x.isin; paintResults(); } } } }) });
-  C.res.replaceChildren(...[kpis, lead, actions,
+  C.res.replaceChildren(...[kpis, lead, actions, pxPanel,
     panel('Da sapere', `${notes.length} note`, h('div', { class: 'pb' }, h('ul', { class: 'note', style: { margin: 0, paddingLeft: '18px' } }, notes.map(n => h('li', { text: n }))))),
     panel('Titoli che passano i filtri', `${list.length > 100 ? 'i primi 100 di ' + list.length : list.length} · clic su una riga per vederla`, table),
     p.nominal ? calendarPanel(p.flows, `${b.desc} · ${fmtEur(p.nominal)} di nominale · euro netti`) : null

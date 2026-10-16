@@ -1,4 +1,4 @@
-# Bond Ladder — v3.7.0
+# Bond Ladder — v3.7.1
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -38,7 +38,9 @@ La scheda `5 Un titolo` (comando `TIT`) serve a comprare un titolo secco: si sce
 di scadenza, il tipo di cedola (fissa, zero coupon, step-up, indicizzati), rating, prezzo massimo, liquidità minima e
 un testo da cercare, e si ordina per rendimento netto o super netto, cedola, prezzo, scadenza, durata o liquidità. Il
 primo è «il migliore»; per il titolo scelto l'app mostra quanto nominale si compra con l'importo indicato (lotti
-interi), il costo vero (prezzo + rateo meno il credito d'imposta) e il calendario degli incassi netti. Filtri salvati
+interi), il costo vero (prezzo + rateo meno il credito d'imposta) e il calendario degli incassi netti. Nel campo
+**Prezzo a cui compri** si scrive la lettera vista sul book (MOT, Vorvel…): rendimento netto, costo, tassa a scadenza e
+incassi si ricalcolano con quel prezzo, con lo scarto rispetto al prezzo del file. Filtri salvati
 nel browser; elenco esportabile in CSV.
 
 ## Aspetto: design system «Terminale ambra»
