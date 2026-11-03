@@ -31,6 +31,7 @@ export function series(known, rate) {
   const memo = new Map();
   const get = (y, m) => {
     const k = mkey(y, m);
+    if (memo.has(k)) return memo.get(k);
     if (k in known) return known[k];
     if (k < keys[0]) throw new Error(`Indice ${k} non disponibile (la serie parte da ${keys[0]}).`);
     if (memo.has(k)) return memo.get(k);
@@ -40,7 +41,9 @@ export function series(known, rate) {
     return v;
   };
   // riempie la memoria in ordine, così la ricorsione resta corta anche per date lontane
-  const warm = (y, m) => { let [cy, cm] = [ly, lm]; while (cy * 12 + cm < y * 12 + m) { [cy, cm] = shift(cy, cm, 1); get(cy, cm); } };
+  // (riparte dall'ultimo mese già calcolato, non dall'ultimo pubblicato: una lettura costa O(1) dopo la prima)
+  let wy = ly, wm = lm;
+  const warm = (y, m) => { while (wy * 12 + wm < y * 12 + m) { [wy, wm] = shift(wy, wm, 1); get(wy, wm); } };
   return {
     last,
     get: (y, m) => { if (mkey(y, m) > last) warm(y, m); return get(y, m); },

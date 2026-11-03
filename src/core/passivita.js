@@ -2,7 +2,8 @@
    Uno scenario dà l'inflazione HICP area euro anno per anno; il FOI italiano è HICP + uno spread (basis, default 0
    nello scenario base); l'€STR segue l'inflazione: €STR_s = €STR_base + 0,5 × (π_s − π_base).
    L'affitto del primo anno L₀ cresce ogni anno con l'inflazione dell'anno appena chiuso più uno spread reale:
-   L(Y) = L₀ × Π_{k = primo anno … Y−1} (1 + π_k + spread). La rata del periodo (12 o 6 mesi) è dovuta
+   L(Y) = L₀ × Π_{k = primo anno … Y−1} (1 + π_k + spread), e se π_k < 0 quell'anno l'affitto resta fermo (scelta di
+   Igor: un canone non scende). La rata del periodo (12 o 6 mesi) è dovuta
    all'inizio del periodo: scelta prudenziale (il brief §3.1). */
 import { day } from './dates.js';
 import { rateFn } from './indice.js';
@@ -41,7 +42,8 @@ export function liabilities(cfg, fns) {
   const out = [];
   let L = L0;
   for (let y = yearFrom; y <= yearTo; y++) {
-    if (y > yearFrom && !cfg.flat) L *= 1 + pi(y - 1) + realSpread;   // flat: importo fisso (per il confronto)
+    // con inflazione negativa l'affitto resta fermo (non scende); flat: importo fisso (per il confronto)
+    if (y > yearFrom && !cfg.flat) L *= pi(y - 1) < 0 ? 1 : 1 + pi(y - 1) + realSpread;
     if (schedule === 'semester') {
       out.push({ day: day(y, 1, 1), year: y, half: 1, amount: L / 2 });
       out.push({ day: day(y, 7, 1), year: y, half: 2, amount: L / 2 });

@@ -1,0 +1,31 @@
+--- inflazione AR(1), 50.000 percorsi ---
+anno0 = infl0 0.026 0.026
+t= 1 media 0.02481 (teoria 0.02480)  sd 0.00959 (teoria 0.00960)
+t= 2 media 0.02413 (teoria 0.02408)  sd 0.01121 (teoria 0.01120)
+t= 5 media 0.02325 (teoria 0.02323)  sd 0.01198 (teoria 0.01196)
+t=10 media 0.02304 (teoria 0.02302)  sd 0.01202 (teoria 0.01200)
+t=20 media 0.02294 (teoria 0.02300)  sd 0.01196 (teoria 0.01200)
+stazionaria: media 0.02301 sd 0.012 -> attese 0.023 0.012
+persistenza stimata 0.5996 sd innovazione 0.0096 teoria 0.0096 normalita innov. (curtosi in eccesso) 0.005
+quota anni con inflazione < 0: 0.0278
+--- ETF ---
+mediana del rendimento lordo (pre-TER) 0.05993 atteso 0.06
+media del log lordo -> composto 0.05989 atteso 0.06
+mediana netta (dopo TER) 0.05843 atteso 0.0585
+sd di z 0.9979 (1)  sd log 0.1597 atteso 0.16
+curtosi in eccesso di z 4.637 teoria t5 = 6 (stima rumorosa)
+  quantile 0.001: campione -4.5141  t5 normalizzata -4.5650  normale -3.0902
+  quantile 0.01: campione -2.5965  t5 normalizzata -2.6065  normale -2.3263
+  quantile 0.05: campione -1.5603  t5 normalizzata -1.5608  normale -1.6449
+  quantile 0.5: campione -0.0004  t5 normalizzata +0.0000  normale +0.0000
+  quantile 0.95: campione +1.5612  t5 normalizzata +1.5608  normale +1.6449
+  quantile 0.99: campione +2.6030  t5 normalizzata +2.6065  normale +2.3263
+KS contro t5 normalizzata: stat 0.00205 p 0.368
+KS contro normale: stat 0.03957 p 1.509200134560455e-272
+media aritmetica netta annua 0.07215  anno peggiore 1/1000 -0.4867  quota anni < -30% 0.01025
+correlazione eq-inflazione stesso anno 0.0008
+autocorrelazione eq -0.0009
+--- motore, caso base: 2000 percorsi, anni 2026-2047 ---
+infl anno0 [0.026]  inflBase {'2027': 0.026, '2028': 0.021, '2029': 0.023}
+infl media anni 10+ 0.0231 sd 0.01189
+eq mediana 0.05857 sd log 0.1594

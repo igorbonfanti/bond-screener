@@ -1,0 +1,5 @@
+base 8308 ms ok
+semestrali 12078 ms ok
+semestrali2056 18027 ms ok
+pesante2066 24344 ms ok
+pesante2066_senzaMC 13980 ms ok
