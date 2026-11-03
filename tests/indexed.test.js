@@ -138,3 +138,13 @@ test('ottimizzatore: con un capitale dato, l\'affitto più alto e l\'anno più l
   const hz = planIndexed(ds, bonds, { ...CFG, mode: 'maxhorizon', budget }, INFL, highs);
   assert.ok(!hz.empty && hz.horizon < CFG.yearTo && hz.horizon >= CFG.yearFrom, `orizzonte ${hz.horizon}`);
 });
+
+test('solver di riserva (javascript-lp-solver): stesso ottimo «a pezzi» di HiGHS', async () => {
+  const { fallbackSolver } = await import('../src/core/lp-fallback.js');
+  const ds = load(), highs = await solver();
+  const { bonds } = applyBasket(ds, { maxPrice: null, includeInflation: true });
+  const a = planIndexed(ds, bonds, CFG, INFL, highs), b = planIndexed(ds, bonds, CFG, INFL, fallbackSolver);
+  assert.ok(!b.empty);
+  assert.ok(Math.abs(a.relaxedCost - b.relaxedCost) < 0.01 * a.relaxedCost, `${a.relaxedCost} vs ${b.relaxedCost}`);
+  assert.equal(b.sims.base.first, null, 'anche con i lotti per eccesso lo scenario base è coperto');
+});

@@ -7,14 +7,16 @@ import { basketFromSettings } from './engine.js';
 import { planIndexed, evaluateLadder, withDefaults } from './core/alm-plan.js';
 import { btpItaliaFlowsFor } from './core/btp-italia.js';
 import { xeonNet } from './core/fisco-parametri.js';
+import { fallbackSolver } from './core/lp-fallback.js';
 
 let highsP = null, inflP = null;
 
 /** Solver HiGHS (WebAssembly), caricato una volta sola. */
 export function loadSolver() {
+  // se il WebAssembly non si carica (browser vecchio, rete) si ripiega su javascript-lp-solver: più lento, lotti per eccesso
   if (!highsP) highsP = import('../vendor/highs/highs.mjs').then(m => m.default({
     locateFile: f => new URL(`../vendor/highs/${f}`, import.meta.url).href
-  }));
+  })).catch(() => fallbackSolver);
   return highsP;
 }
 
@@ -46,6 +48,7 @@ export async function computeIndexed(ds, st, deps = {}) {
   if (banned.size) bonds = bonds.filter(b => !banned.has(b.isin));
   const cfg = withDefaults({ ...ix.alm, estr: ix.alm.estr ?? infl.estr ?? 0.024 });
   const plan = planIndexed(ds, bonds, cfg, infl, highs);
+  if (highs.fallback && !plan.empty) plan.notes.push('Solver di riserva (javascript-lp-solver): HiGHS non si è caricato. Lotti arrotondati per eccesso, costo un po\' più alto.');
   const out = { goal: 'indexed', plan, basketCount: bonds.length, excluded, refDate: ds.refDate, settle: ds.settle, infl: { asOf: infl.asOf, meta: infl.meta.controlli || null } };
   if (!plan.empty) {
     out.flat = flatCompare(ds, bonds, cfg, infl, plan, highs);
