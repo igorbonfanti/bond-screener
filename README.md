@@ -1,4 +1,4 @@
-# Bond Ladder — v3.8.0
+# Bond Ladder — v3.9.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -161,6 +161,11 @@ reale ed è dovuta a inizio periodo.
   pubblicazioni), FOI senza tabacchi (ISTAT), €STR (BCE), indici base dei titoli (`data/inflazione/titoli.json`, dal
   MEF) con la base dei BTP Italia fatta avanzare a ogni cedola. Lo storico è append-only. Ogni giorno i CI
   ricalcolati sono confrontati con quelli ufficiali MEF alla 5ª decimale; l'esito compare nell'app.
+- **Resto del capitale (Monte Carlo)**: opzionale. Il capitale oltre la scala va in un ETF azionario globale;
+  2.000 percorsi con inflazione AR(1) e rendimenti con code grasse (t di Student); la scala si ricalcola per ogni
+  percorso; affitto dal conto e, se non basta, vendendo ETF (26%); spese extra e prove di stress (crollo, stagflazione).
+  Probabilità che l'affitto sia pagato anno per anno e patrimonio in euro di oggi, confrontati con «tutto in ETF».
+  Seme fisso: stessi input, stessi risultati (`src/core/montecarlo.js`).
 
 ## Dati: aggiornamento automatico
 Il workflow `.github/workflows/stfi-data.yml` gira ogni sera nei giorni lavorativi. Legge `documentivari.php`,

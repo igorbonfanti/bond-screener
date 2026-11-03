@@ -149,3 +149,23 @@ test('solver di riserva (javascript-lp-solver): stesso ottimo «a pezzi» di HiG
   assert.ok(Math.abs(a.relaxedCost - b.relaxedCost) < 0.01 * a.relaxedCost, `${a.relaxedCost} vs ${b.relaxedCost}`);
   assert.equal(b.sims.base.first, null, 'anche con i lotti per eccesso lo scenario base è coperto');
 });
+
+test('Monte Carlo: stesso seme stessi risultati; più capitale non peggiora; il crollo di borsa pesa sul patrimonio', async () => {
+  const { monteCarlo } = await import('../src/core/montecarlo.js');
+  const ds = load(), highs = await solver();
+  const { bonds } = applyBasket(ds, { maxPrice: null, includeInflation: true });
+  const plan = planIndexed(ds, bonds, CFG, INFL, highs);
+  const total = plan.totalCost * 1.3;
+  const a = monteCarlo(ds, plan, INFL, total, { n: 200 }), b = monteCarlo(ds, plan, INFL, total, { n: 200 });
+  assert.deepEqual(a.mix.paidTo, b.mix.paidTo);
+  assert.deepEqual(a.mix.wealth, b.mix.wealth);
+  assert.ok(Math.abs(a.etf0 - plan.totalCost * 0.3) < 1e-6);
+  const more = monteCarlo(ds, plan, INFL, total * 1.5, { n: 200 });
+  assert.ok(more.mix.pAll >= a.mix.pAll && more.allEtf.pAll >= a.allEtf.pAll);
+  const crash = monteCarlo(ds, plan, INFL, total, { n: 200, stress: 'crollo' });
+  assert.ok(crash.mix.wealth[3].p50 < a.mix.wealth[3].p50);
+  // la scala copre lo scenario base: senza ETF e senza oscillazioni d'inflazione attorno alla base l'affitto è pagato
+  const det = monteCarlo(ds, plan, INFL, plan.totalCost, { n: 5, inflSd: 0, inflMean: 0.02, infl0: 0.02, eqSd: 0 });
+  assert.equal(det.mix.pAll, 1);
+  assert.equal(monteCarlo(ds, plan, INFL, plan.totalCost - 1000).error != null, true, 'capitale minore della scala: errore');
+});

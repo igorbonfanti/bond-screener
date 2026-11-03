@@ -2,7 +2,7 @@
    cresce con l'inflazione. Nessun calcolo finanziario qui: solo lettura del piano prodotto dal motore
    (src/core/alm-plan.js) e dei confronti (src/engine-indexed.js). Le divisioni per il deflatore servono solo a
    mostrare gli «euro di oggi». */
-import { h, fmtEur, fmtPct, fmtNum, copyText, toast, downloadFile, MINUS } from './dom.js';
+import { h, s as svg, fmtEur, fmtPct, fmtNum, copyText, toast, downloadFile, MINUS } from './dom.js';
 import { columnChart, legend } from './charts.js';
 import { kpi, insight, notesPanel, panel, miniBtn, dataTable, calendarPanel } from './results.js';
 import { fmt } from '../core/dates.js';
@@ -141,6 +141,7 @@ export function renderIndexed(st, result, A) {
   return [kpis, lead, bar,
     h('div', { class: 'grid-side' }, ladder, notesPanel(ins)),
     stressPanel(plan, result),
+    result.mc ? mcPanel(result.mc, plan) : null,
     panel('Rata per rata', tableMeta, tableBox),
     compositionPanel(plan),
     cashPanel(plan, result),
@@ -267,4 +268,61 @@ function assumptionsPanel(plan, result) {
   items.push(insight('info', 'Le rate sono pagate all\'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l\'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza.'));
   for (const s of plan.skipped || []) items.push(insight('warn', `${s.desc} (${s.isin}) escluso: ${s.why}.`));
   return notesPanel(items);
+}
+
+/* ---------------- Monte Carlo: la scala + il resto del capitale in ETF ---------------- */
+function mcPanel(mc, plan) {
+  if (mc.error) return notesPanel([insight('warn', mc.error)]);
+  const a = mc.mix, b = mc.allEtf, K = mc.dues.length;
+  const lastY = mc.dues[K - 1].year;
+  const p = v => fmtPct(v * 100, 1);
+  const kpis = h('div', { class: 'kpis' },
+    kpi('Affitto pagato fino al ' + lastY, p(a.pAll), `scala + ETF · tutto in ETF: ${p(b.pAll)}`),
+    kpi('In ETF all\'inizio', fmtEur(mc.etf0), `su ${fmtEur(mc.total)} · scala ${fmtEur(plan.totalCost)}`),
+    kpi('Percorsi che vendono ETF', p(a.soldShare), 'per pagare l\'affitto o le spese extra'),
+    kpi(`Patrimonio nel ${a.wealth[a.wealth.length - 1].year}`, fmtEur(a.wealth[a.wealth.length - 1].p50), `mediana · 10% peggiore ${fmtEur(a.wealth[a.wealth.length - 1].p10)}`));
+  const survBox = h('div', { class: 'chart' }), fanBox = h('div', { class: 'chart' });
+  requestAnimationFrame(() => {
+    lineChart(survBox, { xs: mc.dues.map(d => d.year + (d.half === 2 ? 0.5 : 0)), series: [{ cls: 'mc-a', ys: a.paidTo }, { cls: 'mc-b', ys: b.paidTo }],
+      yMin: Math.min(0.9, ...a.paidTo, ...b.paidTo), yMax: 1, yFmt: v => fmtPct(v * 100, 0), label: 'Probabilità che l\'affitto sia pagato fino a ogni anno' });
+    lineChart(fanBox, { xs: a.wealth.map(w => w.year), bands: [{ cls: 'mc-a', lo: a.wealth.map(w => w.p10), hi: a.wealth.map(w => w.p90), mid: a.wealth.map(w => w.p50) }],
+      series: [{ cls: 'mc-b', ys: b.wealth.map(w => w.p50) }, { cls: 'mc-b thin', ys: b.wealth.map(w => w.p10) }, { cls: 'mc-b thin', ys: b.wealth.map(w => w.p90) }],
+      yMin: 0, yFmt: v => fmtNum(v, 0), label: 'Patrimonio in euro di oggi: mediana e fascia fra il 10% peggiore e il 10% migliore' });
+  });
+  const leg = legend([{ el: h('span', { class: 'kb mc-a' }), label: 'scala + ETF (linea: mediana; fascia: dal 10% peggiore al 10% migliore)' }, { el: h('span', { class: 'kb mc-b' }), label: 'tutto il capitale in ETF, affitto pagato vendendo (tratteggio: mediana, 10% e 90%)' }]);
+  const params = mc.params;
+  const note = `${fmtNum(mc.n, 0)} percorsi, seme fisso. ETF: ${fmtPct(params.eqMu * 100, 1)} composto atteso, volatilità ${fmtPct(params.eqSd * 100, 0)}, code grasse, TER 0,15%, 26% sulle plusvalenze quando si vende, bollo 0,2%. Inflazione: media ${fmtPct(params.inflMean * 100, 1)}, deviazione ${fmtPct(params.inflSd * 100, 1)}, persistenza 0,6.${params.stress === 'crollo' ? ' Stress: borsa −35% e −10% nei primi due anni.' : params.stress === 'stagflazione' ? ' Stress: inflazione 8→5% per cinque anni, borsa ferma.' : ''} Patrimonio in euro di oggi: ETF al netto delle tasse, conto XEON e titoli della scala (flussi ancora da incassare scontati al rendimento della scala di oggi: all'inizio valgono quanto sono costati). I numeri dipendono dalle ipotesi: servono a confrontare scelte, non a prevedere.`;
+  return panel('Monte Carlo: scala + ETF', `${fmtNum(mc.n, 0)} percorsi di inflazione e borsa`, kpis,
+    h('div', { class: 'grid-2' },
+      h('div', null, h('h3', { class: 'mc-h', text: 'Probabilità che l\'affitto sia pagato fino a ogni anno' }), survBox),
+      h('div', null, h('h3', { class: 'mc-h', text: 'Patrimonio (euro di oggi): mediana e 10%–90%' }), fanBox)),
+    leg, h('p', { class: 'note', text: note }));
+}
+
+/** Linee e fasce semplici in SVG (asse x anni). */
+function lineChart(box, { xs, series = [], bands = [], yMin, yMax, yFmt, label }) {
+  const W = Math.max(280, box.clientWidth || 500), H = 220, M = { l: 48, r: 10, t: 10, b: 22 };
+  const all = [...series.flatMap(x => x.ys), ...bands.flatMap(x => [...x.lo, ...x.hi])].filter(Number.isFinite);
+  // tacche tonde: passo 1, 2 o 5 × 10^k
+  const lo0 = yMin ?? Math.min(...all), hi0 = yMax ?? (Math.max(...all) || 1);
+  const raw = (hi0 - lo0) / 4 || 1, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = [1, 2, 5, 10].map(k => k * mag).find(v => v >= raw);
+  const lo = Math.floor(lo0 / st + 1e-9) * st, hi = Math.ceil(hi0 / st - 1e-9) * st;
+  const nT = Math.round((hi - lo) / st);
+  const X = x => M.l + (x - xs[0]) / Math.max(1e-9, xs[xs.length - 1] - xs[0]) * (W - M.l - M.r);
+  const Y = y => M.t + (1 - (y - lo) / Math.max(1e-9, hi - lo)) * (H - M.t - M.b);
+  const path = (px, py) => px.map((x, i) => `${i ? 'L' : 'M'}${X(x).toFixed(1)},${Y(py[i]).toFixed(1)}`).join('');
+  const el = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', height: H, role: 'img', 'aria-label': label });
+  for (let k = 0; k <= nT; k++) {
+    const v = lo + st * k, y = Y(v);
+    el.appendChild(svg('line', { class: 'gridl', x1: M.l, x2: W - M.r, y1: y, y2: y }));
+    el.appendChild(svg('text', { class: 'axt', x: M.l - 6, y: y + 3, 'text-anchor': 'end', text: yFmt(v) }));
+  }
+  const step = Math.max(1, Math.ceil(xs.length / 6));
+  xs.forEach((x, i) => { if (i % step === 0 && Number.isInteger(x)) el.appendChild(svg('text', { class: 'axt', x: X(x), y: H - 6, 'text-anchor': 'middle', text: String(x) })); });
+  for (const b of bands) {
+    el.appendChild(svg('path', { class: `band ${b.cls}`, d: path(xs, b.hi) + xs.slice().reverse().map(x => `L${X(x).toFixed(1)},${Y(b.lo[xs.indexOf(x)]).toFixed(1)}`).join('') + 'Z' }));
+    el.appendChild(svg('path', { class: `ln ${b.cls}`, d: path(xs, b.mid) }));
+  }
+  for (const sr of series) el.appendChild(svg('path', { class: `ln ${sr.cls}`, d: path(xs, sr.ys) }));
+  box.replaceChildren(el);
 }

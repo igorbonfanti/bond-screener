@@ -376,3 +376,14 @@ h3.lbl { margin: 2px 0 0; }
 .infl3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .infl3 .infl1 { display: grid; gap: 4px; min-width: 0; }
 .infl3 .sep { font: 11px var(--f-mono); color: var(--ink-3); text-transform: uppercase; }
+/* Monte Carlo */
+.mc-h { font: 11px var(--f-mono); color: var(--ink-3); text-transform: uppercase; margin: 10px 10px 4px; font-weight: 400; }
+.chart path.ln { fill: none; stroke-width: 2; }
+.chart path.ln.mc-a { stroke: var(--blue); }
+.chart path.ln.mc-b { stroke: var(--ink-3); stroke-dasharray: 4 3; }
+.chart path.band.mc-a { fill: var(--blue-soft); stroke: none; }
+.chart path.band.mc-b { fill: var(--ink-3); opacity: 0.12; stroke: none; }
+.legend .kb.mc-a { background: var(--blue); }
+.legend .kb.mc-b { background: var(--ink-3); }
+.chart path.band.mc-a { fill: var(--blue); opacity: 0.22; }
+.chart path.ln.mc-b.thin { stroke-width: 1; }

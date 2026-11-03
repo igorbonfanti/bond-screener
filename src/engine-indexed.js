@@ -8,6 +8,7 @@ import { planIndexed, evaluateLadder, withDefaults } from './core/alm-plan.js';
 import { btpItaliaFlowsFor } from './core/btp-italia.js';
 import { xeonNet } from './core/fisco-parametri.js';
 import { fallbackSolver } from './core/lp-fallback.js';
+import { monteCarlo } from './core/montecarlo.js';
 
 let highsP = null, inflP = null;
 
@@ -53,6 +54,9 @@ export async function computeIndexed(ds, st, deps = {}) {
   if (!plan.empty) {
     out.flat = flatCompare(ds, bonds, cfg, infl, plan, highs);
     out.cash = cashInfo(ds, bonds, cfg, infl, plan);
+    const mc = ix.mc;
+    if (mc && mc.on) out.mc = monteCarlo(ds, plan, infl, mc.total, { eqMu: mc.eqMu, eqSd: mc.eqSd, inflMean: mc.inflMean, inflSd: mc.inflSd,
+      stress: mc.stress, extras: mc.extra && mc.extra.amount > 0 ? [mc.extra] : [] });
   }
   return out;
 }

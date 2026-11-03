@@ -60,6 +60,11 @@ export function defaults(refDay) {
         estr: null,                               // null = l'ultimo valore pubblicato (data/inflazione)
         minLinker: 0, issuerCaps: {}, titleCap: 0,
         fisco: { rivalutazioneBtpEi: 'scadenza', baseImponibileBtpEi: 'emissione', rateoRivalutazioneBtpItalia: 'nessuno' }
+      },
+      mc: {                                       // Monte Carlo: la scala + il resto del capitale in un ETF azionario
+        on: false, total: 450000,
+        eqMu: 0.06, eqSd: 0.16, inflMean: 0.023, inflSd: 0.012,
+        stress: 'none', extra: { amount: 0, from: y + 15, to: y + 20 }
       }
     },
     fixed: {},                                    // etichetta gradino → ISIN scelto a mano (solo capitale)
