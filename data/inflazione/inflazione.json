@@ -468,6 +468,7 @@
  },
  "controlli": {
   "hicp_media_2025": 100.0,
+  "foi_media_2025": "non verificabile: la fonte non ha i 12 mesi del 2025 in base 2025",
   "ci": {
    "giorno": "2026-11-03",
    "righe": [
