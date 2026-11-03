@@ -27,7 +27,7 @@ const SECTIONS = [
   ['Tasse (persona fisica, regime amministrato)',
     '12,5% su titoli di Stato e sovranazionali, 26% sugli altri. Le cedole sono tassate alla fonte; sulla prima si paga solo la parte maturata dopo l\'acquisto. La plusvalenza a scadenza (100 − prezzo) è tassata; con «Ho minusvalenze da recuperare» si usa il rendimento super netto di STFI, perché la plusvalenza compensa lo zainetto. Chi compra sopra la pari ha una minusvalenza a scadenza che non si compensa con le cedole: per questo di norma il paniere ammette solo titoli sotto la pari. Per i titoli che hai già: cedole future tassate per intero, plusvalenza sul tuo prezzo di carico (non su quello di oggi) e scarto di emissione (100 − prezzo di emissione) sempre tassato a scadenza, anche con lo zainetto. Per i BTP Valore, Più, Italia e Futura cedole crescenti e premio fedeltà arrivano da una tabella dell\'app; il premio vale solo con l\'ISIN «con premio», quello del collocamento.'],
   ['Cosa non è incluso',
-    'Commissioni, imposta di bollo (0,20% annuo sul valore; inclusa solo nell\'affitto indicizzato) e differenza fra prezzo di chiusura e prezzo lettera a cui compri davvero. Per i BTP Valore, Più e Futura le cedole future seguono il calendario degli scalini del Tesoro; gli altri step-up sono stimati con la cedola attuale. I BTP Italia e BTP€i sono esclusi di default perché nel file il loro rendimento è "senza indicizzazione".']
+    'Commissioni, imposta di bollo (0,20% annuo sul valore; inclusa solo nell\'affitto indicizzato) e differenza fra prezzo di chiusura e prezzo lettera a cui compri davvero. Per i BTP Valore, Più e Futura le cedole future seguono il calendario degli scalini del Tesoro; gli altri step-up sono stimati con la cedola attuale. Nelle viste 1 e 2 i BTP Italia e BTP€i sono esclusi di default perché nel file il loro rendimento è "senza indicizzazione"; l\'affitto indicizzato invece li usa, con le loro regole.']
 ];
 
 const GLOSS = [
@@ -38,6 +38,12 @@ const GLOSS = [
   ['Rendimento alle scadenze', 'dal capitale di oggi (con il portafoglio, anche i tuoi titoli ai prezzi di oggi) alle somme alle date che ti servono, più i soldi che tornano liberi; la cassa ferma rende zero. A parità di somme, la proposta che costa meno rende di più: per questo è il rendimento del confronto fra le alternative.'],
   ['Sotto la pari', 'prezzo sotto 100: a scadenza incassi più di quanto hai pagato.'],
   ['Duration', 'durata finanziaria media (modificata), in anni: quanto il prezzo reagisce ai tassi.'],
+  ['HICP', 'indice europeo dei prezzi al consumo (area euro, senza tabacchi), di Eurostat: è quello dei BTP€i.'],
+  ['FOI', 'indice ISTAT dei prezzi per le famiglie di operai e impiegati, senza tabacchi: è quello dei BTP Italia e dell\'aggiornamento dei canoni d\'affitto.'],
+  ['BTP€i e BTP Italia', 'titoli di Stato italiani indicizzati: cedole e capitale crescono con l\'inflazione (HICP per i BTP€i, FOI per i BTP Italia). Il prezzo di borsa è «reale»: si moltiplica per il CI.'],
+  ['CI', 'coefficiente d\'indicizzazione: quanto è cresciuto l\'indice dei prezzi dalla data base del titolo (1,10 = +10%). Lo pubblica il MEF ogni giorno; l\'app lo ricalcola e lo confronta.'],
+  ['€STR e XEON', '€STR è il tasso overnight della BCE; XEON è un ETF che lo replica: lì restano i soldi in attesa nell\'affitto indicizzato.'],
+  ['Euro di oggi', 'un importo futuro diviso per l\'inflazione da oggi a quella data: quanto vale con i prezzi di oggi.'],
   ['Lotto minimo', 'il taglio minimo acquistabile; i nominali sono multipli del lotto.'],
   ['Liquidità', 'classe di volume STFI da 0 a 4 (media di 20 giorni): quanto il titolo si scambia.'],
   ['Colori', 'ambra per navigare; blu per l\'obiettivo; verde e rosso, con ▲ ▼, solo per variazioni di prezzo o di valore (CVD li passa ad azzurro e rosso).'],

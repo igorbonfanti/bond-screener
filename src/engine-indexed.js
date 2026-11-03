@@ -48,7 +48,7 @@ export async function computeIndexed(ds, st, deps = {}) {
   if (banned.size) bonds = bonds.filter(b => !banned.has(b.isin));
   const cfg = withDefaults({ ...ix.alm, estr: ix.alm.estr ?? infl.estr ?? 0.024 });
   const plan = planIndexed(ds, bonds, cfg, infl, highs);
-  if (highs.fallback && !plan.empty) plan.notes.push('Solver di riserva (javascript-lp-solver): HiGHS non si è caricato. Lotti arrotondati per eccesso, costo un po\' più alto.');
+  if (highs.fallback && !plan.empty) plan.notes.push('Solver di riserva (javascript-lp-solver): HiGHS non si è caricato. Lotti interi approssimati, costo un po\' più alto.');
   const out = { goal: 'indexed', plan, basketCount: bonds.length, excluded, refDate: ds.refDate, settle: ds.settle, infl: { asOf: infl.asOf, meta: infl.meta.controlli || null } };
   if (!plan.empty) {
     out.flat = flatCompare(ds, bonds, cfg, infl, plan, highs);

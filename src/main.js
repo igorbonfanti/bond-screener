@@ -199,7 +199,15 @@ async function runCompute() {
     if (seq !== computeSeq) return;             // arrivato un calcolo più recente
     app.result = r;
     renderBuildResults();
-  } catch (e) { toast('Errore di calcolo: ' + e.message, 'err'); }
+  } catch (e) {
+    toast('Errore di calcolo: ' + e.message, 'err');
+    // i risultati di prima non valgono per le impostazioni nuove: al loro posto il motivo
+    if (seq === computeSeq && res) {
+      app.result = null;
+      res.replaceChildren(h('section', { class: 'panel' }, h('div', { class: 'ph' }, h('h2', { text: 'Nessun risultato' })),
+        h('div', { class: 'pb' }, h('p', { class: 'lead', text: `Il calcolo non è riuscito: ${e.message}.` }))));
+    }
+  }
   finally { if (seq === computeSeq && res) { res.classList.remove('busy'); res.removeAttribute('aria-busy'); } }
 }
 const scheduleCompute = debounce(runCompute, 160);
@@ -249,7 +257,7 @@ function route() {
       const st = JSON.parse(decodeURIComponent(escape(atob(r.data.replace(/-/g, '+').replace(/_/g, '/')))));
       if (st && st.goal) { app.st = { ...(app.st || {}), ...st }; saveSettings(app.st); toast('Configurazione condivisa caricata', 'ok'); }
     } catch { toast('Link non valido', 'err'); }
-    history.replaceState(null, '', TABS[app.st && app.st.goal === 'income' ? 'income' : 'capital']);
+    history.replaceState(null, '', TABS[app.st && ['income', 'indexed'].includes(app.st.goal) ? app.st.goal : 'capital']);
     return route();
   }
   if (r.name === 'portfolio') {

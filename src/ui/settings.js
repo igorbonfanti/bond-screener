@@ -185,14 +185,17 @@ function incomeSection(st) {
 }
 
 /* ---------- 2c. Passività indicizzata ---------- */
-const SCEN_NAMES = [['base', 'Base'], ['alto', 'Alto 3,5%'], ['basso', 'Basso 1%'], ['shock', 'Shock 8→5%'], ['basis', 'FOI +0,5%']];
+const SCEN_NAMES = [['base', 'Base'], ['alto', 'Alto 3,5%'], ['basso', 'Basso 1%'], ['shock', 'Shock 8→5%'], ['basis', 'FOI +0,5% su HICP']];
 
 /** Percentuale: si scrive in punti (2,3) e si salva in decimali (0,023). */
-function pctInput(k, value, onValue, { min = -5, max = 30, dec = 2 } = {}) {
-  const input = h('input', { class: 'input', inputmode: 'decimal', value: fmtNum(value * 100, dec), data: { k } });
+function pctInput(k, value, onValue, { min = -5, max = 30, dec = 2, empty = null } = {}) {
+  // empty: testo segnaposto quando il valore è null (campo vuoto = valore automatico)
+  const show = v => (v == null ? '' : fmtNum(v * 100, dec));
+  const input = h('input', { class: 'input', inputmode: 'decimal', value: show(value), placeholder: empty || '', data: { k } });
   input.addEventListener('change', () => {
+    if (empty && input.value.trim() === '') { onValue(null); return; }
     const v = parseUserNumber(input.value);
-    if (Number.isFinite(v) && v >= min && v <= max) onValue(v / 100); else input.value = fmtNum(value * 100, dec);
+    if (Number.isFinite(v) && v >= min && v <= max) onValue(v / 100); else input.value = show(value);
   });
   return h('div', { class: 'input-wrap' }, input, h('span', { class: 'suffix', 'aria-hidden': 'true', text: '%' }));
 }
@@ -223,17 +226,17 @@ function indexedSections(st) {
   const baseRates = a.inflBase;
   const y1 = minYear + 1, y2 = minYear + 2, y3 = minYear + 3;
   const scen = [
-    field('Inflazione attesa (scenario base)', h('div', { class: 'years' },
-      h('span', { class: 'sep', text: String(y1) }), pctInput('xi1', baseRates[y1] ?? 0.026, v => setA(x => { x.inflBase = { ...x.inflBase, [y1]: v }; })),
-      h('span', { class: 'sep', text: String(y2) }), pctInput('xi2', baseRates[y2] ?? 0.021, v => setA(x => { x.inflBase = { ...x.inflBase, [y2]: v }; })),
-      h('span', { class: 'sep', text: 'poi' }), pctInput('xi3', baseRates[y3] ?? 0.023, v => setA(x => { x.inflBase = { ...x.inflBase, [y3]: v }; }))),
+    field('Inflazione attesa (scenario base)', h('div', { class: 'infl3' },
+      [[y1, 'xi1', 0.026, String(y1)], [y2, 'xi2', 0.021, String(y2)], [y3, 'xi3', 0.023, `dal ${y3}`]].map(([yy, k, dflt, lbl]) =>
+        h('label', { class: 'infl1' }, h('span', { class: 'sep', text: lbl }),
+          pctInput(k, baseRates[yy] ?? dflt, v => setA(x => { x.inflBase = { ...x.inflBase, [yy]: v }; }))))),
       'HICP area euro. Il FOI dello scenario base è uguale; lo scenario «FOI +0,5%» lo alza di mezzo punto.'),
     field('Scenari da coprire per forza', h('div', { class: 'chips', role: 'group', 'aria-label': 'Scenari da coprire' },
       SCEN_NAMES.map(([id, name]) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(a.robust.includes(id)), data: { k: 'rob:' + id }, disabled: id === 'base',
         on: { click: () => setA(x => { x.robust = x.robust.includes(id) ? x.robust.filter(r => r !== id) : [...x.robust, id]; }) } }, name))),
       'La scala deve pagare l\'affitto in tutti gli scenari scelti: costa di più, ma regge. Gli altri si simulano e si mostrano nel pannello stress.'),
-    field('€STR (tasso della liquidità)', pctInput('xestr', a.estr ?? ctx.estr ?? 0.024, v => setA(x => { x.estr = v; }), { min: -1, max: 10 }),
-      'Cedole e rimborsi in attesa restano su un ETF monetario (XEON): €STR − 0,015%, tassato al 26%, meno il bollo 0,2%. Negli scenari l\'€STR segue l\'inflazione (metà della differenza).')
+    field('€STR di oggi (tasso del conto XEON)', pctInput('xestr', a.estr, v => setA(x => { x.estr = v; }), { min: -1, max: 10, empty: 'ultimo BCE' }),
+      'Vuoto = l\'ultimo valore pubblicato dalla BCE (lo vedi nel pannello «Conto XEON o BOT»). Cedole e rimborsi in attesa restano su un ETF monetario (XEON): €STR + 0,085% − costi 0,10%, tassato al 26%, meno il bollo 0,2%. Negli scenari l\'€STR segue l\'inflazione (metà della differenza).')
   ];
   const caps = a.issuerCaps || {};
   const cons = [
@@ -296,7 +299,9 @@ function optionsSection(st) {
   const items = [
     sw('zainetto', b.zainetto, 'Ho minusvalenze da recuperare', 'Usa il rendimento "super netto" di STFI: la plusvalenza a scadenza compensa lo zainetto fiscale e non viene tassata.', v => set(s => { bk(s).zainetto = v; })),
     sw('stepup', b.includeStepUp, 'Includi titoli step-up', 'BTP Valore, Futura, Più: cedola crescente, flussi con il calendario degli scalini del Tesoro.', v => set(s => { bk(s).includeStepUp = v; })),
-    sw('infl', b.includeInflation, 'Includi BTP Italia e BTP€i', 'Nel file il loro rendimento è "senza indicizzazione": non è confrontabile con gli altri.', v => set(s => { bk(s).includeInflation = v; }))
+    sw('infl', b.includeInflation, 'Includi BTP Italia e BTP€i', st.goal === 'indexed'
+      ? 'Sono i titoli che crescono con l\'inflazione: togliendoli la scala usa solo titoli a tasso fisso.'
+      : 'Nel file il loro rendimento è "senza indicizzazione": non è confrontabile con gli altri.', v => set(s => { bk(s).includeInflation = v; }))
   ];
   if (st.goal === 'indexed') {
     // regole fiscali che le fonti non chiariscono: parametri espliciti (src/core/fisco-parametri.js), mai scelti in silenzio

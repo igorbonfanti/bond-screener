@@ -90,10 +90,18 @@ export function planIndexed(ds, bonds, cfg0, infl, highs) {
     const support = new Set([...relaxed.n.keys()].filter(i => relaxed.n[i] > 1e-7));
     let sol = support.size ? solve(m, { ...intOpt, only: support }) : { status: 'none' };
     if (sol.status !== 'Optimal') sol = solve(m, intOpt);
+    // una soluzione trovata al limite di tempo ma lontana dall'ottimo (oltre il 2%) non si usa
+    if (sol.status === 'Optimal' && sol.timed && Math.abs(sol.obj - relaxed.obj) > 0.02 * Math.abs(relaxed.obj)) sol = { status: 'poor' };
     if (sol.status === 'Optimal' && sol.timed) notes.push(`Lotti interi: il solver si è fermato al limite di tempo; la soluzione rispetta i vincoli ed è entro ${fmtGap(sol, relaxed)} dalla scala ideale «a pezzi».`);
     if (sol.status !== 'Optimal') {
-      sol = { ...relaxed, n: relaxed.n.map(v => Math.ceil(v - 1e-9)) };
-      notes.push('Lotti arrotondati per eccesso: il programma intero non ha chiuso.');
+      // ripiego: lotti per difetto e, al posto di quello che manca, più liquidità iniziale (quanto basta negli scenari
+      // da coprire). Costa pochissimo in più e non moltiplica i lotti minimi come l'arrotondamento per eccesso.
+      const n = relaxed.n.map(v => Math.floor(v + 1e-9));
+      const lam = intOpt.mode === 'maxscale' ? relaxed.lam : 1;
+      const sims = simulate(m.items, m.prep, n, relaxed.c0, lam);
+      const extra = Math.max(0, ...cfg.robust.filter(id => sims[id]).map(id => sims[id].extra));
+      sol = { ...relaxed, n, c0: relaxed.c0 + extra * 1.0001 + (extra > 0 ? 1 : 0) };
+      notes.push('Lotti interi: il solver non ha chiuso in tempo. Lotti arrotondati per difetto e un po\' più di liquidità iniziale al posto di quello che manca.');
     }
     const cost = m.items.reduce((acc, it, i) => acc + sol.n[i] * it.b.lot / 100 * it.cost, 0) + sol.c0;
     return cap != null && cost > cap + 0.01 ? null : { sol, notes };

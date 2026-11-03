@@ -1,26 +1,36 @@
 {
  "default": {
   "issues": [
-   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
-   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
-   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
-   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
-   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
-   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
-   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
-   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
-   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
-   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
-   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+   "riga 2027: liquidità 15 lontana da 120 (prima 1 + flussi − affitto)",
+   "riga 2028: liquidità 74 lontana da 483 (prima 15 + flussi − affitto)",
+   "riga 2029: liquidità 69 lontana da -218 (prima 74 + flussi − affitto)",
+   "riga 2030: liquidità 160 lontana da -504 (prima 69 + flussi − affitto)",
+   "riga 2031: liquidità 143 lontana da 453 (prima 160 + flussi − affitto)",
+   "riga 2032: liquidità 126 lontana da 552 (prima 143 + flussi − affitto)",
+   "riga 2033: liquidità 147 lontana da 957 (prima 126 + flussi − affitto)",
+   "riga 2034: liquidità 359 lontana da 14781 (prima 147 + flussi − affitto)",
+   "riga 2035: liquidità 306 lontana da -14541 (prima 359 + flussi − affitto)",
+   "riga 2036: liquidità 142 lontana da -372 (prima 306 + flussi − affitto)",
+   "riga 2037: liquidità 232 lontana da 804 (prima 142 + flussi − affitto)",
+   "riga 2038: liquidità 560 lontana da 17988 (prima 232 + flussi − affitto)",
+   "riga 2039: liquidità 363 lontana da -17293 (prima 560 + flussi − affitto)",
+   "riga 2040: liquidità 479 lontana da 20947 (prima 363 + flussi − affitto)",
+   "riga 2041: liquidità 417 lontana da -19220 (prima 479 + flussi − affitto)",
+   "riga 2042: liquidità 643 lontana da 94378 (prima 417 + flussi − affitto)",
+   "riga 2043: liquidità 1593 lontana da -22713 (prima 643 + flussi − affitto)",
+   "riga 2044: liquidità 1247 lontana da -22417 (prima 1593 + flussi − affitto)",
+   "riga 2045: liquidità 886 lontana da -23435 (prima 1247 + flussi − affitto)",
+   "riga 2046: liquidità 504 lontana da -24487 (prima 886 + flussi − affitto)",
+   "liquidità finale tabella 504 ≠ stress 6765"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "282.745 €",
-    "s": "281.892 € in titoli · 852 € in liquidità"
+    "v": "282.730 €",
+    "s": "282.729 € in titoli · 1 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -31,20 +41,20 @@
     "s": "13 indicizzati su 14 titoli"
    },
    "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,3 anni"
+    "v": "3,82%",
+    "s": "scenario base · incassi in media fra 9,3 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "lead": "Con 282.730 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6765 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2030. Per coprirlo servirebbero 441 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 7 rate scoperte su 20, dalla 2030. Per coprirlo servirebbero 11.182 € in più oggi (non è fra gli scenari da coprire per forza).",
    "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.221 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -52,31 +62,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 282745,
-   "inB": 281892,
-   "inC": 852
+   "capV": 282730,
+   "inB": 282729,
+   "inC": 1
   },
   "list": {
    "n": 14,
-   "sumC": 281892,
+   "sumC": 282729,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "238.421",
+    "240.598",
     "",
     "",
-    "281.892"
+    "282.729"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "13.895",
-   "1086",
+   "14.231",
+   "976",
    "−88",
-   "762"
+   "15",
+   "134"
   ],
   "rateLast": [
    "2046",
@@ -84,7 +95,8 @@
    "0",
    "0",
    "0",
-   "6723"
+   "504",
+   "6765"
   ],
   "nRate": 20,
   "stress": [
@@ -92,62 +104,97 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "6723",
+    "6765",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "1",
+    "0",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 24.919 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "19.904",
-    "soldi finiti al 2028",
-    "11.645",
-    "339",
-    "basta"
+    "1 rata scoperta su 20, dalla 2030",
+    "11.713",
+    "441",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "5532",
+    "5558",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 51.367 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
-    "soldi finiti al 2031",
-    "−15.219",
-    "11.238",
-    "finisce al 2046"
+    "7 rate scoperte su 20, dalla 2030",
+    "−15.143",
+    "11.182",
+    "scoperta dalla 2046, mancano 3930 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 3.897,
+  "secs": 3.845,
   "logs": []
  },
  "semestrali": {
   "issues": [
-   "riga 1/7/2028: liquidità 538 lontana da 501 (prima 633 + flussi − affitto)",
-   "riga 1/7/2029: liquidità 6601 lontana da 6563 (prima 584 + flussi − affitto)",
-   "riga 1/7/2033: liquidità 30697 lontana da 30605 (prima 1385 + flussi − affitto)",
-   "riga 1/7/2037: liquidità 28529 lontana da 28304 (prima 1384 + flussi − affitto)",
-   "riga 1/1/2042: liquidità 97104 lontana da 96583 (prima 4049 + flussi − affitto)"
+   "riga 1/1/2027: liquidità 8 lontana da 50 (prima 0 + flussi − affitto)",
+   "riga 1/7/2027: liquidità 13 lontana da 344 (prima 8 + flussi − affitto)",
+   "riga 1/1/2028: liquidità 27 lontana da -417 (prima 13 + flussi − affitto)",
+   "riga 1/1/2029: liquidità 19 lontana da 160 (prima 33 + flussi − affitto)",
+   "riga 1/7/2029: liquidità 33 lontana da 6103 (prima 19 + flussi − affitto)",
+   "riga 1/1/2030: liquidità 59 lontana da -6141 (prima 33 + flussi − affitto)",
+   "riga 1/7/2030: liquidità 11 lontana da 6408 (prima 59 + flussi − affitto)",
+   "riga 1/1/2031: liquidità 61 lontana da -6539 (prima 11 + flussi − affitto)",
+   "riga 1/7/2031: liquidità 12 lontana da 4025 (prima 61 + flussi − affitto)",
+   "riga 1/1/2032: liquidità 61 lontana da -3461 (prima 12 + flussi − affitto)",
+   "riga 1/7/2032: liquidità 25 lontana da 3649 (prima 61 + flussi − affitto)",
+   "riga 1/1/2033: liquidità 63 lontana da -2884 (prima 25 + flussi − affitto)",
+   "riga 1/7/2033: liquidità 93 lontana da 29283 (prima 63 + flussi − affitto)",
+   "riga 1/1/2034: liquidità 254 lontana da -7356 (prima 93 + flussi − affitto)",
+   "riga 1/7/2034: liquidità 194 lontana da -6769 (prima 254 + flussi − affitto)",
+   "riga 1/1/2035: liquidità 142 lontana da -7473 (prima 194 + flussi − affitto)",
+   "riga 1/7/2035: liquidità 81 lontana da -7088 (prima 142 + flussi − affitto)",
+   "riga 1/1/2036: liquidità 59 lontana da -479 (prima 81 + flussi − affitto)",
+   "riga 1/7/2036: liquidità 52 lontana da 8087 (prima 59 + flussi − affitto)",
+   "riga 1/1/2037: liquidità 85 lontana da -8231 (prima 52 + flussi − affitto)",
+   "riga 1/7/2037: liquidità 225 lontana da 27005 (prima 85 + flussi − affitto)",
+   "riga 1/1/2038: liquidità 235 lontana da -8540 (prima 225 + flussi − affitto)",
+   "riga 1/7/2038: liquidità 164 lontana da -8191 (prima 235 + flussi − affitto)",
+   "riga 1/1/2039: liquidità 101 lontana da -8854 (prima 164 + flussi − affitto)",
+   "riga 1/7/2039: liquidità 126 lontana da 39156 (prima 101 + flussi − affitto)",
+   "riga 1/1/2040: liquidità 342 lontana da -9578 (prima 126 + flussi − affitto)",
+   "riga 1/7/2040: liquidità 264 lontana da -9115 (prima 342 + flussi − affitto)",
+   "riga 1/1/2041: liquidità 194 lontana da -9718 (prima 264 + flussi − affitto)",
+   "riga 1/7/2041: liquidità 114 lontana da -9534 (prima 194 + flussi − affitto)",
+   "riga 1/1/2042: liquidità 520 lontana da 92648 (prima 114 + flussi − affitto)",
+   "riga 1/7/2042: liquidità 765 lontana da -10724 (prima 520 + flussi − affitto)",
+   "riga 1/1/2043: liquidità 694 lontana da -10820 (prima 765 + flussi − affitto)",
+   "riga 1/7/2043: liquidità 597 lontana da -10866 (prima 694 + flussi − affitto)",
+   "riga 1/1/2044: liquidità 519 lontana da -11312 (prima 597 + flussi − affitto)",
+   "riga 1/7/2044: liquidità 423 lontana da -11365 (prima 519 + flussi − affitto)",
+   "riga 1/1/2045: liquidità 336 lontana da -11821 (prima 423 + flussi − affitto)",
+   "riga 1/7/2045: liquidità 237 lontana da -11881 (prima 336 + flussi − affitto)",
+   "riga 1/1/2046: liquidità 145 lontana da -12351 (prima 237 + flussi − affitto)",
+   "riga 1/7/2046: liquidità 117 lontana da -165 (prima 145 + flussi − affitto)",
+   "liquidità finale tabella 117 ≠ stress 5375"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "277.492 €",
-    "s": "277.492 € in titoli · 0 € in liquidità"
+    "v": "277.435 €",
+    "s": "277.435 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "40 rate dal 2027"
+    "s": "40 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "7500 → 12.687",
@@ -155,23 +202,23 @@
    },
    "Quota indicizzata": {
     "v": "94%",
-    "s": "14 indicizzati su 17 titoli"
+    "s": "15 indicizzati su 18 titoli"
    },
    "Rendimento netto": {
     "v": "3,87%",
-    "s": "scenario base · duration 9,7 anni"
+    "s": "scenario base · incassi in media fra 9,7 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 277.492 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 7500 € a 12.687 € nello scenario base. Alla fine restano 5397 € di liquidità nello scenario base.",
+  "lead": "Con 277.435 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 7500 € a 12.687 € nello scenario base. Alla fine restano 5375 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 1/7/2027. Per coprirlo servirebbero 384 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 1/1/2031. Per coprirlo servirebbero 12.142 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 292 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.142 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 1/1/2043.",
+   "ATTENZIONE Scenario «Basso 1%»: 5 rate scoperte su 40, dalla 1/1/2028. Per coprirlo servirebbero 863 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 8 rate scoperte su 40, dalla 1/7/2035. Per coprirlo servirebbero 11.966 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 254 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.137 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -179,31 +226,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 277492,
-   "inB": 277492,
+   "capV": 277435,
+   "inB": 277435,
    "inC": 0
   },
   "list": {
-   "n": 17,
-   "sumC": 277493,
+   "n": 18,
+   "sumC": 277435,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "240.928",
+    "240.804",
     "",
     "",
-    "277.492"
+    "277.435"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "1/1/2027",
    "7500",
-   "7285",
-   "1212",
-   "−88",
-   "918"
+   "6396",
+   "1241",
+   "−87",
+   "8",
+   "57"
   ],
   "rateLast": [
    "1/7/2046",
@@ -211,7 +259,8 @@
    "12.253",
    "127",
    "−3",
-   "5397"
+   "117",
+   "5375"
   ],
   "nRate": 40,
   "stress": [
@@ -219,9 +268,9 @@
     "Base \nDA COPRIRE",
     "12.687",
     "tutte pagate",
-    "5397",
+    "5375",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -229,51 +278,57 @@
     "tutte pagate",
     "1",
     "—",
-    "finisce al 1/1/2043"
+    "scoperta dalla 1/1/2043, mancano 26.400 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "9952",
-    "soldi finiti al 1/7/2027",
-    "9335",
-    "384",
-    "basta"
+    "5 rate scoperte su 40, dalla 1/1/2028",
+    "9272",
+    "863",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "15.698",
     "tutte pagate",
-    "4757",
+    "4620",
     "—",
-    "finisce al 1/1/2038"
+    "scoperta dalla 1/1/2038, mancano 52.717 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "13.912",
-    "soldi finiti al 1/1/2031",
-    "−16.572",
-    "12.142",
-    "finisce al 1/1/2046"
+    "8 rate scoperte su 40, dalla 1/7/2035",
+    "−16.332",
+    "11.966",
+    "scoperta dalla 1/1/2046, mancano 5361 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 10.251,
+  "secs": 10.371,
   "logs": []
  },
  "fino-a-quando-200k": {
   "issues": [
-   "riga 2028: liquidità 125 lontana da 60 (prima 592 + flussi − affitto)",
-   "riga 2029: liquidità 773 lontana da 727 (prima 125 + flussi − affitto)",
-   "riga 2030: liquidità 407 lontana da 240 (prima 773 + flussi − affitto)",
-   "riga 2031: liquidità 489 lontana da 343 (prima 407 + flussi − affitto)",
-   "riga 2032: liquidità 4516 lontana da 4361 (prima 489 + flussi − affitto)",
-   "riga 2034: liquidità 20734 lontana da 20331 (prima 2742 + flussi − affitto)",
-   "riga 2037: liquidità 2785 lontana da 2547 (prima 2116 + flussi − affitto)",
-   "riga 2038: liquidità 23170 lontana da 22565 (prima 2785 + flussi − affitto)"
+   "riga 2027: liquidità 15 lontana da 513 (prima 0 + flussi − affitto)",
+   "riga 2028: liquidità 65 lontana da -508 (prima 15 + flussi − affitto)",
+   "riga 2029: liquidità 45 lontana da 678 (prima 65 + flussi − affitto)",
+   "riga 2030: liquidità 167 lontana da -480 (prima 45 + flussi − affitto)",
+   "riga 2031: liquidità 144 lontana da 111 (prima 167 + flussi − affitto)",
+   "riga 2032: liquidità 139 lontana da 3831 (prima 144 + flussi − affitto)",
+   "riga 2033: liquidità 178 lontana da -1567 (prima 139 + flussi − affitto)",
+   "riga 2034: liquidità 404 lontana da 17767 (prima 178 + flussi − affitto)",
+   "riga 2035: liquidità 342 lontana da -17146 (prima 404 + flussi − affitto)",
+   "riga 2036: liquidità 146 lontana da -1213 (prima 342 + flussi − affitto)",
+   "riga 2037: liquidità 238 lontana da 577 (prima 146 + flussi − affitto)",
+   "riga 2038: liquidità 605 lontana da 20018 (prima 238 + flussi − affitto)",
+   "riga 2039: liquidità 370 lontana da -20309 (prima 605 + flussi − affitto)",
+   "liquidità finale tabella 370 ≠ stress 2642"
   ],
   "kpi": {
    "Capitale usato": {
-    "v": "190.454 €",
-    "s": "190.454 € in titoli · 0 € in liquidità"
+    "v": "190.435 €",
+    "s": "190.435 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2039",
@@ -289,19 +344,19 @@
    },
    "Rendimento netto": {
     "v": "3,53%",
-    "s": "scenario base · duration 5,8 anni"
+    "s": "scenario base · incassi in media fra 5,8 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 190.454 € oggi paghi l'affitto dal 2027 al 2039, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 20.914 € nello scenario base. Alla fine restano 2625 € di liquidità nello scenario base.",
+  "lead": "Con 190.435 € oggi paghi l'affitto dal 2027 al 2039, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 20.914 € nello scenario base. Alla fine restano 2642 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 328 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2036. Per coprirlo servirebbero 3718 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Basso 1%»: 2 rate scoperte su 13, dalla 2028. Per coprirlo servirebbero 379 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 3 rate scoperte su 13, dalla 2036. Per coprirlo servirebbero 3679 € in più oggi (non è fra gli scenari da coprire per forza).",
    "NOTA Comprare a lotti interi costa 146 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 18.244 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2038.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (18.242 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -309,31 +364,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 190454,
-   "inB": 190454,
+   "capV": 190435,
+   "inB": 190435,
    "inC": 0
   },
   "list": {
    "n": 12,
-   "sumC": 190454,
+   "sumC": 190436,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "176.195",
+    "177.099",
     "",
     "",
-    "190.454"
+    "190.435"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "14.795",
-   "840",
+   "14.840",
+   "732",
    "−59",
-   "592"
+   "15",
+   "528"
   ],
   "rateLast": [
    "2039",
@@ -341,7 +397,8 @@
    "0",
    "0",
    "0",
-   "2625"
+   "370",
+   "2642"
   ],
   "nRate": 13,
   "stress": [
@@ -349,9 +406,9 @@
     "Base \nDA COPRIRE",
     "20.914",
     "tutte pagate",
-    "2625",
+    "2642",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -359,62 +416,72 @@
     "tutte pagate",
     "1",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 8247 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "17.934",
-    "soldi finiti al 2028",
-    "4770",
-    "328",
-    "basta"
+    "2 rate scoperte su 13, dalla 2028",
+    "4797",
+    "379",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "25.877",
     "tutte pagate",
-    "60",
+    "44",
     "—",
-    "finisce al 2033"
+    "scoperta dalla 2033, mancano 30.146 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "22.167",
-    "soldi finiti al 2036",
-    "−4507",
-    "3718",
-    "finisce al 2039"
+    "3 rate scoperte su 13, dalla 2036",
+    "−4460",
+    "3679",
+    "scoperta dalla 2039, mancano 75 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 10.971,
+  "secs": 10.868,
   "logs": []
  },
  "quanto-affitto-200k": {
   "issues": [
-   "riga 2028: liquidità 94 lontana da 40 (prima 374 + flussi − affitto)",
-   "riga 2029: liquidità 270 lontana da 227 (prima 94 + flussi − affitto)",
-   "riga 2030: liquidità 11 lontana da -100 (prima 270 + flussi − affitto)",
-   "riga 2031: liquidità 246 lontana da 146 (prima 11 + flussi − affitto)",
-   "riga 2032: liquidità 3374 lontana da 3248 (prima 246 + flussi − affitto)",
-   "riga 2034: liquidità 11791 lontana da 11535 (prima 2358 + flussi − affitto)",
-   "riga 2036: liquidità 1732 lontana da 1632 (prima 1475 + flussi − affitto)",
-   "riga 2037: liquidità 2117 lontana da 1948 (prima 1732 + flussi − affitto)",
-   "riga 2038: liquidità 14069 lontana da 13685 (prima 2117 + flussi − affitto)",
-   "riga 2040: liquidità 18286 lontana da 17944 (prima 1703 + flussi − affitto)",
-   "riga 2042: liquidità 70721 lontana da 70256 (prima 4647 + flussi − affitto)"
+   "riga 2027: liquidità 11 lontana da 701 (prima 0 + flussi − affitto)",
+   "riga 2028: liquidità 60 lontana da -425 (prima 11 + flussi − affitto)",
+   "riga 2029: liquidità 47 lontana da 108 (prima 60 + flussi − affitto)",
+   "riga 2030: liquidità 114 lontana da -412 (prima 47 + flussi − affitto)",
+   "riga 2031: liquidità 101 lontana da 159 (prima 114 + flussi − affitto)",
+   "riga 2032: liquidità 91 lontana da 1012 (prima 101 + flussi − affitto)",
+   "riga 2033: liquidità 118 lontana da 1099 (prima 91 + flussi − affitto)",
+   "riga 2034: liquidità 257 lontana da 9294 (prima 118 + flussi − affitto)",
+   "riga 2035: liquidità 213 lontana da -10274 (prima 257 + flussi − affitto)",
+   "riga 2036: liquidità 100 lontana da 369 (prima 213 + flussi − affitto)",
+   "riga 2037: liquidità 168 lontana da 314 (prima 100 + flussi − affitto)",
+   "riga 2038: liquidità 385 lontana da 11734 (prima 168 + flussi − affitto)",
+   "riga 2039: liquidità 243 lontana da -12226 (prima 385 + flussi − affitto)",
+   "riga 2040: liquidità 343 lontana da 16482 (prima 243 + flussi − affitto)",
+   "riga 2041: liquidità 308 lontana da -13606 (prima 343 + flussi − affitto)",
+   "riga 2042: liquidità 465 lontana da 65916 (prima 308 + flussi − affitto)",
+   "riga 2043: liquidità 1127 lontana da -16054 (prima 465 + flussi − affitto)",
+   "riga 2044: liquidità 882 lontana da -15854 (prima 1127 + flussi − affitto)",
+   "riga 2045: liquidità 627 lontana da -16575 (prima 882 + flussi − affitto)",
+   "riga 2046: liquidità 357 lontana da -17319 (prima 627 + flussi − affitto)",
+   "liquidità finale tabella 357 ≠ stress 4802"
   ],
   "kpi": {
    "Capitale usato": {
     "v": "200.000 €",
-    "s": "199.999 € in titoli · 1 € in liquidità"
+    "s": "200.000 € in titoli · 0 € sul conto XEON"
    },
    "Affitto sostenibile": {
-    "v": "10.608 €",
+    "v": "10.609 €",
     "s": "il primo anno · 71% di 15.000 €"
    },
    "Prima e ultima rata": {
-    "v": "10.608 → 17.944",
-    "s": "€ nominali, scenario base · 11.590 € di oggi"
+    "v": "10.609 → 17.946",
+    "s": "€ nominali, scenario base · 11.591 € di oggi"
    },
    "Quota indicizzata": {
     "v": "95%",
@@ -422,18 +489,18 @@
    },
    "Rendimento netto": {
     "v": "3,82%",
-    "s": "scenario base · duration 9,3 anni"
+    "s": "scenario base · incassi in media fra 9,3 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 200.000 € oggi paghi un affitto di 10.608 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 10.608 € a 17.944 € nello scenario base. Alla fine restano 4817 € di liquidità nello scenario base.",
+  "lead": "Con 200.000 € oggi paghi un affitto di 10.609 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 10.609 € a 17.946 € nello scenario base. Alla fine restano 4802 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 479 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2035. Per coprirlo servirebbero 7816 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 14.303 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2030. Per coprirlo servirebbero 272 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 7 rate scoperte su 20, dalla 2031. Per coprirlo servirebbero 7883 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (14.303 € l'anno, sempre uguali) regge peggio negli scenari «Base», «Alto 3,5%», «Basso 1%», «Shock 8→5%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -442,131 +509,142 @@
   ],
   "cap": {
    "capV": 200000,
-   "inB": 199999,
-   "inC": 1
+   "inB": 200000,
+   "inC": 0
   },
   "list": {
    "n": 14,
-   "sumC": 199999,
+   "sumC": 200000,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "169.779",
+    "170.187",
     "",
     "",
-    "199.999"
+    "200.000"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
-   "10.608",
-   "10.129",
-   "904",
+   "10.609",
+   "10.654",
+   "718",
    "−62",
-   "374"
+   "11",
+   "712"
   ],
   "rateLast": [
    "2046",
-   "17.944",
+   "17.946",
    "0",
    "0",
    "0",
-   "4817"
+   "357",
+   "4802"
   ],
   "nRate": 20,
   "stress": [
    [
     "Base \nDA COPRIRE",
-    "17.944",
+    "17.946",
     "tutte pagate",
-    "4817",
+    "4802",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 89.295 €\nREGGE PEGGIO"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
-    "22.350",
+    "22.351",
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 123.184 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
-    "14.076",
-    "soldi finiti al 2028",
-    "8342",
-    "479",
-    "finisce al 2027"
+    "14.078",
+    "1 rata scoperta su 20, dalla 2030",
+    "8316",
+    "272",
+    "scoperta dalla 2027, mancano 53.527 €\nREGGE PEGGIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
-    "22.203",
+    "22.205",
     "tutte pagate",
-    "3813",
+    "3899",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 146.444 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
-    "19.677",
-    "soldi finiti al 2035",
-    "−10.584",
-    "7816",
-    "finisce al 2027"
+    "19.679",
+    "7 rate scoperte su 20, dalla 2031",
+    "−10.675",
+    "7883",
+    "scoperta dalla 2027, mancano 105.940 €\nREGGE PEGGIO"
    ]
   ],
-  "secs": 9.198,
+  "secs": 9.248,
   "logs": []
  },
  "quanto-affitto-500k": {
   "issues": [
-   "riga 2028: liquidità 385 lontana da 247 (prima 934 + flussi − affitto)",
-   "riga 2029: liquidità 507 lontana da 398 (prima 385 + flussi − affitto)",
-   "riga 2030: liquidità 108 lontana da -174 (prima 507 + flussi − affitto)",
-   "riga 2031: liquidità 858 lontana da 605 (prima 108 + flussi − affitto)",
-   "riga 2032: liquidità 3557 lontana da 3300 (prima 858 + flussi − affitto)",
-   "riga 2033: liquidità 3884 lontana da 3648 (prima 3557 + flussi − affitto)",
-   "riga 2034: liquidità 28829 lontana da 28205 (prima 3884 + flussi − affitto)",
-   "riga 2036: liquidità 3643 lontana da 3404 (prima 3019 + flussi − affitto)",
-   "riga 2037: liquidità 3934 lontana da 3530 (prima 3643 + flussi − affitto)",
-   "riga 2038: liquidità 35672 lontana da 34705 (prima 3934 + flussi − affitto)",
-   "riga 2040: liquidità 39845 lontana da 39044 (prima 4734 + flussi − affitto)",
-   "riga 2042: liquidità 176679 lontana da 175582 (prima 5750 + flussi − affitto)"
+   "riga 2027: liquidità 38 lontana da 405 (prima 6847 + flussi − affitto)",
+   "riga 2028: liquidità 131 lontana da -447 (prima 38 + flussi − affitto)",
+   "riga 2029: liquidità 105 lontana da 321 (prima 131 + flussi − affitto)",
+   "riga 2030: liquidità 280 lontana da -406 (prima 105 + flussi − affitto)",
+   "riga 2031: liquidità 247 lontana da -38 (prima 280 + flussi − affitto)",
+   "riga 2032: liquidità 217 lontana da 2031 (prima 247 + flussi − affitto)",
+   "riga 2033: liquidità 296 lontana da 934 (prima 217 + flussi − affitto)",
+   "riga 2034: liquidità 640 lontana da 27354 (prima 296 + flussi − affitto)",
+   "riga 2035: liquidità 553 lontana da -25728 (prima 640 + flussi − affitto)",
+   "riga 2036: liquidità 263 lontana da -932 (prima 553 + flussi − affitto)",
+   "riga 2037: liquidità 406 lontana da 149 (prima 263 + flussi − affitto)",
+   "riga 2038: liquidità 970 lontana da 31176 (prima 406 + flussi − affitto)",
+   "riga 2039: liquidità 619 lontana da -30586 (prima 970 + flussi − affitto)",
+   "riga 2040: liquidità 803 lontana da 34928 (prima 619 + flussi − affitto)",
+   "riga 2041: liquidità 680 lontana da -33972 (prima 803 + flussi − affitto)",
+   "riga 2042: liquidità 1098 lontana da 170512 (prima 680 + flussi − affitto)",
+   "riga 2043: liquidità 2818 lontana da -40222 (prima 1098 + flussi − affitto)",
+   "riga 2044: liquidità 2205 lontana da -39659 (prima 2818 + flussi − affitto)",
+   "riga 2045: liquidità 1567 lontana da -41461 (prima 2205 + flussi − affitto)",
+   "riga 2046: liquidità 892 lontana da -43322 (prima 1567 + flussi − affitto)",
+   "liquidità finale tabella 892 ≠ stress 11.928"
   ],
   "kpi": {
    "Capitale usato": {
     "v": "500.000 €",
-    "s": "499.786 € in titoli · 214 € in liquidità"
+    "s": "493.153 € in titoli · 6847 € sul conto XEON"
    },
    "Affitto sostenibile": {
-    "v": "26.536 €",
+    "v": "26.537 €",
     "s": "il primo anno · 177% di 15.000 €"
    },
    "Prima e ultima rata": {
-    "v": "26.536 → 44.888",
-    "s": "€ nominali, scenario base · 28.993 € di oggi"
+    "v": "26.537 → 44.889",
+    "s": "€ nominali, scenario base · 28.994 € di oggi"
    },
    "Quota indicizzata": {
-    "v": "95%",
+    "v": "96%",
     "s": "13 indicizzati su 14 titoli"
    },
    "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,3 anni"
+    "v": "3,82%",
+    "s": "scenario base · incassi in media fra 9,4 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 500.000 € oggi paghi un affitto di 26.536 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 26.536 € a 44.888 € nello scenario base. Alla fine restano 11.805 € di liquidità nello scenario base.",
+  "lead": "Con 500.000 € oggi paghi un affitto di 26.537 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 26.537 € a 44.889 € nello scenario base. Alla fine restano 11.928 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 688 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2030. Per coprirlo servirebbero 19.978 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 35.766 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "ATTENZIONE Scenario «Basso 1%»: 4 rate scoperte su 20, dalla 2028. Per coprirlo servirebbero 919 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 6 rate scoperte su 20, dalla 2031. Per coprirlo servirebbero 19.659 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (35.766 € l'anno, sempre uguali) non regge peggio in nessuno scenario e meglio in «Basso 1%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -575,83 +653,85 @@
   ],
   "cap": {
    "capV": 500000,
-   "inB": 499786,
-   "inC": 214
+   "inB": 493153,
+   "inC": 6847
   },
   "list": {
    "n": 14,
-   "sumC": 499785,
+   "sumC": 493152,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "422.639",
+    "419.314",
     "",
     "",
-    "499.786"
+    "493.153"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
-   "26.536",
-   "25.522",
-   "1863",
-   "−156",
-   "934"
+   "26.537",
+   "18.606",
+   "1644",
+   "−155",
+   "38",
+   "442"
   ],
   "rateLast": [
    "2046",
-   "44.888",
+   "44.889",
    "0",
    "0",
    "0",
-   "11.805"
+   "892",
+   "11.928"
   ],
   "nRate": 20,
   "stress": [
    [
     "Base \nDA COPRIRE",
-    "44.888",
+    "44.889",
     "tutte pagate",
-    "11.805",
+    "11.928",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
-    "55.908",
+    "55.909",
     "tutte pagate",
     "0",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Basso 1%",
-    "35.212",
-    "soldi finiti al 2028",
-    "20.443",
-    "688",
-    "basta"
+    "35.213",
+    "4 rate scoperte su 20, dalla 2028",
+    "20.642",
+    "919",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
-    "55.541",
+    "55.542",
     "tutte pagate",
-    "9810",
+    "9564",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "FOI +0,5% su HICP",
-    "49.223",
-    "soldi finiti al 2030",
-    "−27.055",
-    "19.978",
-    "basta"
+    "49.224",
+    "6 rate scoperte su 20, dalla 2031",
+    "−26.623",
+    "19.659",
+    "tutte pagate\nREGGE MEGLIO"
    ]
   ],
-  "secs": 6.698,
+  "secs": 9.131,
   "logs": []
  },
  "fino-a-quando-1000": {
@@ -659,177 +739,79 @@
   "kpi": {},
   "lead": "",
   "notes": [
-   "ATTENZIONE Con 1000 € non si copre nemmeno il 2027."
+   "ATTENZIONE Con 1000 € non si copre nemmeno la rata del 2027."
   ],
   "empty": true,
-  "text": "DA SAPERE\n1 nota\nATTENZIONE\nCon 1000 € non si copre nemmeno il 2027.",
-  "secs": 9.691,
+  "text": "DA SAPERE\n1 nota\nATTENZIONE\nCon 1000 € non si copre nemmeno la rata del 2027.",
+  "secs": 9.718,
   "logs": []
  },
  "quanto-affitto-1000": {
   "issues": [],
-  "kpi": {
-   "Capitale usato": {
-    "v": "1000 €",
-    "s": "0 € in titoli · 1000 € in liquidità"
-   },
-   "Affitto sostenibile": {
-    "v": "40 €",
-    "s": "il primo anno · 0% di 15.000 €"
-   },
-   "Prima e ultima rata": {
-    "v": "40 → 67",
-    "s": "€ nominali, scenario base · 44 € di oggi"
-   },
-   "Quota indicizzata": {
-    "v": "0%",
-    "s": "0 indicizzati su 0 titoli"
-   },
-   "Rendimento netto": {
-    "v": "—",
-    "s": "scenario base · duration 0,0 anni"
-   },
-   "Scenari coperti": {
-    "v": "5 / 5",
-    "s": "tutti"
-   }
-  },
-  "lead": "Con 1000 € oggi paghi un affitto di 40 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 40 € a 67 € nello scenario base. Alla fine restano 145 € di liquidità nello scenario base.",
+  "kpi": {},
+  "lead": "",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 69 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
-   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
-   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
-   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
-   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
-   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+   "PROBLEMA Nessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti."
   ],
-  "cap": {
-   "capV": 1000,
-   "inB": 0,
-   "inC": 1000
-  },
-  "list": {
-   "n": 0,
-   "sumC": 0,
-   "foot": [
-    "Totale titoli",
-    "",
-    "",
-    "0",
-    "",
-    "",
-    "0"
-   ]
-  },
-  "rateMeta": "scenario Base · € nominali",
-  "rateFirst": [
-   "2027",
-   "40",
-   "0",
-   "0",
-   "0",
-   "963"
-  ],
-  "rateLast": [
-   "2046",
-   "67",
-   "0",
-   "0",
-   "0",
-   "145"
-  ],
-  "nRate": 20,
-  "stress": [
-   [
-    "Base \nDA COPRIRE",
-    "67",
-    "tutte pagate",
-    "145",
-    "—",
-    "finisce al 2027"
-   ],
-   [
-    "Alto 3,5% \nDA COPRIRE",
-    "84",
-    "tutte pagate",
-    "61",
-    "—",
-    "finisce al 2027"
-   ],
-   [
-    "Basso 1%",
-    "53",
-    "tutte pagate",
-    "215",
-    "—",
-    "finisce al 2027"
-   ],
-   [
-    "Shock 8→5% \nDA COPRIRE",
-    "83",
-    "tutte pagate",
-    "0",
-    "—",
-    "finisce al 2027"
-   ],
-   [
-    "FOI +0,5% su HICP",
-    "74",
-    "tutte pagate",
-    "86",
-    "—",
-    "finisce al 2027"
-   ]
-  ],
-  "secs": 8.333,
+  "empty": true,
+  "text": "DA SAPERE\n1 nota\nPROBLEMA\nNessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti.",
+  "secs": 7.935,
   "logs": []
  },
  "copri-tutti": {
   "issues": [
-   "riga 2028: liquidità 626 lontana da 542 (prima 754 + flussi − affitto)",
-   "riga 2029: liquidità 710 lontana da 640 (prima 626 + flussi − affitto)",
-   "riga 2030: liquidità 588 lontana da 423 (prima 710 + flussi − affitto)",
-   "riga 2031: liquidità 302 lontana da 155 (prima 588 + flussi − affitto)",
-   "riga 2032: liquidità 6268 lontana da 6085 (prima 302 + flussi − affitto)",
-   "riga 2034: liquidità 19267 lontana da 18880 (prima 2769 + flussi − affitto)",
-   "riga 2037: liquidità 5242 lontana da 4969 (prima 4306 + flussi − affitto)",
-   "riga 2038: liquidità 24818 lontana da 24200 (prima 5242 + flussi − affitto)",
-   "riga 2040: liquidità 29712 lontana da 29159 (prima 7303 + flussi − affitto)"
+   "riga 2028: liquidità 75 lontana da 772 (prima 26 + flussi − affitto)",
+   "riga 2029: liquidità 74 lontana da 7 (prima 75 + flussi − affitto)",
+   "riga 2030: liquidità 169 lontana da -300 (prima 74 + flussi − affitto)",
+   "riga 2031: liquidità 147 lontana da -349 (prima 169 + flussi − affitto)",
+   "riga 2032: liquidità 125 lontana da 731 (prima 147 + flussi − affitto)",
+   "riga 2033: liquidità 188 lontana da 1677 (prima 125 + flussi − affitto)",
+   "riga 2034: liquidità 385 lontana da 16117 (prima 188 + flussi − affitto)",
+   "riga 2035: liquidità 339 lontana da -14636 (prima 385 + flussi − affitto)",
+   "riga 2036: liquidità 174 lontana da -491 (prima 339 + flussi − affitto)",
+   "riga 2037: liquidità 262 lontana da 654 (prima 174 + flussi − affitto)",
+   "riga 2038: liquidità 622 lontana da 20271 (prima 262 + flussi − affitto)",
+   "riga 2039: liquidità 426 lontana da -17520 (prima 622 + flussi − affitto)",
+   "riga 2040: liquidità 567 lontana da 23470 (prima 426 + flussi − affitto)",
+   "riga 2041: liquidità 516 lontana da -19546 (prima 567 + flussi − affitto)",
+   "riga 2042: liquidità 416 lontana da 25493 (prima 516 + flussi − affitto)",
+   "riga 2043: liquidità 598 lontana da -21920 (prima 416 + flussi − affitto)",
+   "riga 2044: liquidità 483 lontana da 1687 (prima 598 + flussi − affitto)",
+   "riga 2045: liquidità 580 lontana da 13691 (prima 483 + flussi − affitto)",
+   "riga 2046: liquidità 639 lontana da -8819 (prima 580 + flussi − affitto)",
+   "liquidità finale tabella 639 ≠ stress 21.681"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "284.773 €",
-    "s": "270.433 € in titoli · 14.340 € in liquidità"
+    "v": "284.691 €",
+    "s": "277.739 € in titoli · 6953 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
     "s": "€ nominali, scenario base · 16.389 € di oggi"
    },
    "Quota indicizzata": {
-    "v": "81%",
-    "s": "13 indicizzati su 16 titoli"
+    "v": "80%",
+    "s": "13 indicizzati su 17 titoli"
    },
    "Rendimento netto": {
     "v": "3,99%",
-    "s": "scenario base · duration 10,3 anni"
+    "s": "scenario base · incassi in media fra 10,1 anni"
    },
    "Scenari coperti": {
     "v": "5 / 5",
     "s": "tutti"
    }
   },
-  "lead": "Con 284.773 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 21.909 € di liquidità nello scenario base.",
+  "lead": "Con 284.691 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 21.681 € sul conto XEON nello scenario base.",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
-   "NOTA Comprare a lotti interi costa 154 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.369 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
-   "NOTA Lotti interi: il solver si è fermato al limite di tempo; la soluzione rispetta i vincoli ed è entro lo 0,05% dalla scala ideale «a pezzi».",
+   "OK La scala regge in tutti e 5 gli scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 106 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.363 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -837,39 +819,41 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 284773,
-   "inB": 270433,
-   "inC": 14340
+   "capV": 284691,
+   "inB": 277739,
+   "inC": 6953
   },
   "list": {
-   "n": 16,
-   "sumC": 270433,
+   "n": 17,
+   "sumC": 277736,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "273.000",
+    "285.445",
     "",
     "",
-    "270.433"
+    "277.739"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "482",
-   "980",
-   "−86",
-   "754"
+   "7252",
+   "934",
+   "−87",
+   "26",
+   "77"
   ],
   "rateLast": [
    "2046",
    "25.373",
-   "24.269",
-   "711",
-   "−20",
-   "21.909"
+   "15.532",
+   "455",
+   "−13",
+   "639",
+   "21.681"
   ],
   "nRate": 20,
   "stress": [
@@ -877,76 +861,76 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "21.909",
+    "21.681",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "387",
+    "225",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 22.570 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1% \nDA COPRIRE",
     "19.904",
     "tutte pagate",
-    "40.237",
+    "39.919",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "0",
+    "1",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 49.102 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP \nDA COPRIRE",
     "27.824",
     "tutte pagate",
-    "70",
+    "0",
     "—",
-    "finisce al 2046"
+    "scoperta dalla 2046, mancano 1485 €\nREGGE PEGGIO"
    ]
   ],
-  "secs": 15.22,
+  "secs": 10.866,
   "logs": []
  },
  "solo-base": {
   "issues": [
-   "riga 2028: liquidità 370 lontana da 297 (prima 28 + flussi − affitto)",
-   "riga 2029: liquidità 0 lontana da -63 (prima 370 + flussi − affitto)",
-   "riga 2030: liquidità 63 lontana da 5 (prima 0 + flussi − affitto)",
-   "riga 2031: liquidità 603 lontana da 542 (prima 63 + flussi − affitto)",
-   "riga 2032: liquidità 642 lontana da 572 (prima 603 + flussi − affitto)",
-   "riga 2033: liquidità 307 lontana da 237 (prima 642 + flussi − affitto)",
-   "riga 2034: liquidità 0 lontana da -64 (prima 307 + flussi − affitto)",
-   "riga 2035: liquidità 1 lontana da -61 (prima 0 + flussi − affitto)",
-   "riga 2036: liquidità 0 lontana da -63 (prima 1 + flussi − affitto)",
-   "riga 2037: liquidità 31 lontana da -157 (prima 0 + flussi − affitto)",
-   "riga 2038: liquidità 3 lontana da -169 (prima 31 + flussi − affitto)",
-   "riga 2039: liquidità 456 lontana da 371 (prima 3 + flussi − affitto)",
-   "riga 2040: liquidità 353 lontana da 162 (prima 456 + flussi − affitto)",
-   "riga 2041: liquidità 31 lontana da -185 (prima 353 + flussi − affitto)",
-   "riga 2042: liquidità 7 lontana da -239 (prima 31 + flussi − affitto)",
-   "riga 2043: liquidità 22 lontana da -202 (prima 7 + flussi − affitto)",
-   "riga 2044: liquidità 565 lontana da 330 (prima 22 + flussi − affitto)",
-   "riga 2045: liquidità 170 lontana da -39 (prima 565 + flussi − affitto)",
-   "riga 2046: liquidità 0 lontana da -243 (prima 170 + flussi − affitto)"
+   "riga 2028: liquidità 72 lontana da 284 (prima 15 + flussi − affitto)",
+   "riga 2029: liquidità 63 lontana da -361 (prima 72 + flussi − affitto)",
+   "riga 2031: liquidità 61 lontana da 538 (prima 59 + flussi − affitto)",
+   "riga 2032: liquidità 70 lontana da 30 (prima 61 + flussi − affitto)",
+   "riga 2033: liquidità 71 lontana da -335 (prima 70 + flussi − affitto)",
+   "riga 2034: liquidità 66 lontana da -300 (prima 71 + flussi − affitto)",
+   "riga 2035: liquidità 63 lontana da 5 (prima 66 + flussi − affitto)",
+   "riga 2036: liquidità 63 lontana da -1 (prima 63 + flussi − affitto)",
+   "riga 2037: liquidità 188 lontana da -94 (prima 63 + flussi − affitto)",
+   "riga 2038: liquidità 171 lontana da -12 (prima 188 + flussi − affitto)",
+   "riga 2039: liquidità 85 lontana da 539 (prima 171 + flussi − affitto)",
+   "riga 2040: liquidità 190 lontana da -209 (prima 85 + flussi − affitto)",
+   "riga 2041: liquidità 216 lontana da -348 (prima 190 + flussi − affitto)",
+   "riga 2042: liquidità 245 lontana da -54 (prima 216 + flussi − affitto)",
+   "riga 2043: liquidità 224 lontana da 36 (prima 245 + flussi − affitto)",
+   "riga 2044: liquidità 235 lontana da 532 (prima 224 + flussi − affitto)",
+   "riga 2045: liquidità 209 lontana da -369 (prima 235 + flussi − affitto)",
+   "riga 2046: liquidità 243 lontana da -204 (prima 209 + flussi − affitto)",
+   "liquidità finale tabella 243 ≠ stress 0"
   ],
   "kpi": {
    "Capitale da investire": {
     "v": "265.429 €",
-    "s": "265.429 € in titoli · 0 € in liquidità"
+    "s": "265.429 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -958,21 +942,21 @@
    },
    "Rendimento netto": {
     "v": "4,21%",
-    "s": "scenario base · duration 10,1 anni"
+    "s": "scenario base · incassi in media fra 10,1 anni"
    },
    "Scenari coperti": {
     "v": "2 / 5",
     "s": "scoperti: Alto 3,5%, Shock 8→5%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 265.429 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 0 € di liquidità nello scenario base.",
+  "lead": "Con 265.429 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 0 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Alto 3,5%»: i soldi finiscono al 2029. Per coprirlo servirebbero 38.408 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «Shock 8→5%»: i soldi finiscono al 2028. Per coprirlo servirebbero 64.044 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2029. Per coprirlo servirebbero 16.646 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Alto 3,5%»: 18 rate scoperte su 20, dalla 2029. Per coprirlo servirebbero 38.408 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Shock 8→5%»: 19 rate scoperte su 20, dalla 2028. Per coprirlo servirebbero 64.044 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 18 rate scoperte su 20, dalla 2029. Per coprirlo servirebbero 16.646 € in più oggi (non è fra gli scenari da coprire per forza).",
    "NOTA Comprare a lotti interi costa 64 € in più della scala ideale «a pezzi».",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 18.983 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2045, con inflazione alta al 2040.",
+   "NOTA Gli indicizzati pesano poco: la scala regge meno se l'inflazione sale. Aggiungi «Alto 3,5%» e «Shock 8→5%» agli scenari da coprire.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (18.983 € l'anno, sempre uguali) regge peggio negli scenari «Base», «Alto 3,5%», «Shock 8→5%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1004,6 +988,7 @@
    "13.380",
    "1714",
    "−82",
+   "15",
    "28"
   ],
   "rateLast": [
@@ -1012,6 +997,7 @@
    "24.269",
    "711",
    "−20",
+   "243",
    "0"
   ],
   "nRate": 20,
@@ -1022,15 +1008,15 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 8620 €\nREGGE PEGGIO"
    ],
    [
     "Alto 3,5%",
     "31.603",
-    "soldi finiti al 2029",
+    "18 rate scoperte su 20, dalla 2029",
     "−56.515",
     "38.408",
-    "finisce al 2040"
+    "scoperta dalla 2040, mancano 45.472 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
@@ -1038,50 +1024,59 @@
     "tutte pagate",
     "50.813",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5%",
     "31.395",
-    "soldi finiti al 2028",
+    "19 rate scoperte su 20, dalla 2028",
     "−94.328",
     "64.044",
-    "finisce al 2034"
+    "scoperta dalla 2034, mancano 71.254 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
-    "soldi finiti al 2029",
+    "18 rate scoperte su 20, dalla 2029",
     "−22.542",
     "16.646",
-    "finisce al 2042"
+    "scoperta dalla 2042, mancano 25.265 €\nREGGE PEGGIO"
    ]
   ],
-  "secs": 9.409,
+  "secs": 10.161,
   "logs": []
  },
  "min-indicizzati-100": {
   "issues": [
-   "riga 2028: liquidità 272 lontana da 191 (prima 757 + flussi − affitto)",
-   "riga 2029: liquidità 36 lontana da -26 (prima 272 + flussi − affitto)",
-   "riga 2030: liquidità 769 lontana da 604 (prima 36 + flussi − affitto)",
-   "riga 2031: liquidità 210 lontana da 64 (prima 769 + flussi − affitto)",
-   "riga 2032: liquidità 1959 lontana da 1812 (prima 210 + flussi − affitto)",
-   "riga 2033: liquidità 2696 lontana da 2562 (prima 1959 + flussi − affitto)",
-   "riga 2034: liquidità 17691 lontana da 17323 (prima 2696 + flussi − affitto)",
-   "riga 2037: liquidità 2167 lontana da 1934 (prima 2568 + flussi − affitto)",
-   "riga 2038: liquidità 20485 lontana da 19934 (prima 2167 + flussi − affitto)",
-   "riga 2040: liquidità 22656 lontana da 22200 (prima 2996 + flussi − affitto)",
-   "riga 2042: liquidità 99911 lontana da 99290 (prima 3384 + flussi − affitto)"
+   "riga 2028: liquidità 74 lontana da 505 (prima 37 + flussi − affitto)",
+   "riga 2029: liquidità 68 lontana da -218 (prima 74 + flussi − affitto)",
+   "riga 2030: liquidità 160 lontana da -505 (prima 68 + flussi − affitto)",
+   "riga 2031: liquidità 143 lontana da 453 (prima 160 + flussi − affitto)",
+   "riga 2032: liquidità 126 lontana da 552 (prima 143 + flussi − affitto)",
+   "riga 2033: liquidità 147 lontana da 957 (prima 126 + flussi − affitto)",
+   "riga 2034: liquidità 358 lontana da 14781 (prima 147 + flussi − affitto)",
+   "riga 2035: liquidità 305 lontana da -14542 (prima 358 + flussi − affitto)",
+   "riga 2036: liquidità 142 lontana da -373 (prima 305 + flussi − affitto)",
+   "riga 2037: liquidità 232 lontana da 804 (prima 142 + flussi − affitto)",
+   "riga 2038: liquidità 560 lontana da 17988 (prima 232 + flussi − affitto)",
+   "riga 2039: liquidità 363 lontana da -17293 (prima 560 + flussi − affitto)",
+   "riga 2040: liquidità 479 lontana da 20947 (prima 363 + flussi − affitto)",
+   "riga 2041: liquidità 417 lontana da -19220 (prima 479 + flussi − affitto)",
+   "riga 2042: liquidità 643 lontana da 94378 (prima 417 + flussi − affitto)",
+   "riga 2043: liquidità 1593 lontana da -22713 (prima 643 + flussi − affitto)",
+   "riga 2044: liquidità 1246 lontana da -22417 (prima 1593 + flussi − affitto)",
+   "riga 2045: liquidità 886 lontana da -23436 (prima 1246 + flussi − affitto)",
+   "riga 2046: liquidità 504 lontana da -24487 (prima 886 + flussi − affitto)",
+   "liquidità finale tabella 504 ≠ stress 6759"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "282.755 €",
-    "s": "268.283 € in titoli · 14.472 € in liquidità"
+    "v": "282.741 €",
+    "s": "268.941 € in titoli · 13.800 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1092,20 +1087,20 @@
     "s": "13 indicizzati su 13 titoli"
    },
    "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,7 anni"
+    "v": "3,82%",
+    "s": "scenario base · incassi in media fra 9,6 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 282.755 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6716 € di liquidità nello scenario base.",
+  "lead": "Con 282.741 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6759 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 352 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.243 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 215 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.223 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2030. Per coprirlo servirebbero 453 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 7 rate scoperte su 20, dalla 2030. Per coprirlo servirebbero 11.186 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 216 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.222 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1113,31 +1108,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 282755,
-   "inB": 268283,
-   "inC": 14472
+   "capV": 282741,
+   "inB": 268941,
+   "inC": 13800
   },
   "list": {
    "n": 13,
-   "sumC": 268283,
+   "sumC": 268940,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "225.000",
+    "227.000",
     "",
     "",
-    "268.283"
+    "268.941"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "482",
-   "851",
+   "641",
+   "738",
    "−86",
-   "757"
+   "37",
+   "130"
   ],
   "rateLast": [
    "2046",
@@ -1145,7 +1141,8 @@
    "0",
    "0",
    "0",
-   "6716"
+   "504",
+   "6759"
   ],
   "nRate": 20,
   "stress": [
@@ -1153,9 +1150,9 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "6716",
+    "6759",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -1163,165 +1160,80 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 24.906 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "19.904",
-    "soldi finiti al 2028",
-    "11.629",
-    "352",
-    "basta"
+    "1 rata scoperta su 20, dalla 2030",
+    "11.698",
+    "453",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "5564",
+    "5591",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 51.354 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
-    "soldi finiti al 2031",
-    "−15.225",
-    "11.243",
-    "finisce al 2046"
+    "7 rate scoperte su 20, dalla 2030",
+    "−15.149",
+    "11.186",
+    "scoperta dalla 2046, mancano 3916 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 7.5,
+  "secs": 7.173,
   "logs": []
  },
  "incompatibili-min100-italia30": {
   "issues": [],
-  "kpi": {
-   "Capitale da investire": {
-    "v": "376.236 €",
-    "s": "0 € in titoli · 376.236 € in liquidità"
-   },
-   "Coperto fino al": {
-    "v": "2046",
-    "s": "20 rate dal 2027"
-   },
-   "Prima e ultima rata": {
-    "v": "15.000 → 25.373",
-    "s": "€ nominali, scenario base · 16.389 € di oggi"
-   },
-   "Quota indicizzata": {
-    "v": "0%",
-    "s": "0 indicizzati su 0 titoli"
-   },
-   "Rendimento netto": {
-    "v": "—",
-    "s": "scenario base · duration 0,0 anni"
-   },
-   "Scenari coperti": {
-    "v": "5 / 5",
-    "s": "tutti"
-   }
-  },
-  "lead": "Con 376.236 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 54.732 € di liquidità nello scenario base.",
+  "kpi": {},
+  "lead": "",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 26.911 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
-   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
-   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
-   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
-   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
-   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+   "PROBLEMA Nessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti."
   ],
-  "cap": {
-   "capV": 376236,
-   "inB": 0,
-   "inC": 376236
-  },
-  "list": {
-   "n": 0,
-   "sumC": 0,
-   "foot": [
-    "Totale titoli",
-    "",
-    "",
-    "0",
-    "",
-    "",
-    "0"
-   ]
-  },
-  "rateMeta": "scenario Base · € nominali",
-  "rateFirst": [
-   "2027",
-   "15.000",
-   "0",
-   "0",
-   "0",
-   "362.183"
-  ],
-  "rateLast": [
-   "2046",
-   "25.373",
-   "0",
-   "0",
-   "0",
-   "54.732"
-  ],
-  "nRate": 20,
-  "stress": [
-   [
-    "Base \nDA COPRIRE",
-    "25.373",
-    "tutte pagate",
-    "54.732",
-    "—",
-    "basta"
-   ],
-   [
-    "Alto 3,5% \nDA COPRIRE",
-    "31.603",
-    "tutte pagate",
-    "22.911",
-    "—",
-    "basta"
-   ],
-   [
-    "Basso 1%",
-    "19.904",
-    "tutte pagate",
-    "80.931",
-    "—",
-    "basta"
-   ],
-   [
-    "Shock 8→5% \nDA COPRIRE",
-    "31.395",
-    "tutte pagate",
-    "0",
-    "—",
-    "basta"
-   ],
-   [
-    "FOI +0,5% su HICP",
-    "27.824",
-    "tutte pagate",
-    "32.190",
-    "—",
-    "basta"
-   ]
-  ],
-  "secs": 10.998,
+  "empty": true,
+  "text": "DA SAPERE\n1 nota\nPROBLEMA\nNessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti.",
+  "secs": 9.799,
   "logs": []
  },
  "tetto-italia-0": {
-  "issues": [],
+  "issues": [
+   "riga 2027: liquidità 140 lontana da 41100 (prima 54419 + flussi − affitto)",
+   "riga 2028: liquidità 709 lontana da -8470 (prima 140 + flussi − affitto)",
+   "riga 2029: liquidità 584 lontana da -8317 (prima 709 + flussi − affitto)",
+   "riga 2030: liquidità 448 lontana da -8896 (prima 584 + flussi − affitto)",
+   "riga 2031: liquidità 304 lontana da -9501 (prima 448 + flussi − affitto)",
+   "riga 2032: liquidità 174 lontana da 4520 (prima 304 + flussi − affitto)",
+   "riga 2033: liquidità 245 lontana da 4043 (prima 174 + flussi − affitto)",
+   "riga 2034: liquidità 311 lontana da 4508 (prima 245 + flussi − affitto)",
+   "riga 2035: liquidità 385 lontana da 4695 (prima 311 + flussi − affitto)",
+   "riga 2036: liquidità 462 lontana da 4842 (prima 385 + flussi − affitto)",
+   "riga 2037: liquidità 698 lontana da 5163 (prima 462 + flussi − affitto)",
+   "riga 2038: liquidità 762 lontana da 5549 (prima 698 + flussi − affitto)",
+   "riga 2039: liquidità 743 lontana da 5905 (prima 762 + flussi − affitto)",
+   "riga 2040: liquidità 953 lontana da 4993 (prima 743 + flussi − affitto)",
+   "riga 2041: liquidità 1079 lontana da 5780 (prima 953 + flussi − affitto)",
+   "riga 2042: liquidità 1214 lontana da 6397 (prima 1079 + flussi − affitto)",
+   "riga 2043: liquidità 1293 lontana da 6821 (prima 1214 + flussi − affitto)",
+   "riga 2044: liquidità 1407 lontana da 6690 (prima 1293 + flussi − affitto)",
+   "riga 2045: liquidità 1483 lontana da 6581 (prima 1407 + flussi − affitto)",
+   "riga 2046: liquidità 1635 lontana da 7062 (prima 1483 + flussi − affitto)",
+   "liquidità finale tabella 1635 ≠ stress 91.094"
+  ],
   "kpi": {
    "Capitale da investire": {
     "v": "317.946 €",
-    "s": "263.527 € in titoli · 54.419 € in liquidità"
+    "s": "263.527 € in titoli · 54.419 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1333,19 +1245,19 @@
    },
    "Rendimento netto": {
     "v": "4,26%",
-    "s": "scenario base · duration 11,5 anni"
+    "s": "scenario base · incassi in media fra 11,5 anni"
    },
    "Scenari coperti": {
     "v": "5 / 5",
     "s": "tutti"
    }
   },
-  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € di liquidità nello scenario base.",
+  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € sul conto XEON nello scenario base.",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "OK La scala regge in tutti e 5 gli scenari d'inflazione simulati.",
    "NOTA Comprare a lotti interi costa 61 € in più della scala ideale «a pezzi».",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.743 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Gli indicizzati pesano poco: la scala regge meno se l'inflazione sale. Prova a chiedere una «Quota minima di indicizzati».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (22.743 € l'anno, sempre uguali) regge peggio negli scenari «Shock 8→5%»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1377,6 +1289,7 @@
    "0",
    "1764",
    "−83",
+   "140",
    "41.240"
   ],
   "rateLast": [
@@ -1385,6 +1298,7 @@
    "30.094",
    "882",
    "−24",
+   "1635",
    "91.094"
   ],
   "nRate": 20,
@@ -1395,7 +1309,7 @@
     "tutte pagate",
     "91.094",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -1403,7 +1317,7 @@
     "tutte pagate",
     "38.501",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Basso 1%",
@@ -1411,7 +1325,7 @@
     "tutte pagate",
     "137.842",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
@@ -1419,7 +1333,7 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 10.867 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
@@ -1427,29 +1341,43 @@
     "tutte pagate",
     "68.553",
     "—",
-    "basta"
+    "tutte pagate"
    ]
   ],
-  "secs": 6.144,
+  "secs": 5.876,
   "logs": []
  },
  "tetto-titolo-5": {
   "issues": [
-   "riga 2028: liquidità 537 lontana da 453 (prima 298 + flussi − affitto)",
-   "riga 2029: liquidità 9 lontana da -65 (prima 537 + flussi − affitto)",
-   "riga 2030: liquidità 269 lontana da 108 (prima 9 + flussi − affitto)",
-   "riga 2031: liquidità 1197 lontana da 1030 (prima 269 + flussi − affitto)",
-   "riga 2032: liquidità 4833 lontana da 4671 (prima 1197 + flussi − affitto)",
-   "riga 2033: liquidità 14905 lontana da 14644 (prima 4833 + flussi − affitto)"
+   "riga 2027: liquidità 15 lontana da 269 (prima 0 + flussi − affitto)",
+   "riga 2028: liquidità 83 lontana da 173 (prima 15 + flussi − affitto)",
+   "riga 2029: liquidità 74 lontana da -517 (prima 83 + flussi − affitto)",
+   "riga 2031: liquidità 167 lontana da 924 (prima 162 + flussi − affitto)",
+   "riga 2032: liquidità 161 lontana da 3644 (prima 167 + flussi − affitto)",
+   "riga 2033: liquidità 260 lontana da 9973 (prima 161 + flussi − affitto)",
+   "riga 2034: liquidità 460 lontana da 4343 (prima 260 + flussi − affitto)",
+   "riga 2035: liquidità 352 lontana da -13960 (prima 460 + flussi − affitto)",
+   "riga 2036: liquidità 205 lontana da 1928 (prima 352 + flussi − affitto)",
+   "riga 2037: liquidità 336 lontana da 2481 (prima 205 + flussi − affitto)",
+   "riga 2038: liquidità 453 lontana da 2292 (prima 336 + flussi − affitto)",
+   "riga 2039: liquidità 385 lontana da -644 (prima 453 + flussi − affitto)",
+   "riga 2040: liquidità 399 lontana da 333 (prima 385 + flussi − affitto)",
+   "riga 2041: liquidità 455 lontana da 5896 (prima 399 + flussi − affitto)",
+   "riga 2042: liquidità 510 lontana da 9649 (prima 455 + flussi − affitto)",
+   "riga 2043: liquidità 623 lontana da -3577 (prima 510 + flussi − affitto)",
+   "riga 2044: liquidità 656 lontana da 6197 (prima 623 + flussi − affitto)",
+   "riga 2045: liquidità 737 lontana da 6921 (prima 656 + flussi − affitto)",
+   "riga 2046: liquidità 856 lontana da 5590 (prima 737 + flussi − affitto)",
+   "liquidità finale tabella 856 ≠ stress 42.943"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "293.769 €",
-    "s": "293.766 € in titoli · 3 € in liquidità"
+    "v": "293.739 €",
+    "s": "293.739 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1461,18 +1389,18 @@
    },
    "Rendimento netto": {
     "v": "4,04%",
-    "s": "scenario base · duration 10,3 anni"
+    "s": "scenario base · incassi in media fra 10,3 anni"
    },
    "Scenari coperti": {
     "v": "4 / 5",
     "s": "scoperti: Basso 1%"
    }
   },
-  "lead": "Con 293.769 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 42.973 € di liquidità nello scenario base.",
+  "lead": "Con 293.739 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 42.943 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2029. Per coprirlo servirebbero 141 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 307 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.987 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2045.",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2029. Per coprirlo servirebbero 151 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 303 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.988 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1480,31 +1408,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 293769,
-   "inB": 293766,
-   "inC": 3
+   "capV": 293739,
+   "inB": 293739,
+   "inC": 0
   },
   "list": {
    "n": 25,
-   "sumC": 293764,
+   "sumC": 293739,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "322.405",
+    "322.376",
     "",
     "",
-    "293.766"
+    "293.739"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "14.592",
+   "14.582",
    "778",
-   "−92",
-   "298"
+   "−91",
+   "15",
+   "284"
   ],
   "rateLast": [
    "2046",
@@ -1512,7 +1441,8 @@
    "29.308",
    "945",
    "−27",
-   "42.973"
+   "856",
+   "42.943"
   ],
   "nRate": 20,
   "stress": [
@@ -1520,92 +1450,102 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "42.973",
+    "42.943",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "8818",
+    "8794",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 12.149 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "19.904",
-    "soldi finiti al 2029",
-    "72.760",
-    "141",
-    "basta"
+    "1 rata scoperta su 20, dalla 2029",
+    "72.724",
+    "151",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "0",
+    "1",
     "—",
-    "finisce al 2040"
+    "scoperta dalla 2040, mancano 39.078 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
     "tutte pagate",
-    "20.934",
+    "20.907",
     "—",
-    "basta"
+    "tutte pagate"
    ]
   ],
-  "secs": 10.833,
+  "secs": 6.632,
   "logs": []
  },
  "tetto-titolo-1": {
   "issues": [
-   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
-   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
-   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
-   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
-   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
-   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
-   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
-   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
-   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
-   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
-   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+   "riga 2027: liquidità 110 lontana da 38537 (prima 40435 + flussi − affitto)",
+   "riga 2028: liquidità 853 lontana da 5595 (prima 110 + flussi − affitto)",
+   "riga 2029: liquidità 849 lontana da 365 (prima 853 + flussi − affitto)",
+   "riga 2030: liquidità 804 lontana da -6617 (prima 849 + flussi − affitto)",
+   "riga 2031: liquidità 731 lontana da -821 (prima 804 + flussi − affitto)",
+   "riga 2032: liquidità 743 lontana da 1687 (prima 731 + flussi − affitto)",
+   "riga 2033: liquidità 738 lontana da 93 (prima 743 + flussi − affitto)",
+   "riga 2034: liquidità 753 lontana da 489 (prima 738 + flussi − affitto)",
+   "riga 2035: liquidità 775 lontana da 3605 (prima 753 + flussi − affitto)",
+   "riga 2036: liquidità 850 lontana da 1633 (prima 775 + flussi − affitto)",
+   "riga 2037: liquidità 894 lontana da 1660 (prima 850 + flussi − affitto)",
+   "riga 2038: liquidità 960 lontana da 3087 (prima 894 + flussi − affitto)",
+   "riga 2039: liquidità 972 lontana da 2981 (prima 960 + flussi − affitto)",
+   "riga 2040: liquidità 1047 lontana da 1443 (prima 972 + flussi − affitto)",
+   "riga 2041: liquidità 1114 lontana da 7698 (prima 1047 + flussi − affitto)",
+   "riga 2042: liquidità 1303 lontana da 11861 (prima 1114 + flussi − affitto)",
+   "riga 2043: liquidità 1424 lontana da 3202 (prima 1303 + flussi − affitto)",
+   "riga 2044: liquidità 1469 lontana da 976 (prima 1424 + flussi − affitto)",
+   "riga 2045: liquidità 1393 lontana da -5293 (prima 1469 + flussi − affitto)",
+   "riga 2046: liquidità 1443 lontana da 3459 (prima 1393 + flussi − affitto)",
+   "liquidità finale tabella 1443 ≠ stress 77.079"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "282.745 €",
-    "s": "281.892 € in titoli · 852 € in liquidità"
+    "v": "327.749 €",
+    "s": "287.314 € in titoli · 40.435 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
     "s": "€ nominali, scenario base · 16.389 € di oggi"
    },
    "Quota indicizzata": {
-    "v": "95%",
-    "s": "13 indicizzati su 14 titoli"
+    "v": "16%",
+    "s": "17 indicizzati su 102 titoli"
    },
    "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,3 anni"
+    "v": "3,82%",
+    "s": "scenario base · incassi in media fra 10,3 anni"
    },
    "Scenari coperti": {
-    "v": "3 / 5",
-    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+    "v": "5 / 5",
+    "s": "tutti"
    }
   },
-  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "lead": "Con 327.749 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 77.079 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "OK La scala regge in tutti e 5 gli scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 5934 € in più della scala ideale «a pezzi».",
+   "NOTA Gli indicizzati pesano poco: la scala regge meno se l'inflazione sale. Prova a chiedere una «Quota minima di indicizzati».",
+   "NOTA Lotti interi: il solver non ha chiuso in tempo. Lotti arrotondati per difetto e un po' più di liquidità iniziale al posto di quello che manca.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1613,39 +1553,41 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 282745,
-   "inB": 281892,
-   "inC": 852
+   "capV": 327749,
+   "inB": 287314,
+   "inC": 40435
   },
   "list": {
-   "n": 14,
-   "sumC": 281892,
+   "n": 102,
+   "sumC": 287315,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "238.421",
+    "322.669",
     "",
     "",
-    "281.892"
+    "287.314"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "13.895",
-   "1086",
-   "−88",
-   "762"
+   "12.356",
+   "836",
+   "−90",
+   "110",
+   "38.647"
   ],
   "rateLast": [
    "2046",
    "25.373",
-   "0",
-   "0",
-   "0",
-   "6723"
+   "26.786",
+   "674",
+   "−21",
+   "1443",
+   "77.079"
   ],
   "nRate": 20,
   "stress": [
@@ -1653,66 +1595,73 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "6723",
-    "—",
-    "basta"
+    "77.079",
+    "—"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "1",
-    "—",
-    "finisce al 2043"
+    "30.378",
+    "—"
    ],
    [
     "Basso 1%",
     "19.904",
-    "soldi finiti al 2028",
-    "11.645",
-    "339",
-    "basta"
+    "tutte pagate",
+    "118.197",
+    "—"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "5532",
-    "—",
-    "finisce al 2038"
+    "7",
+    "—"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
-    "soldi finiti al 2031",
-    "−15.219",
-    "11.238",
-    "finisce al 2046"
+    "tutte pagate",
+    "54.841",
+    "—"
    ]
   ],
-  "secs": 30.943,
+  "secs": 6.245,
   "logs": []
  },
  "fisco-annuale-acquisto-credito": {
   "issues": [
-   "riga 2028: liquidità 648 lontana da 563 (prima 932 + flussi − affitto)",
-   "riga 2029: liquidità 2676 lontana da 2604 (prima 648 + flussi − affitto)",
-   "riga 2030: liquidità 2852 lontana da 2645 (prima 2676 + flussi − affitto)",
-   "riga 2031: liquidità 3629 lontana da 3409 (prima 2852 + flussi − affitto)",
-   "riga 2032: liquidità 8799 lontana da 8547 (prima 3629 + flussi − affitto)",
-   "riga 2034: liquidità 22980 lontana da 22522 (prima 7918 + flussi − affitto)",
-   "riga 2038: liquidità 24958 lontana da 24328 (prima 7591 + flussi − affitto)",
-   "riga 2040: liquidità 27644 lontana da 27112 (prima 6937 + flussi − affitto)",
-   "riga 2042: liquidità 101928 lontana da 101247 (prima 7934 + flussi − affitto)"
+   "riga 2027: liquidità 24 lontana da 903 (prima 5321 + flussi − affitto)",
+   "riga 2028: liquidità 85 lontana da -343 (prima 24 + flussi − affitto)",
+   "riga 2029: liquidità 72 lontana da 2043 (prima 85 + flussi − affitto)",
+   "riga 2030: liquidità 207 lontana da 41 (prima 72 + flussi − affitto)",
+   "riga 2031: liquidità 220 lontana da 764 (prima 207 + flussi − affitto)",
+   "riga 2032: liquidità 252 lontana da 5138 (prima 220 + flussi − affitto)",
+   "riga 2033: liquidità 238 lontana da -867 (prima 252 + flussi − affitto)",
+   "riga 2034: liquidità 458 lontana da 14842 (prima 238 + flussi − affitto)",
+   "riga 2035: liquidità 400 lontana da -15182 (prima 458 + flussi − affitto)",
+   "riga 2036: liquidità 240 lontana da 1917 (prima 400 + flussi − affitto)",
+   "riga 2037: liquidità 331 lontana da -1995 (prima 240 + flussi − affitto)",
+   "riga 2038: liquidità 630 lontana da 17068 (prima 331 + flussi − affitto)",
+   "riga 2039: liquidità 423 lontana da -17814 (prima 630 + flussi − affitto)",
+   "riga 2040: liquidità 532 lontana da 20598 (prima 423 + flussi − affitto)",
+   "riga 2041: liquidità 463 lontana da -19641 (prima 532 + flussi − affitto)",
+   "riga 2042: liquidità 681 lontana da 93776 (prima 463 + flussi − affitto)",
+   "riga 2043: liquidità 1625 lontana da -22675 (prima 681 + flussi − affitto)",
+   "riga 2044: liquidità 1278 lontana da -22385 (prima 1625 + flussi − affitto)",
+   "riga 2045: liquidità 919 lontana da -23404 (prima 1278 + flussi − affitto)",
+   "riga 2046: liquidità 537 lontana da -24454 (prima 919 + flussi − affitto)",
+   "liquidità finale tabella 537 ≠ stress 8865"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "283.223 €",
-    "s": "275.507 € in titoli · 7715 € in liquidità"
+    "v": "283.216 €",
+    "s": "277.895 € in titoli · 5321 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1724,18 +1673,18 @@
    },
    "Rendimento netto": {
     "v": "3,89%",
-    "s": "scenario base · duration 9,4 anni"
+    "s": "scenario base · incassi in media fra 9,3 anni"
    },
    "Scenari coperti": {
     "v": "4 / 5",
     "s": "scoperti: FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 283.223 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 8865 € di liquidità nello scenario base.",
+  "lead": "Con 283.216 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 8865 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2039. Per coprirlo servirebbero 9580 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 184 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.256 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 3 rate scoperte su 20, dalla 2039. Per coprirlo servirebbero 9580 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 183 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.255 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata ogni anno; base imponibile a scadenza: prezzo d'acquisto. Le minusvalenze che ne nascono non sono usate.",
@@ -1743,31 +1692,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 283223,
-   "inB": 275507,
-   "inC": 7715
+   "capV": 283216,
+   "inB": 277895,
+   "inC": 5321
   },
   "list": {
    "n": 13,
-   "sumC": 275509,
+   "sumC": 277897,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "231.918",
+    "234.273",
     "",
     "",
-    "275.507"
+    "277.895"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "7254",
-   "1234",
-   "−300",
-   "932"
+   "9608",
+   "1275",
+   "−301",
+   "24",
+   "928"
   ],
   "rateLast": [
    "2046",
@@ -1775,6 +1725,7 @@
    "0",
    "0",
    "0",
+   "537",
    "8865"
   ],
   "nRate": 20,
@@ -1785,15 +1736,15 @@
     "tutte pagate",
     "8865",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "0",
+    "1",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 24.347 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
@@ -1801,7 +1752,7 @@
     "tutte pagate",
     "15.328",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
@@ -1809,30 +1760,52 @@
     "tutte pagate",
     "4421",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 50.813 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "27.824",
-    "soldi finiti al 2039",
-    "−12.974",
+    "3 rate scoperte su 20, dalla 2039",
+    "−12.973",
     "9580",
-    "finisce al 2046"
+    "scoperta dalla 2046, mancano 3337 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 14.416,
+  "secs": 15.001,
   "logs": []
  },
  "senza-indicizzati": {
-  "issues": [],
+  "issues": [
+   "riga 2027: liquidità 140 lontana da 41100 (prima 54419 + flussi − affitto)",
+   "riga 2028: liquidità 709 lontana da -8470 (prima 140 + flussi − affitto)",
+   "riga 2029: liquidità 584 lontana da -8317 (prima 709 + flussi − affitto)",
+   "riga 2030: liquidità 448 lontana da -8896 (prima 584 + flussi − affitto)",
+   "riga 2031: liquidità 304 lontana da -9501 (prima 448 + flussi − affitto)",
+   "riga 2032: liquidità 174 lontana da 4520 (prima 304 + flussi − affitto)",
+   "riga 2033: liquidità 245 lontana da 4043 (prima 174 + flussi − affitto)",
+   "riga 2034: liquidità 311 lontana da 4508 (prima 245 + flussi − affitto)",
+   "riga 2035: liquidità 385 lontana da 4695 (prima 311 + flussi − affitto)",
+   "riga 2036: liquidità 462 lontana da 4842 (prima 385 + flussi − affitto)",
+   "riga 2037: liquidità 698 lontana da 5163 (prima 462 + flussi − affitto)",
+   "riga 2038: liquidità 762 lontana da 5549 (prima 698 + flussi − affitto)",
+   "riga 2039: liquidità 743 lontana da 5905 (prima 762 + flussi − affitto)",
+   "riga 2040: liquidità 953 lontana da 4993 (prima 743 + flussi − affitto)",
+   "riga 2041: liquidità 1079 lontana da 5780 (prima 953 + flussi − affitto)",
+   "riga 2042: liquidità 1214 lontana da 6397 (prima 1079 + flussi − affitto)",
+   "riga 2043: liquidità 1293 lontana da 6821 (prima 1214 + flussi − affitto)",
+   "riga 2044: liquidità 1407 lontana da 6690 (prima 1293 + flussi − affitto)",
+   "riga 2045: liquidità 1483 lontana da 6581 (prima 1407 + flussi − affitto)",
+   "riga 2046: liquidità 1635 lontana da 7062 (prima 1483 + flussi − affitto)",
+   "liquidità finale tabella 1635 ≠ stress 91.094"
+  ],
   "kpi": {
    "Capitale da investire": {
     "v": "317.946 €",
-    "s": "263.527 € in titoli · 54.419 € in liquidità"
+    "s": "263.527 € in titoli · 54.419 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1844,19 +1817,18 @@
    },
    "Rendimento netto": {
     "v": "4,26%",
-    "s": "scenario base · duration 11,5 anni"
+    "s": "scenario base · incassi in media fra 11,5 anni"
    },
    "Scenari coperti": {
     "v": "5 / 5",
     "s": "tutti"
    }
   },
-  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € di liquidità nello scenario base.",
+  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € sul conto XEON nello scenario base.",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "OK La scala regge in tutti e 5 gli scenari d'inflazione simulati.",
    "NOTA Comprare a lotti interi costa 61 € in più della scala ideale «a pezzi».",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.743 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (22.743 € l'anno, sempre uguali) regge peggio negli scenari «Shock 8→5%»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1888,6 +1860,7 @@
    "0",
    "1764",
    "−83",
+   "140",
    "41.240"
   ],
   "rateLast": [
@@ -1896,6 +1869,7 @@
    "30.094",
    "882",
    "−24",
+   "1635",
    "91.094"
   ],
   "nRate": 20,
@@ -1906,7 +1880,7 @@
     "tutte pagate",
     "91.094",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -1914,7 +1888,7 @@
     "tutte pagate",
     "38.501",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Basso 1%",
@@ -1922,7 +1896,7 @@
     "tutte pagate",
     "137.842",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
@@ -1930,7 +1904,7 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 10.867 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
@@ -1938,34 +1912,44 @@
     "tutte pagate",
     "68.553",
     "—",
-    "basta"
+    "tutte pagate"
    ]
   ],
-  "secs": 6.012,
+  "secs": 5.427,
   "logs": []
  },
  "hicp": {
   "issues": [
-   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
-   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
-   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
-   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
-   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
-   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
-   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
-   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
-   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
-   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
-   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+   "riga 2027: liquidità 15 lontana da 120 (prima 1 + flussi − affitto)",
+   "riga 2028: liquidità 74 lontana da 483 (prima 15 + flussi − affitto)",
+   "riga 2029: liquidità 69 lontana da -218 (prima 74 + flussi − affitto)",
+   "riga 2030: liquidità 160 lontana da -504 (prima 69 + flussi − affitto)",
+   "riga 2031: liquidità 143 lontana da 453 (prima 160 + flussi − affitto)",
+   "riga 2032: liquidità 126 lontana da 552 (prima 143 + flussi − affitto)",
+   "riga 2033: liquidità 147 lontana da 957 (prima 126 + flussi − affitto)",
+   "riga 2034: liquidità 359 lontana da 14781 (prima 147 + flussi − affitto)",
+   "riga 2035: liquidità 306 lontana da -14541 (prima 359 + flussi − affitto)",
+   "riga 2036: liquidità 142 lontana da -372 (prima 306 + flussi − affitto)",
+   "riga 2037: liquidità 232 lontana da 804 (prima 142 + flussi − affitto)",
+   "riga 2038: liquidità 560 lontana da 17988 (prima 232 + flussi − affitto)",
+   "riga 2039: liquidità 363 lontana da -17293 (prima 560 + flussi − affitto)",
+   "riga 2040: liquidità 479 lontana da 20947 (prima 363 + flussi − affitto)",
+   "riga 2041: liquidità 417 lontana da -19220 (prima 479 + flussi − affitto)",
+   "riga 2042: liquidità 643 lontana da 94378 (prima 417 + flussi − affitto)",
+   "riga 2043: liquidità 1593 lontana da -22713 (prima 643 + flussi − affitto)",
+   "riga 2044: liquidità 1247 lontana da -22417 (prima 1593 + flussi − affitto)",
+   "riga 2045: liquidità 886 lontana da -23435 (prima 1247 + flussi − affitto)",
+   "riga 2046: liquidità 504 lontana da -24487 (prima 886 + flussi − affitto)",
+   "liquidità finale tabella 504 ≠ stress 6765"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "282.745 €",
-    "s": "281.892 € in titoli · 852 € in liquidità"
+    "v": "282.730 €",
+    "s": "282.729 € in titoli · 1 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -1976,20 +1960,19 @@
     "s": "13 indicizzati su 14 titoli"
    },
    "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,3 anni"
+    "v": "3,82%",
+    "s": "scenario base · incassi in media fra 9,3 anni"
    },
    "Scenari coperti": {
-    "v": "3 / 5",
-    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+    "v": "4 / 5",
+    "s": "scoperti: Basso 1%"
    }
   },
-  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione europea (HICP) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "lead": "Con 282.730 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione europea (HICP) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6765 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2030. Per coprirlo servirebbero 441 € in più oggi (non è fra gli scenari da coprire per forza).",
    "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.221 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «Basso 1%»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -1997,31 +1980,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 282745,
-   "inB": 281892,
-   "inC": 852
+   "capV": 282730,
+   "inB": 282729,
+   "inC": 1
   },
   "list": {
    "n": 14,
-   "sumC": 281892,
+   "sumC": 282729,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "238.421",
+    "240.598",
     "",
     "",
-    "281.892"
+    "282.729"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "13.895",
-   "1086",
+   "14.231",
+   "976",
    "−88",
-   "762"
+   "15",
+   "134"
   ],
   "rateLast": [
    "2046",
@@ -2029,7 +2013,8 @@
    "0",
    "0",
    "0",
-   "6723"
+   "504",
+   "6765"
   ],
   "nRate": 20,
   "stress": [
@@ -2037,199 +2022,123 @@
     "Base \nDA COPRIRE",
     "25.373",
     "tutte pagate",
-    "6723",
+    "6765",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
     "31.603",
     "tutte pagate",
-    "1",
+    "0",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 24.919 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "19.904",
-    "soldi finiti al 2028",
-    "11.645",
-    "339",
-    "basta"
+    "1 rata scoperta su 20, dalla 2030",
+    "11.713",
+    "441",
+    "tutte pagate\nREGGE MEGLIO"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "31.395",
     "tutte pagate",
-    "5532",
+    "5558",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 51.367 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
-    "27.824",
-    "soldi finiti al 2031",
-    "−15.219",
-    "11.238",
-    "finisce al 2046"
+    "25.373",
+    "tutte pagate",
+    "7399",
+    "—",
+    "tutte pagate"
    ]
   ],
-  "secs": 7.356,
+  "secs": 7.133,
   "logs": []
  },
  "primo-anno-2026": {
-  "issues": [
-   "riga 2028: liquidità 1333 lontana da 1243 (prima 1016 + flussi − affitto)",
-   "riga 2029: liquidità 1878 lontana da 1794 (prima 1333 + flussi − affitto)",
-   "riga 2030: liquidità 2361 lontana da 2164 (prima 1878 + flussi − affitto)",
-   "riga 2031: liquidità 6501 lontana da 6286 (prima 2361 + flussi − affitto)",
-   "riga 2034: liquidità 25970 lontana da 25479 (prima 8383 + flussi − affitto)",
-   "riga 2038: liquidità 33655 lontana da 32891 (prima 14309 + flussi − affitto)"
-  ],
-  "kpi": {
-   "Capitale da investire": {
-    "v": "319.421 €",
-    "s": "289.046 € in titoli · 30.374 € in liquidità"
-   },
-   "Coperto fino al": {
-    "v": "2046",
-    "s": "21 rate dal 2026"
-   },
-   "Prima e ultima rata": {
-    "v": "15.000 → 26.160",
-    "s": "€ nominali, scenario base · 16.897 € di oggi"
-   },
-   "Quota indicizzata": {
-    "v": "100%",
-    "s": "12 indicizzati su 12 titoli"
-   },
-   "Rendimento netto": {
-    "v": "3,81%",
-    "s": "scenario base · duration 9,6 anni"
-   },
-   "Scenari coperti": {
-    "v": "5 / 5",
-    "s": "tutti"
-   }
-  },
-  "lead": "Con 319.421 € oggi paghi l'affitto dal 2026 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 26.160 € nello scenario base. Alla fine restano 27.081 € di liquidità nello scenario base.",
+  "issues": [],
+  "kpi": {},
+  "lead": "",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
-   "NOTA Comprare a lotti interi costa 158 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 21.303 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2044.",
-   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
-   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
-   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
-   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
-   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+   "ATTENZIONE La prima rata (1/1/2026) non è dopo la data di regolamento dei prezzi (04/11/2026): scegli come primo anno il 2027 o dopo."
   ],
-  "cap": {
-   "capV": 319421,
-   "inB": 289046,
-   "inC": 30374
-  },
-  "list": {
-   "n": 12,
-   "sumC": 289045,
-   "foot": [
-    "Totale titoli",
-    "",
-    "",
-    "243.000",
-    "",
-    "",
-    "289.046"
-   ]
-  },
-  "rateMeta": "scenario Base · € nominali",
-  "rateFirst": [
-   "2026",
-   "15.000",
-   "0",
-   "0",
-   "0",
-   "15.374"
-  ],
-  "rateLast": [
-   "2046",
-   "26.160",
-   "0",
-   "0",
-   "0",
-   "27.081"
-  ],
-  "nRate": 21,
-  "stress": [
-   [
-    "Base \nDA COPRIRE",
-    "26.160",
-    "tutte pagate",
-    "27.081",
-    "—",
-    "basta"
-   ],
-   [
-    "Alto 3,5% \nDA COPRIRE",
-    "32.867",
-    "tutte pagate",
-    "18.198",
-    "—",
-    "finisce al 2044"
-   ],
-   [
-    "Basso 1%",
-    "20.203",
-    "tutte pagate",
-    "35.624",
-    "—",
-    "basta"
-   ],
-   [
-    "Shock 8→5% \nDA COPRIRE",
-    "34.064",
-    "tutte pagate",
-    "7",
-    "—",
-    "finisce al 2038"
-   ],
-   [
-    "FOI +0,5% su HICP",
-    "28.825",
-    "tutte pagate",
-    "1993",
-    "—",
-    "basta"
-   ]
-  ],
-  "secs": 6.269,
+  "empty": true,
+  "text": "DA SAPERE\n1 nota\nATTENZIONE\nLa prima rata (1/1/2026) non è dopo la data di regolamento dei prezzi (04/11/2026): scegli come primo anno il 2027 o dopo.",
+  "secs": 4.153,
   "logs": []
  },
  "ultimo-anno-2080": {
   "issues": [
-   "riga 2028: liquidità 139 lontana da 40 (prima 8 + flussi − affitto)",
-   "riga 2029: liquidità 104 lontana da 3 (prima 139 + flussi − affitto)",
-   "riga 2030: liquidità 164 lontana da 42 (prima 104 + flussi − affitto)",
-   "riga 2031: liquidità 726 lontana da 601 (prima 164 + flussi − affitto)",
-   "riga 2032: liquidità 1052 lontana da 915 (prima 726 + flussi − affitto)",
-   "riga 2033: liquidità 607 lontana da 472 (prima 1052 + flussi − affitto)",
-   "riga 2034: liquidità 4502 lontana da 4319 (prima 607 + flussi − affitto)",
-   "riga 2036: liquidità 1539 lontana da 1393 (prima 1292 + flussi − affitto)",
-   "riga 2037: liquidità 1752 lontana da 1578 (prima 1539 + flussi − affitto)",
-   "riga 2038: liquidità 5331 lontana da 5086 (prima 1752 + flussi − affitto)",
-   "riga 2040: liquidità 6508 lontana da 6274 (prima 1138 + flussi − affitto)",
-   "riga 2042: liquidità 27203 lontana da 26913 (prima 1705 + flussi − affitto)",
-   "riga 2047: liquidità 38601 lontana da 37834 (prima 2591 + flussi − affitto)",
-   "riga 2052: liquidità 48105 lontana da 47366 (prima 5172 + flussi − affitto)",
-   "riga 2057: liquidità 1030675 lontana da 1020021 (prima 7868 + flussi − affitto)"
+   "riga 2027: liquidità 22 lontana da 191 (prima 0 + flussi − affitto)",
+   "riga 2028: liquidità 102 lontana da -30 (prima 22 + flussi − affitto)",
+   "riga 2029: liquidità 102 lontana da -106 (prima 102 + flussi − affitto)",
+   "riga 2030: liquidità 122 lontana da -33 (prima 102 + flussi − affitto)",
+   "riga 2031: liquidità 125 lontana da 484 (prima 122 + flussi − affitto)",
+   "riga 2032: liquidità 138 lontana da 1859 (prima 125 + flussi − affitto)",
+   "riga 2033: liquidità 151 lontana da -1913 (prima 138 + flussi − affitto)",
+   "riga 2034: liquidità 184 lontana da 3863 (prima 151 + flussi − affitto)",
+   "riga 2035: liquidità 178 lontana da -3204 (prima 184 + flussi − affitto)",
+   "riga 2036: liquidità 147 lontana da 279 (prima 178 + flussi − affitto)",
+   "riga 2038: liquidità 245 lontana da 3509 (prima 175 + flussi − affitto)",
+   "riga 2039: liquidità 199 lontana da -4147 (prima 245 + flussi − affitto)",
+   "riga 2040: liquidità 234 lontana da 5335 (prima 199 + flussi − affitto)",
+   "riga 2041: liquidità 222 lontana da -4791 (prima 234 + flussi − affitto)",
+   "riga 2042: liquidità 291 lontana da 25430 (prima 222 + flussi − affitto)",
+   "riga 2043: liquidità 551 lontana da -5870 (prima 291 + flussi − affitto)",
+   "riga 2044: liquidità 464 lontana da -5875 (prima 551 + flussi − affitto)",
+   "riga 2045: liquidità 373 lontana da -6240 (prima 464 + flussi − affitto)",
+   "riga 2046: liquidità 274 lontana da -6609 (prima 373 + flussi − affitto)",
+   "riga 2047: liquidità 766 lontana da 35517 (prima 274 + flussi − affitto)",
+   "riga 2048: liquidità 738 lontana da -7630 (prima 766 + flussi − affitto)",
+   "riga 2049: liquidità 620 lontana da -7997 (prima 738 + flussi − affitto)",
+   "riga 2050: liquidità 492 lontana da -8454 (prima 620 + flussi − affitto)",
+   "riga 2051: liquidità 358 lontana da -8938 (prima 492 + flussi − affitto)",
+   "riga 2052: liquidità 739 lontana da 42552 (prima 358 + flussi − affitto)",
+   "riga 2053: liquidità 906 lontana da -9403 (prima 739 + flussi − affitto)",
+   "riga 2054: liquidità 759 lontana da -9622 (prima 906 + flussi − affitto)",
+   "riga 2055: liquidità 607 lontana da -10174 (prima 759 + flussi − affitto)",
+   "riga 2056: liquidità 446 lontana da -10744 (prima 607 + flussi − affitto)",
+   "riga 2057: liquidità 10654 lontana da 1012599 (prima 446 + flussi − affitto)",
+   "riga 2058: liquidità 16430 lontana da -24689 (prima 10654 + flussi − affitto)",
+   "riga 2059: liquidità 16129 lontana da -19902 (prima 16430 + flussi − affitto)",
+   "riga 2060: liquidità 15807 lontana da -21220 (prima 16129 + flussi − affitto)",
+   "riga 2061: liquidità 15506 lontana da -22588 (prima 15807 + flussi − affitto)",
+   "riga 2062: liquidità 15099 lontana da -23964 (prima 15506 + flussi − affitto)",
+   "riga 2063: liquidità 14710 lontana da -25476 (prima 15099 + flussi − affitto)",
+   "riga 2064: liquidità 14298 lontana da -27002 (prima 14710 + flussi − affitto)",
+   "riga 2065: liquidità 13899 lontana da -28581 (prima 14298 + flussi − affitto)",
+   "riga 2066: liquidità 13399 lontana da -30181 (prima 13899 + flussi − affitto)",
+   "riga 2067: liquidità 12910 lontana da -31915 (prima 13399 + flussi − affitto)",
+   "riga 2068: liquidità 12393 lontana da -33673 (prima 12910 + flussi − affitto)",
+   "riga 2069: liquidità 11881 lontana da -35494 (prima 12393 + flussi − affitto)",
+   "riga 2070: liquidità 11274 lontana da -37347 (prima 11881 + flussi − affitto)",
+   "riga 2071: liquidità 10669 lontana da -39333 (prima 11274 + flussi − affitto)",
+   "riga 2072: liquidità 10032 lontana da -41355 (prima 10669 + flussi − affitto)",
+   "riga 2073: liquidità 9389 lontana da -43448 (prima 10032 + flussi − affitto)",
+   "riga 2074: liquidità 8660 lontana da -45589 (prima 9389 + flussi − affitto)",
+   "riga 2075: liquidità 7922 lontana da -47857 (prima 8660 + flussi − affitto)",
+   "riga 2076: liquidità 7147 lontana da -50178 (prima 7922 + flussi − affitto)",
+   "riga 2077: liquidità 6352 lontana da -52579 (prima 7147 + flussi − affitto)",
+   "riga 2078: liquidità 5484 lontana da -55047 (prima 6352 + flussi − affitto)",
+   "riga 2079: liquidità 4592 lontana da -57634 (prima 5484 + flussi − affitto)",
+   "riga 2080: liquidità 3659 lontana da -60293 (prima 4592 + flussi − affitto)",
+   "liquidità finale tabella 3659 ≠ stress 168.332"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "651.822 €",
-    "s": "651.822 € in titoli · 0 € in liquidità"
+    "v": "651.819 €",
+    "s": "651.818 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2080",
-    "s": "54 rate dal 2027"
+    "s": "54 rate dal 2027 al 2080"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 64.885",
@@ -2237,23 +2146,22 @@
    },
    "Quota indicizzata": {
     "v": "98%",
-    "s": "15 indicizzati su 17 titoli"
+    "s": "14 indicizzati su 16 titoli"
    },
    "Rendimento netto": {
     "v": "4,50%",
-    "s": "scenario base · duration 24,1 anni"
+    "s": "scenario base · incassi in media fra 24,1 anni"
    },
    "Scenari coperti": {
-    "v": "3 / 5",
-    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+    "v": "4 / 5",
+    "s": "scoperti: FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 651.822 € oggi paghi l'affitto dal 2027 al 2080, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 64.885 € nello scenario base. Alla fine restano 168.332 € di liquidità nello scenario base.",
+  "lead": "Con 651.819 € oggi paghi l'affitto dal 2027 al 2080, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 64.885 € nello scenario base. Alla fine restano 168.332 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2027. Per coprirlo servirebbero 5 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2029. Per coprirlo servirebbero 102.891 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 296 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 29.771 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2079, con inflazione alta al 2064.",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 24 rate scoperte su 54, dalla 2029. Per coprirlo servirebbero 102.947 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 297 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (29.771 € l'anno, sempre uguali) regge peggio negli scenari «Base», «Alto 3,5%», «Shock 8→5%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -2261,31 +2169,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 651822,
-   "inB": 651822,
+   "capV": 651819,
+   "inB": 651818,
    "inC": 0
   },
   "list": {
-   "n": 17,
-   "sumC": 651821,
+   "n": 16,
+   "sumC": 651818,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "648.368",
+    "648.646",
     "",
     "",
-    "651.822"
+    "651.818"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "8489",
-   "6704",
+   "8767",
+   "6630",
    "−206",
-   "8"
+   "22",
+   "213"
   ],
   "rateLast": [
    "2080",
@@ -2293,6 +2202,7 @@
    "0",
    "0",
    "0",
+   "3659",
    "168.332"
   ],
   "nRate": 54,
@@ -2303,7 +2213,7 @@
     "tutte pagate",
     "168.332",
     "—",
-    "finisce al 2079"
+    "scoperta dalla 2079, mancano 37.452 €\nREGGE PEGGIO"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -2311,46 +2221,48 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2064"
+    "scoperta dalla 2064, mancano 403.222 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "33.021",
-    "soldi finiti al 2027",
-    "214.255",
-    "5",
-    "basta"
+    "tutte pagate",
+    "214.262",
+    "—",
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "80.284",
     "tutte pagate",
-    "220.540",
+    "220.654",
     "—",
-    "finisce al 2065"
+    "scoperta dalla 2065, mancano 266.888 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "83.912",
-    "soldi finiti al 2029",
-    "−238.644",
-    "102.891",
-    "finisce al 2074"
+    "24 rate scoperte su 54, dalla 2029",
+    "−238.775",
+    "102.947",
+    "scoperta dalla 2074, mancano 213.059 €\nREGGE PEGGIO"
    ]
   ],
-  "secs": 12.554,
+  "secs": 12.062,
   "logs": []
  },
  "un-anno-2027": {
-  "issues": [],
+  "issues": [
+   "liquidità finale tabella 14 ≠ stress 0"
+  ],
   "kpi": {
    "Capitale da investire": {
     "v": "14.946 €",
-    "s": "14.946 € in titoli · 0 € in liquidità"
+    "s": "14.946 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2027",
-    "s": "1 rata dal 2027"
+    "s": "1 rata nel 2027"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 15.000",
@@ -2358,22 +2270,21 @@
    },
    "Quota indicizzata": {
     "v": "0%",
-    "s": "0 indicizzati su 1 titoli"
+    "s": "0 indicizzati su 1 titolo"
    },
    "Rendimento netto": {
     "v": "2,74%",
-    "s": "scenario base · duration 0,1 anni"
+    "s": "scenario base · incassi in media fra 0,1 anni"
    },
    "Scenari coperti": {
     "v": "4 / 5",
     "s": "scoperti: Basso 1%"
    }
   },
-  "lead": "Con 14.946 € oggi paghi l'affitto dal 2027 al 2027, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 15.000 € nello scenario base. Alla fine restano 0 € di liquidità nello scenario base.",
+  "lead": "Con 14.946 € oggi paghi l'affitto nel 2027, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 15.000 € nello scenario base. Alla fine restano 0 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2027. Per coprirlo servirebbero 5 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 14.994 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 1, dalla 2027. Per coprirlo servirebbero 5 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (14.994 € l'anno, sempre uguali) non regge peggio in nessuno scenario: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -2405,6 +2316,7 @@
    "14.731",
    "258",
    "−3",
+   "14",
    "0"
   ],
   "rateLast": [
@@ -2413,6 +2325,7 @@
    "14.731",
    "258",
    "−3",
+   "14",
    "0"
   ],
   "nRate": 1,
@@ -2423,7 +2336,7 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 6 €"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -2431,15 +2344,15 @@
     "tutte pagate",
     "3",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 5 €"
    ],
    [
     "Basso 1%",
     "15.000",
-    "soldi finiti al 2027",
+    "1 rata scoperta su 1, dalla 2027",
     "−5",
     "5",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 7 €"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
@@ -2447,7 +2360,7 @@
     "tutte pagate",
     "18",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 2 €"
    ],
    [
     "FOI +0,5% su HICP",
@@ -2455,35 +2368,43 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2027"
+    "scoperta dalla 2027, mancano 6 €"
    ]
   ],
-  "secs": 4.064,
+  "secs": 4.31,
   "logs": []
  },
  "spread-10": {
   "issues": [
-   "riga 2028: liquidità 4 lontana da -132 (prima 720 + flussi − affitto)",
-   "riga 2029: liquidità 379 lontana da 249 (prima 4 + flussi − affitto)",
-   "riga 2030: liquidità 590 lontana da 384 (prima 379 + flussi − affitto)",
-   "riga 2031: liquidità 237 lontana da 24 (prima 590 + flussi − affitto)",
-   "riga 2032: liquidità 1675 lontana da 1438 (prima 237 + flussi − affitto)",
-   "riga 2033: liquidità 1229 lontana da 1003 (prima 1675 + flussi − affitto)",
-   "riga 2034: liquidità 24582 lontana da 24004 (prima 1229 + flussi − affitto)",
-   "riga 2036: liquidità 430 lontana da 154 (prima 1059 + flussi − affitto)",
-   "riga 2037: liquidità 528 lontana da 54 (prima 430 + flussi − affitto)",
-   "riga 2038: liquidità 48330 lontana da 46984 (prima 528 + flussi − affitto)",
-   "riga 2040: liquidità 67789 lontana da 66434 (prima 1573 + flussi − affitto)",
-   "riga 2042: liquidità 449702 lontana da 447113 (prima 3697 + flussi − affitto)"
+   "riga 2028: liquidità 129 lontana da 53 (prima 16 + flussi − affitto)",
+   "riga 2029: liquidità 132 lontana da 264 (prima 129 + flussi − affitto)",
+   "riga 2030: liquidità 208 lontana da 23 (prima 132 + flussi − affitto)",
+   "riga 2031: liquidità 212 lontana da -473 (prima 208 + flussi − affitto)",
+   "riga 2032: liquidità 207 lontana da 441 (prima 212 + flussi − affitto)",
+   "riga 2033: liquidità 231 lontana da 662 (prima 207 + flussi − affitto)",
+   "riga 2034: liquidità 577 lontana da 23006 (prima 231 + flussi − affitto)",
+   "riga 2035: liquidità 520 lontana da -23465 (prima 577 + flussi − affitto)",
+   "riga 2036: liquidità 276 lontana da -385 (prima 520 + flussi − affitto)",
+   "riga 2037: liquidità 474 lontana da -100 (prima 276 + flussi − affitto)",
+   "riga 2038: liquidità 1346 lontana da 46930 (prima 474 + flussi − affitto)",
+   "riga 2039: liquidità 885 lontana da -46296 (prima 1346 + flussi − affitto)",
+   "riga 2040: liquidità 1354 lontana da 65746 (prima 885 + flussi − affitto)",
+   "riga 2041: liquidità 1188 lontana da -63925 (prima 1354 + flussi − affitto)",
+   "riga 2042: liquidità 2589 lontana da 444604 (prima 1188 + flussi − affitto)",
+   "riga 2043: liquidità 7169 lontana da -93473 (prima 2589 + flussi − affitto)",
+   "riga 2044: liquidità 5752 lontana da -100709 (prima 7169 + flussi − affitto)",
+   "riga 2045: liquidità 4135 lontana da -115395 (prima 5752 + flussi − affitto)",
+   "riga 2046: liquidità 2258 lontana da -131913 (prima 4135 + flussi − affitto)",
+   "liquidità finale tabella 2258 ≠ stress 7868"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "715.694 €",
-    "s": "715.694 € in titoli · 0 € in liquidità"
+    "v": "715.662 €",
+    "s": "715.662 € in titoli · 0 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 136.048",
@@ -2495,19 +2416,19 @@
    },
    "Rendimento netto": {
     "v": "3,92%",
-    "s": "scenario base · duration 11,5 anni"
+    "s": "scenario base · incassi in media fra 11,5 anni"
    },
    "Scenari coperti": {
     "v": "3 / 5",
     "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 715.694 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 10,0% l'anno: da 15.000 € a 136.048 € nello scenario base. Alla fine restano 7882 € di liquidità nello scenario base.",
+  "lead": "Con 715.662 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 10,0% l'anno: da 15.000 € a 136.048 € nello scenario base. Alla fine restano 7868 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 270 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 46.674 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 200 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 51.196 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2046, con inflazione alta al 2045.",
+   "ATTENZIONE Scenario «Basso 1%»: 1 rata scoperta su 20, dalla 2028. Per coprirlo servirebbero 2 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 9 rate scoperte su 20, dalla 2031. Per coprirlo servirebbero 46.762 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 178 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (51.194 € l'anno, sempre uguali) regge peggio negli scenari «Base», «Alto 3,5%», «Shock 8→5%», «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -2515,31 +2436,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 715694,
-   "inB": 715694,
+   "capV": 715662,
+   "inB": 715662,
    "inC": 0
   },
   "list": {
    "n": 14,
-   "sumC": 715694,
+   "sumC": 715662,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "564.746",
+    "565.174",
     "",
     "",
-    "715.694"
+    "715.662"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "15.000",
-   "14.063",
-   "1868",
+   "13.585",
+   "1656",
    "−226",
-   "720"
+   "16",
+   "31"
   ],
   "rateLast": [
    "2046",
@@ -2547,7 +2469,8 @@
    "0",
    "0",
    "0",
-   "7882"
+   "2258",
+   "7868"
   ],
   "nRate": 20,
   "stress": [
@@ -2555,9 +2478,9 @@
     "Base \nDA COPRIRE",
     "136.048",
     "tutte pagate",
-    "7882",
+    "7868",
     "—",
-    "finisce al 2046"
+    "scoperta dalla 2046, mancano 29.400 €\nREGGE PEGGIO"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -2565,56 +2488,68 @@
     "tutte pagate",
     "61",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 136.396 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "108.950",
-    "soldi finiti al 2028",
-    "13.343",
-    "270",
-    "basta"
+    "1 rata scoperta su 20, dalla 2028",
+    "13.324",
+    "2",
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "165.392",
     "tutte pagate",
-    "32.844",
+    "32.944",
     "—",
-    "finisce al 2044"
+    "scoperta dalla 2044, mancano 191.193 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "148.029",
-    "soldi finiti al 2031",
-    "−63.207",
-    "46.674",
-    "finisce al 2045"
+    "9 rate scoperte su 20, dalla 2031",
+    "−63.326",
+    "46.762",
+    "scoperta dalla 2045, mancano 82.264 €\nREGGE PEGGIO"
    ]
   ],
-  "secs": 6.318,
+  "secs": 5.959,
   "logs": []
  },
  "inflazione-0": {
   "issues": [
-   "riga 2029: liquidità 636 lontana da 569 (prima 930 + flussi − affitto)",
-   "riga 2030: liquidità 75 lontana da -78 (prima 636 + flussi − affitto)",
-   "riga 2031: liquidità 364 lontana da 233 (prima 75 + flussi − affitto)",
-   "riga 2032: liquidità 15223 lontana da 15007 (prima 364 + flussi − affitto)",
-   "riga 2034: liquidità 16629 lontana da 16292 (prima 3185 + flussi − affitto)",
-   "riga 2037: liquidità 4430 lontana da 4207 (prima 4298 + flussi − affitto)",
-   "riga 2038: liquidità 19910 lontana da 19421 (prima 4430 + flussi − affitto)",
-   "riga 2040: liquidità 23556 lontana da 23123 (prima 6644 + flussi − affitto)",
-   "riga 2042: liquidità 77945 lontana da 77391 (prima 9600 + flussi − affitto)"
+   "riga 2027: liquidità 66 lontana da 11896 (prima 25645 + flussi − affitto)",
+   "riga 2028: liquidità 225 lontana da -11202 (prima 66 + flussi − affitto)",
+   "riga 2029: liquidità 68 lontana da -135 (prima 225 + flussi − affitto)",
+   "riga 2030: liquidità 153 lontana da -646 (prima 68 + flussi − affitto)",
+   "riga 2031: liquidità 131 lontana da 312 (prima 153 + flussi − affitto)",
+   "riga 2032: liquidità 216 lontana da 14774 (prima 131 + flussi − affitto)",
+   "riga 2033: liquidità 272 lontana da -12094 (prima 216 + flussi − affitto)",
+   "riga 2034: liquidità 336 lontana da 13379 (prima 272 + flussi − affitto)",
+   "riga 2035: liquidità 294 lontana da -12100 (prima 336 + flussi − affitto)",
+   "riga 2036: liquidità 157 lontana da -53 (prima 294 + flussi − affitto)",
+   "riga 2037: liquidità 224 lontana da 66 (prima 157 + flussi − affitto)",
+   "riga 2038: liquidità 489 lontana da 15215 (prima 224 + flussi − affitto)",
+   "riga 2039: liquidità 338 lontana da -13115 (prima 489 + flussi − affitto)",
+   "riga 2040: liquidità 432 lontana da 16817 (prima 338 + flussi − affitto)",
+   "riga 2041: liquidità 393 lontana da -13918 (prima 432 + flussi − affitto)",
+   "riga 2042: liquidità 554 lontana da 68184 (prima 393 + flussi − affitto)",
+   "riga 2043: liquidità 1242 lontana da -15692 (prima 554 + flussi − affitto)",
+   "riga 2044: liquidità 1003 lontana da -15085 (prima 1242 + flussi − affitto)",
+   "riga 2045: liquidità 761 lontana da -15406 (prima 1003 + flussi − affitto)",
+   "riga 2046: liquidità 509 lontana da -15730 (prima 761 + flussi − affitto)",
+   "liquidità finale tabella 509 ≠ stress 15.977"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "280.052 €",
-    "s": "254.395 € in titoli · 25.657 € in liquidità"
+    "v": "280.040 €",
+    "s": "254.395 € in titoli · 25.645 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 16.491",
@@ -2626,18 +2561,18 @@
    },
    "Rendimento netto": {
     "v": "1,69%",
-    "s": "scenario base · duration 9,4 anni"
+    "s": "scenario base · incassi in media fra 9,4 anni"
    },
    "Scenari coperti": {
     "v": "4 / 5",
     "s": "scoperti: FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 280.052 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 16.491 € nello scenario base. Alla fine restano 15.989 € di liquidità nello scenario base.",
+  "lead": "Con 280.040 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 16.491 € nello scenario base. Alla fine restano 15.977 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2030. Per coprirlo servirebbero 433 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 140 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.031 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 2 rate scoperte su 20, dalla 2030. Per coprirlo servirebbero 440 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 141 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (20.030 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -2645,9 +2580,9 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 280052,
+   "capV": 280040,
    "inB": 254395,
-   "inC": 25657
+   "inC": 25645
   },
   "list": {
    "n": 11,
@@ -2669,7 +2604,8 @@
    "462",
    "870",
    "−81",
-   "11.974"
+   "66",
+   "11.963"
   ],
   "rateLast": [
    "2046",
@@ -2677,7 +2613,8 @@
    "0",
    "0",
    "0",
-   "15.989"
+   "509",
+   "15.977"
   ],
   "nRate": 20,
   "stress": [
@@ -2685,9 +2622,9 @@
     "Base \nDA COPRIRE",
     "16.491",
     "tutte pagate",
-    "15.989",
+    "15.977",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -2695,161 +2632,80 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 21.595 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "19.904",
     "tutte pagate",
-    "12.737",
+    "12.728",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "22.871",
     "tutte pagate",
-    "14.965",
+    "14.981",
     "—",
-    "finisce al 2041"
+    "scoperta dalla 2041, mancano 10.185 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "18.122",
-    "soldi finiti al 2030",
-    "−586",
-    "433",
-    "basta"
+    "2 rate scoperte su 20, dalla 2030",
+    "−596",
+    "440",
+    "tutte pagate\nREGGE MEGLIO"
    ]
   ],
-  "secs": 14.035,
+  "secs": 15.384,
   "logs": []
  },
  "nessun-emittente": {
   "issues": [],
-  "kpi": {
-   "Capitale da investire": {
-    "v": "376.236 €",
-    "s": "0 € in titoli · 376.236 € in liquidità"
-   },
-   "Coperto fino al": {
-    "v": "2046",
-    "s": "20 rate dal 2027"
-   },
-   "Prima e ultima rata": {
-    "v": "15.000 → 25.373",
-    "s": "€ nominali, scenario base · 16.389 € di oggi"
-   },
-   "Quota indicizzata": {
-    "v": "0%",
-    "s": "0 indicizzati su 0 titoli"
-   },
-   "Rendimento netto": {
-    "v": "—",
-    "s": "scenario base · duration 0,0 anni"
-   },
-   "Scenari coperti": {
-    "v": "5 / 5",
-    "s": "tutti"
-   }
-  },
-  "lead": "Con 376.236 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 54.732 € di liquidità nello scenario base.",
+  "kpi": {},
+  "lead": "",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "ATTENZIONE Solo 0 titoli rispettano i filtri: allarga il paniere.",
-   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
-   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
-   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
-   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
-   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+   "PROBLEMA Nessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti."
   ],
-  "cap": {
-   "capV": 376236,
-   "inB": 0,
-   "inC": 376236
-  },
-  "list": {
-   "n": 0,
-   "sumC": 0,
-   "foot": [
-    "Totale titoli",
-    "",
-    "",
-    "0",
-    "",
-    "",
-    "0"
-   ]
-  },
-  "rateMeta": "scenario Base · € nominali",
-  "rateFirst": [
-   "2027",
-   "15.000",
-   "0",
-   "0",
-   "0",
-   "362.183"
-  ],
-  "rateLast": [
-   "2046",
-   "25.373",
-   "0",
-   "0",
-   "0",
-   "54.732"
-  ],
-  "nRate": 20,
-  "stress": [
-   [
-    "Base \nDA COPRIRE",
-    "25.373",
-    "tutte pagate",
-    "54.732",
-    "—"
-   ],
-   [
-    "Alto 3,5% \nDA COPRIRE",
-    "31.603",
-    "tutte pagate",
-    "22.911",
-    "—"
-   ],
-   [
-    "Basso 1%",
-    "19.904",
-    "tutte pagate",
-    "80.931",
-    "—"
-   ],
-   [
-    "Shock 8→5% \nDA COPRIRE",
-    "31.395",
-    "tutte pagate",
-    "0",
-    "—"
-   ],
-   [
-    "FOI +0,5% su HICP",
-    "27.824",
-    "tutte pagate",
-    "32.190",
-    "—"
-   ]
-  ],
-  "secs": 5.714,
+  "empty": true,
+  "text": "DA SAPERE\n1 nota\nPROBLEMA\nNessun titolo rispetta insieme filtri e vincoli: la «scala» sarebbe solo liquidità sul conto XEON. Allarga il paniere (emittenti, rating) o allenta quota minima di indicizzati e tetti.",
+  "secs": 5.955,
   "logs": []
  },
  "rating-AA": {
-  "issues": [],
+  "issues": [
+   "riga 2027: liquidità 172 lontana da 53284 (prima 68366 + flussi − affitto)",
+   "riga 2028: liquidità 917 lontana da -8337 (prima 172 + flussi − affitto)",
+   "riga 2029: liquidità 798 lontana da -8004 (prima 917 + flussi − affitto)",
+   "riga 2030: liquidità 667 lontana da -8574 (prima 798 + flussi − affitto)",
+   "riga 2031: liquidità 528 lontana da -9170 (prima 667 + flussi − affitto)",
+   "riga 2032: liquidità 380 lontana da -9788 (prima 528 + flussi − affitto)",
+   "riga 2033: liquidità 345 lontana da 4255 (prima 380 + flussi − affitto)",
+   "riga 2034: liquidità 413 lontana da 3923 (prima 345 + flussi − affitto)",
+   "riga 2035: liquidità 399 lontana da 4744 (prima 413 + flussi − affitto)",
+   "riga 2036: liquidità 569 lontana da 4761 (prima 399 + flussi − affitto)",
+   "riga 2037: liquidità 654 lontana da 5053 (prima 569 + flussi − affitto)",
+   "riga 2038: liquidità 745 lontana da 5829 (prima 654 + flussi − affitto)",
+   "riga 2039: liquidità 837 lontana da 5146 (prima 745 + flussi − affitto)",
+   "riga 2040: liquidità 985 lontana da 5510 (prima 837 + flussi − affitto)",
+   "riga 2041: liquidità 1032 lontana da 6707 (prima 985 + flussi − affitto)",
+   "riga 2042: liquidità 1216 lontana da 5291 (prima 1032 + flussi − affitto)",
+   "riga 2043: liquidità 1228 lontana da 6510 (prima 1216 + flussi − affitto)",
+   "riga 2044: liquidità 1587 lontana da 36295 (prima 1228 + flussi − affitto)",
+   "riga 2045: liquidità 1687 lontana da -22171 (prima 1587 + flussi − affitto)",
+   "riga 2046: liquidità 1578 lontana da 6705 (prima 1687 + flussi − affitto)",
+   "liquidità finale tabella 1578 ≠ stress 89.548"
+  ],
   "kpi": {
    "Capitale da investire": {
     "v": "329.472 €",
-    "s": "261.106 € in titoli · 68.366 € in liquidità"
+    "s": "261.106 € in titoli · 68.366 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "15.000 → 25.373",
@@ -2861,19 +2717,18 @@
    },
    "Rendimento netto": {
     "v": "3,88%",
-    "s": "scenario base · duration 11,6 anni"
+    "s": "scenario base · incassi in media fra 11,6 anni"
    },
    "Scenari coperti": {
     "v": "5 / 5",
     "s": "tutti"
    }
   },
-  "lead": "Con 329.472 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 89.548 € di liquidità nello scenario base.",
+  "lead": "Con 329.472 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 89.548 € sul conto XEON nello scenario base.",
   "notes": [
-   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "OK La scala regge in tutti e 5 gli scenari d'inflazione simulati.",
    "NOTA Comprare a lotti interi costa 65 € in più della scala ideale «a pezzi».",
-   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.806 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (22.806 € l'anno, sempre uguali) regge peggio negli scenari «Shock 8→5%»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -2905,6 +2760,7 @@
    "0",
    "0",
    "−82",
+   "172",
    "53.455"
   ],
   "rateLast": [
@@ -2913,6 +2769,7 @@
    "29.435",
    "984",
    "−28",
+   "1578",
    "89.548"
   ],
   "nRate": 20,
@@ -2923,7 +2780,7 @@
     "tutte pagate",
     "89.548",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -2931,7 +2788,7 @@
     "tutte pagate",
     "37.564",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Basso 1%",
@@ -2939,7 +2796,7 @@
     "tutte pagate",
     "135.692",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
@@ -2947,7 +2804,7 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2045"
+    "scoperta dalla 2045, mancano 9785 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
@@ -2955,26 +2812,43 @@
     "tutte pagate",
     "67.006",
     "—",
-    "basta"
+    "tutte pagate"
    ]
   ],
-  "secs": 4.895,
+  "secs": 4.884,
   "logs": []
  },
  "affitto-1000": {
   "issues": [
-   "riga 2034: liquidità 2215 lontana da 2180 (prima 392 + flussi − affitto)",
-   "riga 2038: liquidità 1837 lontana da 1794 (prima 450 + flussi − affitto)",
-   "riga 2040: liquidità 3667 lontana da 3612 (prima 671 + flussi − affitto)"
+   "riga 2028: liquidità 6 lontana da 291 (prima 1 + flussi − affitto)",
+   "riga 2029: liquidità 9 lontana da 237 (prima 6 + flussi − affitto)",
+   "riga 2030: liquidità 23 lontana da 326 (prima 9 + flussi − affitto)",
+   "riga 2031: liquidità 16 lontana da -841 (prima 23 + flussi − affitto)",
+   "riga 2032: liquidità 10 lontana da 269 (prima 16 + flussi − affitto)",
+   "riga 2033: liquidità 16 lontana da 67 (prima 10 + flussi − affitto)",
+   "riga 2034: liquidità 36 lontana da 1804 (prima 16 + flussi − affitto)",
+   "riga 2035: liquidità 37 lontana da -978 (prima 36 + flussi − affitto)",
+   "riga 2036: liquidità 22 lontana da -1006 (prima 37 + flussi − affitto)",
+   "riga 2037: liquidità 18 lontana da 237 (prima 22 + flussi − affitto)",
+   "riga 2038: liquidità 44 lontana da 1362 (prima 18 + flussi − affitto)",
+   "riga 2039: liquidità 31 lontana da -1153 (prima 44 + flussi − affitto)",
+   "riga 2040: liquidità 54 lontana da 2972 (prima 31 + flussi − affitto)",
+   "riga 2041: liquidità 60 lontana da -1299 (prima 54 + flussi − affitto)",
+   "riga 2042: liquidità 66 lontana da 4378 (prima 60 + flussi − affitto)",
+   "riga 2043: liquidità 108 lontana da -1491 (prima 66 + flussi − affitto)",
+   "riga 2044: liquidità 84 lontana da -1493 (prima 108 + flussi − affitto)",
+   "riga 2045: liquidità 60 lontana da -1561 (prima 84 + flussi − affitto)",
+   "riga 2046: liquidità 35 lontana da -1632 (prima 60 + flussi − affitto)",
+   "liquidità finale tabella 35 ≠ stress 541"
   ],
   "kpi": {
    "Capitale da investire": {
-    "v": "19.002 €",
-    "s": "19.002 € in titoli · 0 € in liquidità"
+    "v": "18.999 €",
+    "s": "18.998 € in titoli · 1 € sul conto XEON"
    },
    "Coperto fino al": {
     "v": "2046",
-    "s": "20 rate dal 2027"
+    "s": "20 rate dal 2027 al 2046"
    },
    "Prima e ultima rata": {
     "v": "1000 → 1692",
@@ -2982,23 +2856,22 @@
    },
    "Quota indicizzata": {
     "v": "95%",
-    "s": "9 indicizzati su 10 titoli"
+    "s": "10 indicizzati su 11 titoli"
    },
    "Rendimento netto": {
-    "v": "3,87%",
-    "s": "scenario base · duration 8,9 anni"
+    "v": "3,85%",
+    "s": "scenario base · incassi in media fra 8,9 anni"
    },
    "Scenari coperti": {
-    "v": "3 / 5",
-    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+    "v": "4 / 5",
+    "s": "scoperti: FOI +0,5% su HICP"
    }
   },
-  "lead": "Con 19.002 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 1000 € a 1692 € nello scenario base. Alla fine restano 552 € di liquidità nello scenario base.",
+  "lead": "Con 18.999 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 1000 € a 1692 € nello scenario base. Alla fine restano 541 € sul conto XEON nello scenario base.",
   "notes": [
-   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2030. Per coprirlo servirebbero 61 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2046. Per coprirlo servirebbero 637 € in più oggi (non è fra gli scenari da coprire per forza).",
-   "NOTA Comprare a lotti interi costa 167 € in più della scala ideale «a pezzi».",
-   "NOTA Una scala a importo fisso con lo stesso capitale paga 1356 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: 2 rate scoperte su 20, dalla 2036. Per coprirlo servirebbero 675 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 164 € in più della scala ideale «a pezzi».",
+   "NOTA Con lo stesso capitale, una scala a importo fisso (1356 € l'anno, sempre uguali) regge peggio negli scenari «Alto 3,5%», «Shock 8→5%» e meglio in «FOI +0,5% su HICP»: vedi la prova di stress.",
    "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
    "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
    "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
@@ -3006,31 +2879,32 @@
    "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
   ],
   "cap": {
-   "capV": 19002,
-   "inB": 19002,
-   "inC": 0
+   "capV": 18999,
+   "inB": 18998,
+   "inC": 1
   },
   "list": {
-   "n": 10,
-   "sumC": 19001,
+   "n": 11,
+   "sumC": 18997,
    "foot": [
     "Totale titoli",
     "",
     "",
-    "17.003",
+    "16.893",
     "",
     "",
-    "19.002"
+    "18.998"
    ]
   },
   "rateMeta": "scenario Base · € nominali",
   "rateFirst": [
    "2027",
    "1000",
-   "1045",
-   "128",
+   "940",
+   "82",
    "−6",
-   "168"
+   "1",
+   "19"
   ],
   "rateLast": [
    "2046",
@@ -3038,7 +2912,8 @@
    "0",
    "0",
    "0",
-   "552"
+   "35",
+   "541"
   ],
   "nRate": 20,
   "stress": [
@@ -3046,9 +2921,9 @@
     "Base \nDA COPRIRE",
     "1692",
     "tutte pagate",
-    "552",
+    "541",
     "—",
-    "basta"
+    "tutte pagate"
    ],
    [
     "Alto 3,5% \nDA COPRIRE",
@@ -3056,34 +2931,34 @@
     "tutte pagate",
     "0",
     "—",
-    "finisce al 2043"
+    "scoperta dalla 2043, mancano 1526 €\nREGGE PEGGIO"
    ],
    [
     "Basso 1%",
     "1327",
-    "soldi finiti al 2030",
-    "960",
-    "61",
-    "basta"
+    "tutte pagate",
+    "941",
+    "—",
+    "tutte pagate"
    ],
    [
     "Shock 8→5% \nDA COPRIRE",
     "2093",
     "tutte pagate",
-    "337",
+    "380",
     "—",
-    "finisce al 2038"
+    "scoperta dalla 2038, mancano 3302 €\nREGGE PEGGIO"
    ],
    [
     "FOI +0,5% su HICP",
     "1855",
-    "soldi finiti al 2046",
-    "−863",
-    "637",
-    "finisce al 2046"
+    "2 rate scoperte su 20, dalla 2036",
+    "−914",
+    "675",
+    "scoperta dalla 2046, mancano 131 €\nREGGE MEGLIO"
    ]
   ],
-  "secs": 5.334,
+  "secs": 5.449,
   "logs": []
  }
 }

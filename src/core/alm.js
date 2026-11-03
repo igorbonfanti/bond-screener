@@ -236,7 +236,11 @@ export function lpText(items, prep, opt) {
   // quota indicizzata sul costo dei titoli (la liquidità iniziale non conta): Σ_lk C n − m Σ C n ≥ 0
   if (opt.minLinker > 0) share(it => it.type !== 'NOM', opt.minLinker, '>=', 'linker');
   for (const [iss, cap] of Object.entries(opt.issuerCap || {})) if (cap < 1) share(it => it.b.issuer === iss, cap, '<=', `cap_${iss.replace(/\W/g, '_')}`);
-  if (opt.titleCap > 0 && opt.titleCap < 1) items.forEach((it, i) => { if (live(i)) share((jt, j) => j === i, opt.titleCap, '<=', `tcap_${i}`); });
+  // tetto per titolo: con una variabile per il costo totale dei titoli (tot) ogni riga ha due termini, non n
+  if (opt.titleCap > 0 && opt.titleCap < 1) {
+    lines.push(` tot_def:${costTerms.replace(/ \+ c0$/, '').replace(/^ \+ /, ' ')} - tot = 0`);
+    items.forEach((it, i) => { if (live(i) && it.cost > 0) lines.push(` tcap_${i}:${term(it.cost * u[i], `n${i}`, true)} - ${num(opt.titleCap)} tot <= 0`); });
+  }
   lines.push('Bounds');
   items.forEach((it, i) => {
     const fx = opt.fixed && opt.fixed[it.b.isin];

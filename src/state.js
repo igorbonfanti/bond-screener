@@ -90,6 +90,8 @@ export function loadSettings(refDay) {
       if (st[k].yearFrom <= y) st[k].yearFrom = d[k].yearFrom;
       if (st[k].yearTo < st[k].yearFrom) st[k].yearTo = st[k].yearFrom + 5;
     }
+    const ia = st.indexed && st.indexed.alm;
+    if (ia && ia.yearFrom <= y) { ia.yearFrom = d.indexed.alm.yearFrom; if (ia.yearTo < ia.yearFrom) ia.yearTo = ia.yearFrom + 5; }
     return st;
   } catch { return d; }
 }
