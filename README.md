@@ -1,4 +1,4 @@
-# Bond Ladder — v3.7.1
+# Bond Ladder — v3.8.0
 
 App web per costruire una **scala di titoli di Stato** (bond ladder) con i dati giornalieri di
 [simpletoolsforinvestors.eu](https://www.simpletoolsforinvestors.eu/documentivari.php) e la fiscalità
@@ -15,7 +15,8 @@ italiana già calcolata. Riprogettata da zero rispetto alla v2 attorno a un'unic
 
 ## Come si usa
 1. **Scheda**: `1 Capitale a scadenza`, `2 Rendita mensile`, `3 Portafoglio` (i titoli che hai già),
-   `4 Le mie scale` (le scale salvate) oppure `5 Un titolo` (cerca il singolo titolo migliore, senza scala).
+   `4 Le mie scale` (le scale salvate), `5 Un titolo` (cerca il singolo titolo migliore, senza scala) oppure
+   `6 Affitto indicizzato` (la scala che paga una spesa che cresce con l'inflazione).
 2. **Importi e scadenze**: anni della scala (o date precise con la flessibilità ammessa, "fino a N mesi prima").
    Con le scadenze annuali puoi dire **entro quale mese** ti servono i soldi (rette, affitti, tasse): ogni anno il
    titolo scade nei 12 mesi prima della fine di quel mese e contano le cedole di quei 12 mesi.
@@ -28,8 +29,8 @@ impostazione alla volta (quota per emittente, eccedenze, cedole di prima, mese d
 clic. Il pannello **Movimenti di cassa** mostra i soldi che arrivano prima che servano: entrate, prelievi, saldo e
 attesa. La proposta si salva, si stampa, si esporta in CSV e si condivide.
 
-Dalla tastiera: `1`–`5` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
-Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE`, `TIT` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
+Dalla tastiera: `1`–`6` cambiano scheda (anche ← → sulle schede), `/` porta alla barra comandi, `?` apre la guida.
+Nella barra comandi: `CAP`, `REN`, `PTF`, `SCALE`, `TIT`, `IND` per le viste, `DATI` per i dati del giorno, `CVD` per i colori per
 daltonici, `CHIARO` / `SCURO` per il tema, `HELP` per la guida, oppure un **ISIN** per trovare il titolo nella
 proposta. Le scorciatoie da un tasto si spengono dalla guida.
 
@@ -138,6 +139,29 @@ testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condi
   verifica delle soluzioni del programma lineare nella rendita): i test confrontano ogni proposta con i vincoli
   (scadenze coperte, capitale, quote, identità dei flussi) su configurazioni casuali con i dati reali.
 
+## Affitto indicizzato (passività indicizzata)
+La scala più economica che paga una spesa annua (o semestrale) che cresce con l'inflazione, dal primo all'ultimo
+anno scelto. La rata del primo anno cresce ogni anno con l'inflazione dell'anno prima (FOI o HICP) più uno spread
+reale ed è dovuta a inizio periodo.
+
+- **Strumenti**: i titoli del paniere (stessi filtri dell'app) più BTP€i (HICP) e BTP Italia (FOI), tenuti a
+  scadenza. Indicizzati esteri non gestiti. I premi fedeltà dei BTP Italia non spettano a chi compra sul secondario.
+- **Ottimizzazione**: programmazione lineare con [HiGHS](https://highs.dev) in WebAssembly (`vendor/highs/`, MIT),
+  nel Web Worker. Vincolo: dopo ogni rata la liquidità (su un ETF monetario tipo XEON, al netto di costi, 26% e
+  bollo) non va mai sotto zero in ognuno degli scenari «da coprire». Poi lotti interi (programma intero sui titoli
+  scelti, con limite di tempo). Modalità: costo minimo, affitto più alto con un capitale dato, anno più lontano.
+  Vincoli opzionali: quota minima indicizzata, tetto all'Italia, tetto per titolo.
+- **Scenari**: base (inflazione impostata), alto 3,5%, basso 1%, shock 8% → 5%, FOI = HICP + 0,5; l'€STR segue
+  l'inflazione per metà. Prova di stress e confronto con una scala a importo fisso dello stesso capitale.
+- **Fisco**: 12,5% su cedole e rivalutazioni, bollo 0,2% annuo sul valore stimato. Le regole non chiare nelle fonti
+  sono parametri `DA VERIFICARE` in `src/core/fisco-parametri.js`, mostrati nelle opzioni avanzate, con default
+  prudente. Regole e fonti: `ricerca/ladder-indicizzata/regole/`.
+- **Dati d'inflazione**: `.github/workflows/inflation-data.yml` gira ogni mattina e scrive
+  `data/inflazione/inflazione.json` con `scripts/fetch_inflation.py`: HICP senza tabacchi (Eurostat, prime
+  pubblicazioni), FOI senza tabacchi (ISTAT), €STR (BCE), indici base dei titoli (`data/inflazione/titoli.json`, dal
+  MEF) con la base dei BTP Italia fatta avanzare a ogni cedola. Lo storico è append-only. Ogni giorno i CI
+  ricalcolati sono confrontati con quelli ufficiali MEF alla 5ª decimale; l'esito compare nell'app.
+
 ## Dati: aggiornamento automatico
 Il workflow `.github/workflows/stfi-data.yml` gira ogni sera nei giorni lavorativi. Legge `documentivari.php`,
 trova il pulsante **"Dati End of Day"** (il link `…/data/export/<codice>.csv` cambia nel tempo), scarica il file,
@@ -183,8 +207,10 @@ src/data/              lettura del CSV STFI, sorgenti dati, lettura degli export
 src/core/              date, flussi e tasse, paniere, selezione (flusso/B&B), capitale, rendita, LP
 src/ui/                pannello, risultati, grafici SVG, dialoghi, le mie scale, guida
 vendor/lp-solver.mjs   javascript-lp-solver 1.0.3 (Unlicense)
+vendor/highs/          HiGHS 1.15.4 in WebAssembly (MIT), per l'affitto indicizzato
 vendor/xlsx.mjs        SheetJS Community Edition 0.20.3 (Apache 2.0), solo per leggere gli Excel
 scripts/fetch_stfi.py  download giornaliero dei dati
+scripts/fetch_inflation.py  dati d'inflazione e controllo dei CI MEF (affitto indicizzato)
 tests/                 test del motore (node --test) con un file STFI sintetico e portafogli inventati
 v2/, v1/               versioni precedenti, congelate
 ```

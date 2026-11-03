@@ -363,3 +363,11 @@ h3.lbl { margin: 2px 0 0; }
   .ph h2, .sym, a, .t th[aria-sort] { color: #000 !important; }
   .panel { break-inside: avoid; margin-bottom: 8px; }
 }
+
+/* Affitto indicizzato */
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px; align-items: start; }
+@media (max-width: 900px) { .grid-3 { grid-template-columns: minmax(0, 1fr); } }
+.pb.prose p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); max-width: 900px; }
+.pb.prose p.hl { color: var(--ink); }
+.panel > p.note { margin: 8px 10px 10px; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.ph-end .seg { display: inline-flex; flex-wrap: wrap; }
