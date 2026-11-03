@@ -1,0 +1,298 @@
+{
+ "_nota": "Regole dei titoli indicizzati italiani (fonte: MEF, ricerca/ladder-indicizzata/regole/). irBase in base 2025=100. BTP€i: Inflazione di Riferimento alla data di godimento (fissa). BTP Italia: base del semestre che inizia a baseDal; lo script la fa avanzare a ogni cedola con la regola del massimo (Italia Sì: indice alla cedola precedente). mesiCedolaDaVerificare: mesi ricavati dalla scadenza, non da un comunicato.",
+ "titoli": {
+  "IT0003745541": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.35,
+   "freq": 2,
+   "mesiCedola": [
+    3,
+    9
+   ],
+   "godimento": "2004-09-15",
+   "scadenza": "2035-09-15",
+   "irBase": 65.4231,
+   "isinMef": "IT0003745541"
+  },
+  "IT0004545890": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.55,
+   "freq": 2,
+   "mesiCedola": [
+    3,
+    9
+   ],
+   "godimento": "2009-09-15",
+   "scadenza": "2041-09-15",
+   "irBase": 71.98379,
+   "isinMef": "IT0004545890",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005138828": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 1.25,
+   "freq": 2,
+   "mesiCedola": [
+    3,
+    9
+   ],
+   "godimento": "2015-09-15",
+   "scadenza": "2032-09-15",
+   "irBase": 78.29443,
+   "isinMef": "IT0005138828"
+  },
+  "IT0005246134": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 1.3,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2016-11-15",
+   "scadenza": "2028-05-15",
+   "irBase": 78.3138,
+   "isinMef": "IT0005246134",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005387052": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 0.4,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2019-05-15",
+   "scadenza": "2030-05-15",
+   "irBase": 80.81051,
+   "isinMef": "IT0005387052",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005436701": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 0.15,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2020-11-15",
+   "scadenza": "2051-05-15",
+   "irBase": 81.56521,
+   "isinMef": "IT0005436701",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005482994": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 0.1,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2021-11-15",
+   "scadenza": "2033-05-15",
+   "irBase": 84.13387,
+   "isinMef": "IT0005482994",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005543803": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 1.5,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2023-04-26",
+   "scadenza": "2029-05-15",
+   "irBase": 94.27683,
+   "isinMef": "IT0005543803",
+   "mesiCedolaDaVerificare": true
+  },
+  "IT0005547812": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.4,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2023-05-15",
+   "scadenza": "2039-05-15",
+   "irBase": 94.778,
+   "isinMef": "IT0005547812"
+  },
+  "IT0005588881": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 1.8,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2023-11-15",
+   "scadenza": "2036-05-15",
+   "irBase": 96.67324,
+   "isinMef": "IT0005588881"
+  },
+  "IT0005647273": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.55,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2024-11-15",
+   "scadenza": "2056-05-15",
+   "irBase": 98.44725,
+   "isinMef": "IT0005647273"
+  },
+  "IT0005657348": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 1.1,
+   "freq": 2,
+   "mesiCedola": [
+    2,
+    8
+   ],
+   "godimento": "2025-06-27",
+   "scadenza": "2031-08-15",
+   "irBase": 99.9642,
+   "isinMef": "IT0005657348"
+  },
+  "IT0005706293": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.25,
+   "freq": 2,
+   "mesiCedola": [
+    2,
+    8
+   ],
+   "godimento": "2026-02-15",
+   "scadenza": "2046-02-15",
+   "irBase": 100.52804,
+   "isinMef": "IT0005706293"
+  },
+  "IT0005725160": {
+   "tipo": "BTPEI",
+   "indice": "HICP",
+   "cedolaReale": 2.0,
+   "freq": 2,
+   "mesiCedola": [
+    2,
+    8
+   ],
+   "godimento": "2026-07-30",
+   "scadenza": "2037-02-15",
+   "irBase": 103.09484,
+   "isinMef": "IT0005725160"
+  },
+  "IT0005388175": {
+   "tipo": "BTPITALIA",
+   "indice": "FOI",
+   "cedolaReale": 0.65,
+   "freq": 2,
+   "mesiCedola": [
+    4,
+    10
+   ],
+   "godimento": "2019-10-28",
+   "scadenza": "2027-10-28",
+   "irBase": 103.62258,
+   "isinMef": "IT0005388167",
+   "baseDal": "2026-10-28"
+  },
+  "IT0005497000": {
+   "tipo": "BTPITALIA",
+   "indice": "FOI",
+   "cedolaReale": 1.6,
+   "freq": 2,
+   "mesiCedola": [
+    6,
+    12
+   ],
+   "godimento": "2022-06-28",
+   "scadenza": "2030-06-28",
+   "irBase": 102.4,
+   "isinMef": "IT0005496994",
+   "baseDal": "2026-06-28"
+  },
+  "IT0005517195": {
+   "tipo": "BTPITALIA",
+   "indice": "FOI",
+   "cedolaReale": 1.6,
+   "freq": 2,
+   "mesiCedola": [
+    5,
+    11
+   ],
+   "godimento": "2022-11-22",
+   "scadenza": "2028-11-22",
+   "irBase": 101.30645,
+   "isinMef": "IT0005517187",
+   "baseDal": "2026-05-22"
+  },
+  "IT0005532723": {
+   "tipo": "BTPITALIA",
+   "indice": "FOI",
+   "cedolaReale": 2.0,
+   "freq": 2,
+   "mesiCedola": [
+    3,
+    9
+   ],
+   "godimento": "2023-03-14",
+   "scadenza": "2028-03-14",
+   "irBase": 102.93,
+   "isinMef": "IT0005532715",
+   "baseDal": "2026-09-14"
+  },
+  "IT0005648255": {
+   "tipo": "BTPITALIA",
+   "indice": "FOI",
+   "cedolaReale": 1.85,
+   "freq": 2,
+   "mesiCedola": [
+    6,
+    12
+   ],
+   "godimento": "2025-06-04",
+   "scadenza": "2032-06-04",
+   "irBase": 101.6,
+   "isinMef": "IT0005648248",
+   "baseDal": "2026-06-04"
+  },
+  "IT0005713547": {
+   "tipo": "BTPITALIA",
+   "sottotipo": "BTP_ITALIA_SI",
+   "indice": "FOI",
+   "cedolaReale": 1.6,
+   "freq": 2,
+   "mesiCedola": [
+    6,
+    12
+   ],
+   "godimento": "2026-06-23",
+   "scadenza": "2031-06-23",
+   "irBase": 102.23333,
+   "isinMef": "IT0005713539",
+   "baseDal": "2026-06-23"
+  }
+ }
+}

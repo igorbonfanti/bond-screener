@@ -1,0 +1,59 @@
+name: Dati d'inflazione giornalieri
+
+# Aggiorna data/inflazione/inflazione.json per la modalità «Affitto indicizzato»: HICP (Eurostat), FOI (ISTAT),
+# €STR (BCE) e indici base dei BTP€i / BTP Italia, con il controllo dei CI ricalcolati contro quelli ufficiali MEF.
+# Lo storico è append-only: un mese già salvato non si sovrascrive mai (fa fede la prima pubblicazione).
+on:
+  schedule:
+    - cron: '23 8 * * *'
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]          # sui branch di lavoro: solo prova a vuoto
+    paths:
+      - scripts/fetch_inflation.py
+      - .github/workflows/inflation-data.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-push
+  cancel-in-progress: false
+
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Scarica, controlla e scrivi i dati
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            python3 scripts/fetch_inflation.py --out data/inflazione
+          else
+            python3 scripts/fetch_inflation.py --out data/inflazione --dry-run
+          fi
+
+      - name: Controlli del giorno
+        run: |
+          python3 - <<'PY'
+          import json
+          c = json.load(open('data/inflazione/inflazione.json'))['controlli']
+          for e in c.get('errori', []):
+              print(f"::warning::{e}")
+          PY
+
+      - name: Pubblica i dati (solo su main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/inflazione/inflazione.json
+          if git diff --cached --quiet; then
+            echo "Nessun aggiornamento."
+            exit 0
+          fi
+          git commit -m "Dati d'inflazione del $(date -u +%F)"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 10; done
+          exit 1
