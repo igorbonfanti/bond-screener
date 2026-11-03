@@ -142,7 +142,7 @@ testo. La scelta è salvata nel browser con la chiave `antigravity-theme`, condi
 ## Affitto indicizzato (passività indicizzata)
 La scala più economica che paga una spesa annua (o semestrale) che cresce con l'inflazione, dal primo all'ultimo
 anno scelto. La rata del primo anno cresce ogni anno con l'inflazione dell'anno prima (FOI o HICP) più uno spread
-reale ed è dovuta a inizio periodo.
+reale (con inflazione negativa resta ferma) ed è dovuta a inizio periodo.
 
 - **Strumenti**: i titoli del paniere (stessi filtri dell'app) più BTP€i (HICP) e BTP Italia (FOI), tenuti a
   scadenza. Indicizzati esteri non gestiti. I premi fedeltà dei BTP Italia non spettano a chi compra sul secondario.

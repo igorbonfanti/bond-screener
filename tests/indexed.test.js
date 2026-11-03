@@ -184,3 +184,9 @@ test('Monte Carlo: senza ETF la scala vende titoli invece di fallire per pochi e
   const w0 = r.mix.wealth[0];
   assert.ok(w0.p90 - w0.p10 < 0.08 * plan.totalCost, `fascia iniziale ${w0.p10}–${w0.p90}`);
 });
+
+test('affitto: con inflazione negativa resta fermo, non scende', () => {
+  const fns = scenarioFns({ rates: { 2027: -0.01, 2028: 0.02 }, basis: 0 }, 0.02, { rates: { 2027: 0.02 } });
+  const L = liabilities({ L0: 12000, yearFrom: 2027, yearTo: 2029, realSpread: 0.005, index: 'HICP' }, fns);
+  assert.deepEqual(L.map(l => +l.amount.toFixed(2)), [12000, 12000, +(12000 * 1.025).toFixed(2)]);
+});

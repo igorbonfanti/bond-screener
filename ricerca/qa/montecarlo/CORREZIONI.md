@@ -15,5 +15,6 @@
 | M5 messaggio capitale minore | Nel pannello Monte Carlo, con i numeri formattati | |
 | M6 testi e grafici | «2.000», etichetta dell'ultimo anno, regola CSS doppia tolta | |
 
-Non corretti: M7 (affitto che scende con inflazione negativa: stessa regola della scala, da decidere con Igor), M8 (in «Quanto affitto» e «Fino a quando» il capitale complessivo è un campo separato dal capitale da investire: ora la nota lo dice).
+M7 risolto su decisione di Igor: con inflazione negativa l'affitto resta fermo (scala e Monte Carlo).
+Non corretti: M8 (in «Quanto affitto» e «Fino a quando» il capitale complessivo è un campo separato dal capitale da investire: ora la nota lo dice).
 Nota: gli script `check_walk.py` e `export.mjs` rifanno il modello di prima della correzione B1/D1: sul nuovo codice differiscono per costruzione.
