@@ -152,7 +152,7 @@
  "foi": {
   "serie": "FOI senza tabacchi",
   "base": "2025=100",
-  "fonte": "https://esploradati.istat.it/SDMXWS/rest/data/169_748_DF_DCSP_FOI1B2025_1/M.IT.101.4.00ST?startPeriod=2026-01",
+  "fonte": "https://esploradati.istat.it/SDMXWS/rest/data/169_748_DF_DCSP_FOI1B2025_1/M.IT.101.4.00ST?startPeriod=2025-01",
   "ultimo": "2026-09",
   "valori": {
    "2026-01": 100.4,

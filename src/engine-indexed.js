@@ -33,7 +33,7 @@ export function loadInflation() {
 export function prepareInflation(j) {
   const bases = {};
   for (const [isin, t] of Object.entries(j.titoli || {})) if (Number.isFinite(t.irBase)) bases[isin] = { irBase: t.irBase, indice: t.indice, tipo: t.tipo, sottotipo: t.sottotipo || null,
-    freq: t.freq || null, mesiCedola: t.mesiCedola || null, cedolaReale: t.cedolaReale };
+    freq: t.freq || null, mesiCedola: t.mesiCedola || null, cedolaReale: t.cedolaReale, baseDal: t.baseDal || null };
   return { asOf: j.aggiornato, hicp: j.hicp.valori, foi: j.foi.valori, bases, estr: j.estr ? j.estr.valore : null, meta: j,
     btpItalia: btpItaliaFlowsFor(j) };
 }

@@ -1,0 +1,333 @@
+{
+ "res": {
+  "ramo-1440-capitale": {
+   "kpis": [
+    "DA INVESTIRE OGGI | 83.572 € | per 100.000 € in 10 scadenze",
+    "RICEVI ALLE SCADENZE | 101.058 € | 2027 → 2036",
+    "RENDIMENTO NETTO | 3,77% | annuo, dai flussi netti",
+    "GUADAGNO NETTO | +17.804 € | incassi − investimento",
+    "SCADENZE COPERTE | 10 / 10 | tutte",
+    "DURATION MEDIA | 4,8 | anni · 10 titoli, 5 emittenti"
+   ],
+   "panels": [
+    "Importi e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "La tua scala",
+    "Da sapere",
+    "Scadenze e titoli",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 2043,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "ramo-1440-rendita": {
+   "kpis": [
+    "RENDITA AL MESE | 268 € | media netta, dopo le tasse",
+    "MESE PIÙ BASSO | 256 € | il più alto 285 €",
+    "RENDITA ANNUA | 3217 € | netta, solo cedole",
+    "REGOLARITÀ | 95% | mese più basso / media",
+    "RENDIMENTO NETTO | 3,59% | annuo, cedole + rimborsi",
+    "DA INVESTIRE | 99.932 € | non investiti 68 € (lotti)"
+   ],
+   "panels": [
+    "Capitale e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "Cedole nette mese per mese",
+    "Da sapere",
+    "I titoli",
+    "Rendita anno per anno",
+    "Capitale che torna",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 1421,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "ramo-1440-portafoglio": {
+   "kpis": [],
+   "panels": [
+    "Carica il portafoglio"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "ramo-1440-scale": {
+   "kpis": [],
+   "panels": [
+    "Le mie scale"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "ramo-1440-titolo": {
+   "kpis": [],
+   "panels": [
+    "Cerca un titolo",
+    "Prezzo a cui compri",
+    "Da sapere",
+    "Titoli che passano i filtri",
+    "Calendario degli incassi"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "ramo-1440-logs": [],
+  "ramo-390-capitale": {
+   "kpis": [
+    "DA INVESTIRE OGGI | 83.572 € | per 100.000 € in 10 scadenze",
+    "RICEVI ALLE SCADENZE | 101.058 € | 2027 → 2036",
+    "RENDIMENTO NETTO | 3,77% | annuo, dai flussi netti",
+    "GUADAGNO NETTO | +17.804 € | incassi − investimento",
+    "SCADENZE COPERTE | 10 / 10 | tutte",
+    "DURATION MEDIA | 4,8 | anni · 10 titoli, 5 emittenti"
+   ],
+   "panels": [
+    "Importi e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "La tua scala",
+    "Da sapere",
+    "Scadenze e titoli",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 2043,
+   "sw": 390,
+   "cw": 390
+  },
+  "ramo-390-rendita": {
+   "kpis": [
+    "RENDITA AL MESE | 268 € | media netta, dopo le tasse",
+    "MESE PIÙ BASSO | 256 € | il più alto 285 €",
+    "RENDITA ANNUA | 3217 € | netta, solo cedole",
+    "REGOLARITÀ | 95% | mese più basso / media",
+    "RENDIMENTO NETTO | 3,59% | annuo, cedole + rimborsi",
+    "DA INVESTIRE | 99.932 € | non investiti 68 € (lotti)"
+   ],
+   "panels": [
+    "Capitale e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "Cedole nette mese per mese",
+    "Da sapere",
+    "I titoli",
+    "Rendita anno per anno",
+    "Capitale che torna",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 1421,
+   "sw": 390,
+   "cw": 390
+  },
+  "ramo-390-portafoglio": {
+   "kpis": [],
+   "panels": [
+    "Carica il portafoglio"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "ramo-390-scale": {
+   "kpis": [],
+   "panels": [
+    "Le mie scale"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "ramo-390-titolo": {
+   "kpis": [],
+   "panels": [
+    "Cerca un titolo",
+    "Prezzo a cui compri",
+    "Da sapere",
+    "Titoli che passano i filtri",
+    "Calendario degli incassi"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "ramo-390-logs": [],
+  "prima-1440-capitale": {
+   "kpis": [
+    "DA INVESTIRE OGGI | 83.572 € | per 100.000 € in 10 scadenze",
+    "RICEVI ALLE SCADENZE | 101.058 € | 2027 → 2036",
+    "RENDIMENTO NETTO | 3,77% | annuo, dai flussi netti",
+    "GUADAGNO NETTO | +17.804 € | incassi − investimento",
+    "SCADENZE COPERTE | 10 / 10 | tutte",
+    "DURATION MEDIA | 4,8 | anni · 10 titoli, 5 emittenti"
+   ],
+   "panels": [
+    "Importi e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "La tua scala",
+    "Da sapere",
+    "Scadenze e titoli",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 2043,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "prima-1440-rendita": {
+   "kpis": [
+    "RENDITA AL MESE | 268 € | media netta, dopo le tasse",
+    "MESE PIÙ BASSO | 256 € | il più alto 285 €",
+    "RENDITA ANNUA | 3217 € | netta, solo cedole",
+    "REGOLARITÀ | 95% | mese più basso / media",
+    "RENDIMENTO NETTO | 3,59% | annuo, cedole + rimborsi",
+    "DA INVESTIRE | 99.932 € | non investiti 68 € (lotti)"
+   ],
+   "panels": [
+    "Capitale e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "Cedole nette mese per mese",
+    "Da sapere",
+    "I titoli",
+    "Rendita anno per anno",
+    "Capitale che torna",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 1421,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "prima-1440-portafoglio": {
+   "kpis": [],
+   "panels": [
+    "Carica il portafoglio"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "prima-1440-scale": {
+   "kpis": [],
+   "panels": [
+    "Le mie scale"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "prima-1440-titolo": {
+   "kpis": [],
+   "panels": [
+    "Cerca un titolo",
+    "Prezzo a cui compri",
+    "Da sapere",
+    "Titoli che passano i filtri",
+    "Calendario degli incassi"
+   ],
+   "settings": 0,
+   "sw": 1440,
+   "cw": 1440
+  },
+  "prima-1440-logs": [],
+  "prima-390-capitale": {
+   "kpis": [
+    "DA INVESTIRE OGGI | 83.572 € | per 100.000 € in 10 scadenze",
+    "RICEVI ALLE SCADENZE | 101.058 € | 2027 → 2036",
+    "RENDIMENTO NETTO | 3,77% | annuo, dai flussi netti",
+    "GUADAGNO NETTO | +17.804 € | incassi − investimento",
+    "SCADENZE COPERTE | 10 / 10 | tutte",
+    "DURATION MEDIA | 4,8 | anni · 10 titoli, 5 emittenti"
+   ],
+   "panels": [
+    "Importi e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "La tua scala",
+    "Da sapere",
+    "Scadenze e titoli",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 2043,
+   "sw": 390,
+   "cw": 390
+  },
+  "prima-390-rendita": {
+   "kpis": [
+    "RENDITA AL MESE | 268 € | media netta, dopo le tasse",
+    "MESE PIÙ BASSO | 256 € | il più alto 285 €",
+    "RENDITA ANNUA | 3217 € | netta, solo cedole",
+    "REGOLARITÀ | 95% | mese più basso / media",
+    "RENDIMENTO NETTO | 3,59% | annuo, cedole + rimborsi",
+    "DA INVESTIRE | 99.932 € | non investiti 68 € (lotti)"
+   ],
+   "panels": [
+    "Capitale e scadenze",
+    "Titoli ammessi",
+    "Opzioni avanzate",
+    "Cedole nette mese per mese",
+    "Da sapere",
+    "I titoli",
+    "Rendita anno per anno",
+    "Capitale che torna",
+    "Mappa dei rendimenti",
+    "Calendario degli incassi",
+    "Lista d'acquisto"
+   ],
+   "settings": 1421,
+   "sw": 390,
+   "cw": 390
+  },
+  "prima-390-portafoglio": {
+   "kpis": [],
+   "panels": [
+    "Carica il portafoglio"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "prima-390-scale": {
+   "kpis": [],
+   "panels": [
+    "Le mie scale"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "prima-390-titolo": {
+   "kpis": [],
+   "panels": [
+    "Cerca un titolo",
+    "Prezzo a cui compri",
+    "Da sapere",
+    "Titoli che passano i filtri",
+    "Calendario degli incassi"
+   ],
+   "settings": 0,
+   "sw": 390,
+   "cw": 390
+  },
+  "prima-390-logs": []
+ },
+ "diff": []
+}

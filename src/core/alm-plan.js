@@ -1,7 +1,7 @@
 /* Regia della modalità «Passività indicizzata»: scenari, universo, ottimizzazione nelle tre modalità, lotti,
    simulazione di tutti gli scenari e indicatori per l'interfaccia. Il solver (HiGHS) viene passato da fuori:
    nel Web Worker la build WebAssembly, nei test la stessa build caricata da Node. */
-import { day, parts, years } from './dates.js';
+import { day, parts, years, fmt as fmtDay } from './dates.js';
 import { xirr } from './bond.js';
 import { series } from './indice.js';
 import { FISCO_DEFAULT } from './fisco-parametri.js';
@@ -72,12 +72,34 @@ export function planIndexed(ds, bonds, cfg0, infl, highs) {
     const prep = prepare(items, ctx, c);
     return { c, items, skipped, prep };
   };
-  const optFor = (extra = {}) => ({ mode: 'mincost', robust: cfg.robust, minLinker: cfg.minLinker, issuerCap: cfg.issuerCaps,
+  // senza indicizzati nel paniere la quota minima renderebbe impossibile comprare titoli: non si applica (e si dice)
+  const noLinkers = !bonds.some(b => b.inflation);
+  const optFor = (extra = {}) => ({ mode: 'mincost', robust: cfg.robust, minLinker: noLinkers ? 0 : cfg.minLinker, issuerCap: cfg.issuerCaps,
     titleCap: cfg.titleCap, fixed: cfg.fixedLots, ...extra });
   // il programma intero ha un limite di tempo: oltre, si tiene la migliore soluzione a lotti trovata
   const solve = (m, opt) => solveWith(highs, lpText(m.items, m.prep, opt), m.items.length, opt.ints ? { time_limit: cfg.mipSeconds || 4 } : {});
 
-  let m, sol, relaxed = null, horizon = cfg.yearTo, note = [];
+  // la prima rata deve venire dopo la data di regolamento dei prezzi
+  if (day(cfg.yearFrom, 1, 1) <= settle)
+    return { empty: true, cfg, warnings: [`La prima rata (1/1/${cfg.yearFrom}) non è dopo la data di regolamento dei prezzi (${fmtDay(settle)}): scegli come primo anno il ${parts(settle).y + 1} o dopo.`] };
+
+  // Lotti: programma intero sui titoli (stessi vincoli, e il capitale come tetto quando c'è). Gira prima sui titoli
+  // scelti dal rilassamento (pochi: veloce e, di fatto, lo stesso ottimo), poi su tutti; altrimenti per eccesso.
+  const lots = (m, relaxed, intOpt, cap) => {
+    const notes = [];
+    const support = new Set([...relaxed.n.keys()].filter(i => relaxed.n[i] > 1e-7));
+    let sol = support.size ? solve(m, { ...intOpt, only: support }) : { status: 'none' };
+    if (sol.status !== 'Optimal') sol = solve(m, intOpt);
+    if (sol.status === 'Optimal' && sol.timed) notes.push(`Lotti interi: il solver si è fermato al limite di tempo; la soluzione rispetta i vincoli ed è entro ${fmtGap(sol, relaxed)} dalla scala ideale «a pezzi».`);
+    if (sol.status !== 'Optimal') {
+      sol = { ...relaxed, n: relaxed.n.map(v => Math.ceil(v - 1e-9)) };
+      notes.push('Lotti arrotondati per eccesso: il programma intero non ha chiuso.');
+    }
+    const cost = m.items.reduce((acc, it, i) => acc + sol.n[i] * it.b.lot / 100 * it.cost, 0) + sol.c0;
+    return cap != null && cost > cap + 0.01 ? null : { sol, notes };
+  };
+
+  let m, relaxed = null, horizon = cfg.yearTo, lotted = null;
   if (cfg.mode === 'maxhorizon') {
     // ricerca binaria sull'ultimo anno coperto con il capitale dato (costo minimo, rilassato)
     const fits = T => { const mm = run(T); const s = solve(mm, optFor()); return s.status === 'Optimal' && s.obj <= cfg.budget + 0.01 ? { mm, s } : null; };
@@ -87,29 +109,30 @@ export function planIndexed(ds, bonds, cfg0, infl, highs) {
     else {
       while (hi - lo > 1) { const mid = (lo + hi) >> 1; const r = fits(mid); if (r) { lo = mid; best = r; } else hi = mid; }
     }
-    if (!best) return { empty: true, cfg, warnings: [`Con ${cfg.budget} € non si copre nemmeno il ${cfg.yearFrom}.`] };
+    // a lotti interi il capitale può non bastare più per l'ultimo anno trovato: si scende di un anno alla volta
+    while (best) {
+      lotted = lots(best.mm, best.s, optFor({ ints: true, cap: cfg.budget }), cfg.budget);
+      if (lotted) break;
+      lo -= 1;
+      best = lo >= cfg.yearFrom ? fits(lo) : null;
+    }
+    if (!best) return { empty: true, cfg, warnings: [`Con ${fmtEur0(cfg.budget)} non si copre nemmeno la rata del ${cfg.yearFrom}.`] };
     horizon = lo; m = best.mm; relaxed = best.s;
   } else {
     m = run(cfg.yearTo);
     relaxed = solve(m, cfg.mode === 'maxscale' ? optFor({ mode: 'maxscale', budget: cfg.budget }) : optFor());
     if (relaxed.status !== 'Optimal') return { empty: true, cfg, skipped: m.skipped, status: relaxed.status,
       warnings: [infeasibleText(relaxed.status, cfg)] };
+    lotted = lots(m, relaxed, cfg.mode === 'maxscale' ? optFor({ mode: 'maxscale', budget: cfg.budget, ints: true }) : optFor({ ints: true }), null);
   }
-
-  // Lotti: programma intero sui titoli (stessi vincoli). Se il solver non chiude, arrotondamento per eccesso.
-  const intOpt = cfg.mode === 'maxscale' ? optFor({ mode: 'maxscale', budget: cfg.budget, ints: true }) : optFor({ ints: true });
-  // il programma intero gira sui titoli scelti dal rilassamento (pochi): veloce e, di fatto, lo stesso ottimo
-  const support = new Set([...relaxed.n.keys()].filter(i => relaxed.n[i] > 1e-7));
-  sol = support.size ? solve(m, { ...intOpt, only: support }) : { status: 'none' };
-  if (sol.status !== 'Optimal') sol = solve(m, intOpt);
-  if (sol.status === 'Optimal' && sol.timed) note.push(`Lotti interi: il solver si è fermato al limite di tempo; la soluzione rispetta i vincoli ed è entro ${fmtGap(sol, relaxed)} dalla scala ideale «a pezzi».`);
-  if (sol.status !== 'Optimal') {
-    sol = { ...relaxed, n: relaxed.n.map(v => Math.ceil(v - 1e-9)) };
-    note.push('Lotti arrotondati per eccesso: il programma intero non ha chiuso.');
-  }
+  const sol = lotted.sol, note = lotted.notes;
+  if (cfg.minLinker > 0 && !m.items.some(it => it.type !== 'NOM'))
+    note.push('Nel paniere non ci sono titoli indicizzati (controlla rating ed emittenti): la quota minima indicizzata non si applica.');
   const lam = cfg.mode === 'maxscale' ? sol.lam : 1;
   return report(ds, cfg, m, sol, relaxed, lam, horizon, scen, note);
 }
+
+const fmtEur0 = v => `${Math.round(v).toLocaleString('it-IT')} €`;
 
 function fmtGap(sol, relaxed) {
   const g = Math.abs(sol.obj - relaxed.obj) / Math.max(1, Math.abs(relaxed.obj));

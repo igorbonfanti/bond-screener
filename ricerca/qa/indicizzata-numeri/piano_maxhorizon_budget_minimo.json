@@ -1,0 +1,10 @@
+{
+ "tag": "maxhorizon_budget_minimo",
+ "secs": 1.082,
+ "empty": true,
+ "warnings": [
+  "Con 1000 € non si copre nemmeno la rata del 2027."
+ ],
+ "basketCount": 737,
+ "settle": "2026-11-04"
+}

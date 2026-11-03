@@ -12,6 +12,7 @@
    Fisco: 12,5% su cedole e rivalutazioni quando vengono pagate (certo). Il resto è nei parametri DA VERIFICARE di
    fisco-parametri.js. */
 import { couponDates, accrued } from './bond.js';
+import { t6r5 } from './indice.js';
 
 /** Dal JSON dei dati d'inflazione: le funzioni per i BTP Italia, o null se mancano le basi. */
 export function btpItaliaFlowsFor(j) {
@@ -54,11 +55,11 @@ export function btpItaliaFlows(b, settle, ci, ciSettle, f, info) {
   for (const c of couponDates(b, settle, b.maturity)) {
     const ni = NI(c);
     if (isSi(info)) {
-      const g = b.coupon / b.freq + 100 * Math.max(0, ni / base - 1);
+      const g = b.coupon / b.freq + 100 * Math.max(0, t6r5(ni / base) - 1);
       out.push({ day: c, kind: 'coupon', net: g * (1 - t) });
       base = ni;                                            // nessuna regola del massimo
     } else {
-      const k = ni / base;
+      const k = t6r5(ni / base);                          // CI del semestre: troncato alla 6ª, arrotondato alla 5ª
       out.push({ day: c, kind: 'coupon', net: b.coupon / b.freq * Math.max(k, 1) * (1 - t) });
       const riv = 100 * Math.max(k - 1, 0);
       if (riv > 0) out.push({ day: c, kind: 'rivalutazione', net: riv * (1 - t) });

@@ -80,10 +80,11 @@ test('BTP Italia: rivalutazione semestrale con la regola del massimo; Italia Sì
   const f = FISCO_DEFAULT;
   const riv = btpItaliaFlows(b, settle, ci, 1, f, { irBase: 100 }).filter(x => x.kind === 'rivalutazione').map(x => +(x.net / 0.875).toFixed(6));
   // 2% · niente (deflazione) · 103/102 − 1 · 104/103 − 1: si riparte sopra il massimo (102), senza recupero
-  assert.deepEqual(riv, [2, +(100 * (103 / 102 - 1)).toFixed(6), +(100 * (104 / 103 - 1)).toFixed(6)]);
+  const r5 = x => t6r5(x);   // CI del semestre troncato alla 6ª e arrotondato alla 5ª
+  assert.deepEqual(riv, [2, +(100 * (r5(103 / 102) - 1)).toFixed(6), +(100 * (r5(104 / 103) - 1)).toFixed(6)]);
   const si = btpItaliaFlows(b, settle, ci, 1, f, { irBase: 100, sottotipo: 'BTP_ITALIA_SI' }).filter(x => x.kind === 'coupon').map(x => +(x.net / 0.875).toFixed(6));
   // cedola fissa 1 + inflazione del semestre dalla cedola precedente (dopo la deflazione la risalita si paga tutta)
-  assert.deepEqual(si, [3, 1, +(1 + 100 * (103 / 101 - 1)).toFixed(6), +(1 + 100 * (104 / 103 - 1)).toFixed(6)]);
+  assert.deepEqual(si, [3, 1, +(1 + 100 * (r5(103 / 101) - 1)).toFixed(6), +(1 + 100 * (r5(104 / 103) - 1)).toFixed(6)]);
 });
 
 test('affitto: cresce con l\'inflazione dell\'anno prima più lo spread, rata a inizio periodo', () => {

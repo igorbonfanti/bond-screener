@@ -252,13 +252,16 @@ def main():
     # continuità della base 2025: la media 2025 delle due serie deve essere 100 (± arrotondamenti)
     for name, s in (("hicp", hicp), ("foi", foi)):
         y25 = [s[k] for k in s if k.startswith("2025-")]
-        if len(y25) == 12:
+        if len(y25) < 12:
+            controls[f"{name}_media_2025"] = "non verificabile: la fonte non ha i 12 mesi del 2025 in base 2025"
+        else:
             mean = sum(y25) / 12
             controls[f"{name}_media_2025"] = round(mean, 4)
             if abs(mean - 100) > 0.06:
                 errors.append(f"{name}: media 2025 = {mean:.3f}, non 100: base cambiata?")
 
     titoli = roll_bases(cfg["titoli"], foi, today)
+    errors += [f"{k}: {v['avviso']}" for k, v in titoli.items() if v.get("avviso")]
     if not a.no_mef:
         try:
             rows = check_ci(titoli, hicp, foi, fetch_mef_ci(today), today)

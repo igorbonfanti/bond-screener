@@ -35,7 +35,8 @@ export function scenarioFns(sc, estrBase, baseScenario) {
  * cfg: { L0, yearFrom, yearTo, schedule: 'yearly'|'semester', realSpread, index: 'FOI'|'HICP', flat: importo fisso }
  */
 export function liabilities(cfg, fns) {
-  const { L0, yearFrom, yearTo, schedule = 'yearly', realSpread = 0.005, index = 'FOI' } = cfg;
+  const { L0, yearFrom, yearTo, schedule = 'yearly', realSpread = 0.005 } = cfg;
+  const index = cfg.index || cfg.liabIndex || 'FOI';     // nelle impostazioni si chiama liabIndex
   const pi = index === 'HICP' ? fns.hicp : fns.foi;
   const out = [];
   let L = L0;

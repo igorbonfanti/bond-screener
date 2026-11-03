@@ -12,7 +12,7 @@
    con la simulazione esatta di cassa (simulate). */
 import { day, parts, years } from './dates.js';
 import { cashflows, couponDates, accrued } from './bond.js';
-import { series, refIndexRaw, indexRatio } from './indice.js';
+import { series, refIndex, refIndexRaw, indexRatio } from './indice.js';
 import { FISCO_DEFAULT, xeonNet } from './fisco-parametri.js';
 import { scenarioFns, liabilities } from './passivita.js';
 
@@ -43,6 +43,15 @@ export function growthFor(estr, f) {
 }
 
 /* ---------------- flussi per titolo e scenario ---------------- */
+
+const parseIso = s => { const [y, m, d] = s.split('-').map(Number); return day(y, m, d); };
+
+/** BTP Italia classico: CI del semestre in corso (la rivalutazione si paga a ogni cedola, poi si riparte da circa 1),
+    per il valore di mercato su cui si calcola il bollo. */
+function semesterCi(b, ci, dn) {
+  const prev = couponDates(b, dn - 200, dn).pop();
+  return prev ? Math.max(0.9, ci(dn) / Math.max(1e-9, ci(prev))) : ci(dn);
+}
 
 /** Prezzo di mercato stimato (per il bollo), per 100 nominale e in termini reali: da quello di oggi a 100 in linea retta. */
 function realPriceAt(b, settle, dn) {
@@ -84,13 +93,26 @@ export function buildInstruments(bonds, ctx) {
       continue;
     }
     if (type === 'ALTRO') { skipped.push({ b, why: 'indicizzato estero: regole non gestite' }); continue; }
-    const info = ctx.bases && ctx.bases[b.isin];
+    let info = ctx.bases && ctx.bases[b.isin];
     if (!info || !Number.isFinite(info.irBase)) { skipped.push({ b, why: 'manca l\'indice base del titolo (CI ufficiale non disponibile)' }); continue; }
     if (type === 'BTPITALIA' && !ctx.btpItalia) { skipped.push({ b, why: 'regole BTP Italia non ancora caricate' }); continue; }
     const index = type === 'BTPEI' ? 'HICP' : 'FOI';
     // calendario e cedola reale dalle regole MEF quando il file STFI non li ha (p. es. un titolo appena emesso)
     const bb = info.freq && info.mesiCedola && (!b.freq || !b.months || !b.months.length)
       ? { ...b, freq: info.freq, months: info.mesiCedola, zc: false, coupon: Number.isFinite(info.cedolaReale) ? info.cedolaReale : b.coupon } : b;
+    // BTP Italia: la base del file vale dal giorno baseDal; se fra quel giorno e il regolamento c'è stata una cedola, la
+    // base va fatta avanzare qui (regola del massimo; Italia Sì: indice di quella cedola). Se il regolamento viene
+    // prima di baseDal (prezzi più vecchi dei dati d'inflazione) la base del semestre dei prezzi non c'è: si esclude.
+    if (type === 'BTPITALIA' && info.baseDal) {
+      const from = parseIso(info.baseDal);
+      if (settle < from) { skipped.push({ b, why: 'i prezzi sono più vecchi dei dati d\'inflazione (base del semestre non disponibile)' }); continue; }
+      let base = info.irBase;
+      for (const c of couponDates(bb, from, settle)) {
+        const ni = refIndex(scen[0].series.FOI, c);
+        base = info.sottotipo === 'BTP_ITALIA_SI' ? ni : Math.max(base, ni);
+      }
+      if (base !== info.irBase) info = { ...info, irBase: base };
+    }
     const flows = {};
     let cost = null, ciSettle = null;
     for (const s of scen) {
@@ -107,7 +129,7 @@ export function buildInstruments(bonds, ctx) {
       }
       flows[s.id] = type === 'BTPEI' ? btpEiFlows(bb, settle, ci, ciSettle, f)
         : ctx.btpItalia.flows(bb, settle, ci, ciSettle, f, info)
-          .concat(bolloFlows(bb, settle, f, dn => realPriceAt(bb, settle, dn) * (info.sottotipo === 'BTP_ITALIA_SI' ? 1 : ci(dn))));
+          .concat(bolloFlows(bb, settle, f, dn => realPriceAt(bb, settle, dn) * (info.sottotipo === 'BTP_ITALIA_SI' ? 1 : semesterCi(bb, ci, dn))));
     }
     items.push({ b, type, index, cost, ciSettle, flows, sottotipo: info.sottotipo || null });
   }
@@ -205,6 +227,7 @@ export function lpText(items, prep, opt) {
     });
   }
   if (opt.mode === 'maxscale') lines.push(` budget:${costTerms.replace(/^ \+ /, ' ')} <= ${num(opt.budget)}`);
+  else if (opt.cap != null) lines.push(` budget:${costTerms.replace(/^ \+ /, ' ')} <= ${num(opt.cap)}`);
   const share = (pick, m, sense, name) => {
     let row = '';
     items.forEach((it, i) => { if (live(i)) row += term(it.cost * u[i] * ((pick(it, i) ? 1 : 0) - m), `n${i}`, row === ''); });
