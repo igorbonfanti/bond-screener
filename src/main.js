@@ -18,7 +18,7 @@ import { openHelp, shortcutsOn } from './ui/help.js';
 import { saveLadder, cloudReady, currentUser, openLogin } from './cloud.js';
 import { fmt, iso, parseDay, day, parts, weekday } from './core/dates.js';
 
-const VERSION = '3.7.1';
+const VERSION = '3.8.0';
 const INTRO_KEY = 'bondladder.intro';
 const CVD_KEY = 'bondladder.cvd';
 const THEME_KEY = 'antigravity-theme';   // chiave condivisa con le altre app del sito: 'dark' | 'light'
@@ -184,6 +184,7 @@ function computeAsync(st) {
       app.worker.postMessage({ type: 'compute', id, settings: input });
     });
   }
+  if (input.goal === 'indexed') return import('./engine-indexed.js').then(m => m.computeIndexed(app.ds, input));   // ripiego senza worker
   return new Promise(resolve => setTimeout(() => resolve(compute(app.ds, input)), 0));   // ripiego senza worker
 }
 
@@ -198,7 +199,15 @@ async function runCompute() {
     if (seq !== computeSeq) return;             // arrivato un calcolo più recente
     app.result = r;
     renderBuildResults();
-  } catch (e) { toast('Errore di calcolo: ' + e.message, 'err'); }
+  } catch (e) {
+    toast('Errore di calcolo: ' + e.message, 'err');
+    // i risultati di prima non valgono per le impostazioni nuove: al loro posto il motivo
+    if (seq === computeSeq && res) {
+      app.result = null;
+      res.replaceChildren(h('section', { class: 'panel' }, h('div', { class: 'ph' }, h('h2', { text: 'Nessun risultato' })),
+        h('div', { class: 'pb' }, h('p', { class: 'lead', text: `Il calcolo non è riuscito: ${e.message}.` }))));
+    }
+  }
   finally { if (seq === computeSeq && res) { res.classList.remove('busy'); res.removeAttribute('aria-busy'); } }
 }
 const scheduleCompute = debounce(runCompute, 160);
@@ -209,7 +218,7 @@ function settingsChanged() {
 }
 
 /* ---------------- Schede e indirizzi ---------------- */
-const TABS = { capital: '#/capitale', income: '#/rendita', portfolio: '#/portafoglio', saved: '#/scale', finder: '#/titolo' };
+const TABS = { capital: '#/capitale', income: '#/rendita', portfolio: '#/portafoglio', saved: '#/scale', finder: '#/titolo', indexed: '#/indicizzata' };
 
 function currentRoute() {
   const hsh = location.hash || '#/';
@@ -221,6 +230,7 @@ function currentRoute() {
   if (hsh.startsWith('#/portafoglio')) return { name: 'portfolio' };
   if (hsh.startsWith('#/rendita')) return { name: 'build', goal: 'income' };
   if (hsh.startsWith('#/capitale')) return { name: 'build', goal: 'capital' };
+  if (hsh.startsWith('#/indicizzata')) return { name: 'build', goal: 'indexed' };
   return { name: 'build', goal: null };
 }
 
@@ -247,7 +257,7 @@ function route() {
       const st = JSON.parse(decodeURIComponent(escape(atob(r.data.replace(/-/g, '+').replace(/_/g, '/')))));
       if (st && st.goal) { app.st = { ...(app.st || {}), ...st }; saveSettings(app.st); toast('Configurazione condivisa caricata', 'ok'); }
     } catch { toast('Link non valido', 'err'); }
-    history.replaceState(null, '', TABS[app.st && app.st.goal === 'income' ? 'income' : 'capital']);
+    history.replaceState(null, '', TABS[app.st && ['income', 'indexed'].includes(app.st.goal) ? app.st.goal : 'capital']);
     return route();
   }
   if (r.name === 'portfolio') {
@@ -284,7 +294,7 @@ function route() {
     else renderSavedDetail(box, { id: r.id, ds: app.ds, onBack: () => { location.hash = TABS.saved; }, onRebuild: rebuildFrom });
     return;
   }
-  const goal = r.goal || (app.st && app.st.goal === 'income' ? 'income' : 'capital');
+  const goal = r.goal || (app.st && (app.st.goal === 'income' || app.st.goal === 'indexed') ? app.st.goal : 'capital');
   if (!r.goal) history.replaceState(null, '', TABS[goal]);
   selectTab(goal);
   if (!app.ds) { view.replaceChildren(app.booting ? h('p', { class: 'loading note', text: 'Caricamento dei dati…' }) : noDataView()); return; }
@@ -579,6 +589,7 @@ function showBar(on) {
 function updateMobileBar() {
   if (!app.result || !app.result.plan) return;
   const p = app.result.plan;
+  if (p.mode === 'indexed') { $('#mbMain').textContent = p.empty ? 'Nessuna proposta' : `${fmtEur(p.totalCost)} di scala`; $('#mbSub').textContent = p.empty ? '' : `coperto fino al ${p.horizon}`; return; }
   const main = p.mode === 'capital' ? `${fmtEur(p.totalCost)} ${p.holdings ? 'da comprare' : 'da investire'}` : p.empty ? 'Nessuna proposta' : `${fmtEur(p.annual / 12)} al mese`;
   const covered = p.mode === 'capital' ? p.targets.filter(t => (t.bond && t.nominal > 0) || t.available + 0.5 >= t.amount).length : 0;
   const sub = p.mode === 'capital' ? `netto ${fmtPct((p.holdings ? p.irrAll : p.irr) * 100)} · ${covered}/${p.targets.length} scadenze` : p.empty ? '' : `netto ${fmtPct((p.holdings ? p.irrAll : p.irr) * 100)} · ${p.coveredMonths}/12 mesi`;
@@ -721,7 +732,7 @@ function openDataDialog() {
 
 /* ---------------- Barra comandi ---------------- */
 const NARROW = matchMedia('(max-width: 600px)');   // sul telefono il segnaposto intero non ci sta
-const cmdHint = () => NARROW.matches ? 'CAP, REN, PTF, TIT, HELP' : 'Comando: CAP, REN, PTF, SCALE, TIT, DATI, un ISIN, HELP · poi Invio';
+const cmdHint = () => NARROW.matches ? 'CAP, REN, PTF, TIT, HELP' : 'Comando: CAP, REN, PTF, SCALE, TIT, IND, DATI, un ISIN, HELP · poi Invio';
 let cmdTimer = 0;
 /** Comando non riconosciuto: messaggio nel segnaposto, in rosso, per 4 secondi (e letto dai lettori di schermo). */
 function cmdError(msg, short) {
@@ -754,7 +765,7 @@ function findIsin(isin) {
 
 const VIEW_CMDS = { 1: 'capital', CAP: 'capital', CAPITALE: 'capital', 2: 'income', REN: 'income', RENDITA: 'income',
   3: 'portfolio', PTF: 'portfolio', PORT: 'portfolio', PORTAFOGLIO: 'portfolio', 4: 'saved', SCALE: 'saved', SCALA: 'saved', SALVATE: 'saved',
-  5: 'finder', TIT: 'finder', TITOLO: 'finder', CERCA: 'finder', BOND: 'finder' };
+  5: 'finder', TIT: 'finder', TITOLO: 'finder', CERCA: 'finder', BOND: 'finder', 6: 'indexed', IND: 'indexed', AFFITTO: 'indexed' };
 function runCommand(raw) {
   const text = String(raw || '').trim();
   const q = text.toUpperCase().replace(/\s+/g, ' ');
@@ -828,9 +839,9 @@ function wireKeys() {
     if (document.querySelector('dialog[open]')) return;
     const tg = e.target;
     if (tg && tg.closest && tg.closest('input, textarea, select, [contenteditable="true"], #accessoForm')) return;
-    if (e.key >= '1' && e.key <= '5') {
+    if (e.key >= '1' && e.key <= '6') {
       e.preventDefault();
-      const v = ['capital', 'income', 'portfolio', 'saved', 'finder'][+e.key - 1];
+      const v = ['capital', 'income', 'portfolio', 'saved', 'finder', 'indexed'][+e.key - 1];
       go(v);
       $('#tab-' + v).focus({ preventScroll: true });
     } else if (e.key === '/') { e.preventDefault(); $('#cmdInput').focus(); }

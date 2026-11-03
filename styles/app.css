@@ -171,6 +171,8 @@ textarea.input { resize: vertical; min-height: 64px; font: 12.5px/1.45 var(--f-m
 .chart .s1 { fill: var(--ink); }
 .chart .s2 { fill: var(--chart-trail); }
 .chart .s3 { fill: var(--chart-line); }
+.chart .s-unpaid { fill: transparent; stroke: var(--ink-3); stroke-dasharray: 3 2; }
+.legend .kb.unpaid { border: 1px dashed var(--ink-3); background: transparent; }
 .chart .s4 { fill: var(--amber-fill); }                 /* la parte pagata dai titoli che hai già */
 .t .held-list { display: block; margin-top: 2px; }
 .t .held-list .mine { font: 600 9.5px var(--f-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber); }
@@ -363,3 +365,14 @@ h3.lbl { margin: 2px 0 0; }
   .ph h2, .sym, a, .t th[aria-sort] { color: #000 !important; }
   .panel { break-inside: avoid; margin-bottom: 8px; }
 }
+
+/* Affitto indicizzato */
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px; align-items: start; }
+@media (max-width: 900px) { .grid-3 { grid-template-columns: minmax(0, 1fr); } }
+.pb.prose p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); max-width: 900px; }
+.pb.prose p.hl { color: var(--ink); }
+.panel > p.note { margin: 8px 10px 10px; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.ph-end .seg { display: inline-flex; flex-wrap: wrap; }
+.infl3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.infl3 .infl1 { display: grid; gap: 4px; min-width: 0; }
+.infl3 .sep { font: 11px var(--f-mono); color: var(--ink-3); text-transform: uppercase; }

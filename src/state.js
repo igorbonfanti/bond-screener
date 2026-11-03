@@ -40,6 +40,28 @@ export function defaults(refDay) {
       includeInflation: false,
       includeStepUp: true
     },
+    indexed: {                                    // «Passività indicizzata»: paniere proprio (indicizzati inclusi) e parametri
+      basket: {
+        groups: { euro: true, extra: false, sov: true },
+        excluded: [], excludedIsins: [],
+        minRating: 'BBB-',
+        belowPar: false, maxPrice: null,
+        minLiquidity: 1,
+        issuerCap: 1,
+        zainetto: false,
+        includeInflation: true,
+        includeStepUp: true
+      },
+      alm: {
+        mode: 'mincost', budget: 300000,
+        L0: 15000, yearFrom: y + 1, yearTo: y + 20, schedule: 'yearly', realSpread: 0.005, liabIndex: 'FOI',
+        inflBase: { [y + 1]: 0.026, [y + 2]: 0.021, [y + 3]: 0.023 },
+        scenarios: ['base', 'alto', 'basso', 'shock', 'basis'], robust: ['base', 'alto', 'shock'],   // scenari da coprire per forza
+        estr: null,                               // null = l'ultimo valore pubblicato (data/inflazione)
+        minLinker: 0, issuerCaps: {}, titleCap: 0,
+        fisco: { rivalutazioneBtpEi: 'scadenza', baseImponibileBtpEi: 'emissione', rateoRivalutazioneBtpItalia: 'nessuno' }
+      }
+    },
     fixed: {},                                    // etichetta gradino → ISIN scelto a mano (solo capitale)
     usePortfolio: true,                           // con un portafoglio caricato: costruisci attorno ai titoli posseduti
     portfolioPref: 'balanced',                    // 'mine' | 'balanced' | 'yield': preferenza per i titoli già posseduti
@@ -68,6 +90,8 @@ export function loadSettings(refDay) {
       if (st[k].yearFrom <= y) st[k].yearFrom = d[k].yearFrom;
       if (st[k].yearTo < st[k].yearFrom) st[k].yearTo = st[k].yearFrom + 5;
     }
+    const ia = st.indexed && st.indexed.alm;
+    if (ia && ia.yearFrom <= y) { ia.yearFrom = d.indexed.alm.yearFrom; if (ia.yearTo < ia.yearFrom) ia.yearTo = ia.yearFrom + 5; }
     return st;
   } catch { return d; }
 }

@@ -18,4 +18,4 @@ jobs:
       - name: Controllo sintassi dei moduli e dello script dati
         run: |
           for f in src/*.js src/*/*.js sw.js; do node --check "$f"; done
-          python3 -m py_compile scripts/fetch_stfi.py
+          python3 -m py_compile scripts/fetch_stfi.py scripts/fetch_inflation.py

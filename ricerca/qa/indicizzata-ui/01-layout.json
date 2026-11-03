@@ -1,0 +1,630 @@
+{
+ "desk1440-dark": {
+  "scrollW": 1440,
+  "clientW": 1440,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [],
+  "overlaps": [],
+  "phHeight": 61,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 1048,
+    "cw": 1048
+   }
+  ],
+  "secs": 5.555,
+  "logs": []
+ },
+ "desk1280-dark": {
+  "scrollW": 1280,
+  "clientW": 1280,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [],
+  "overlaps": [],
+  "phHeight": 94,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 918,
+    "cw": 918
+   }
+  ],
+  "secs": 5.177,
+  "logs": []
+ },
+ "tel390-dark": {
+  "scrollW": 390,
+  "clientW": 390,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [
+   "INPUT[xl0] 326×30 «15.000»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xfrom] 86×27 «2027»",
+   "BUTTON 30×27 «+»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xto] 86×27 «2046»",
+   "BUTTON 30×27 «+»",
+   "BUTTON[xsched:yearly] 162×30 «Annuali»",
+   "BUTTON[xsched:semester] 163×30 «Semestrali»",
+   "BUTTON[xidx:FOI] 162×30 «FOI (ISTAT)»",
+   "BUTTON[xidx:HICP] 163×30 «HICP area euro»",
+   "INPUT[xspread] 326×30 «0,50»",
+   "INPUT[xi1] 200×30 «2,60»",
+   "INPUT[xi2] 55×30 «2,10»",
+   "INPUT[xi3] 55×30 «2,30»",
+   "BUTTON[rob:base] 46×23 «Base»",
+   "BUTTON[rob:alto] 80×23 «Alto 3,5%»",
+   "BUTTON[rob:basso] 73×23 «Basso 1%»",
+   "BUTTON[rob:shock] 87×23 «Shock 8→5%»",
+   "BUTTON[rob:basis] 80×23 «FOI +0,5%»",
+   "INPUT[xestr] 326×30 «2,40»",
+   "INPUT[xmin] 326×30 «0»",
+   "INPUT[xcapit] 326×30 «100»",
+   "INPUT[xtcap] 326×30 «100»",
+   "BUTTON[area:euro] 122×23 «Stati area euro»",
+   "BUTTON[area:sov] 115×23 «Sovranazionali»",
+   "BUTTON[area:extra] 149×23 «Altri Stati in euro»",
+   "BUTTON[rating:AA-] 80×30 «≥ AA-»",
+   "BUTTON[rating:A-] 81×30 «≥ A-»",
+   "BUTTON[rating:BBB+] 81×30 «≥ BBB+»",
+   "BUTTON[rating:BBB-] 81×30 «≥ BBB-»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:GOV_DE] 118×23 «DEGermaniaAAA»",
+   "BUTTON[iss:GOV_NL] 138×23 «NLPaesi BassiAAA»",
+   "BUTTON[iss:GOV_AT] 111×23 «ATAustriaAA+»",
+   "BUTTON[iss:GOV_FI] 125×23 «FIFinlandiaAA+»",
+   "BUTTON[iss:GOV_IE] 111×23 «IEIrlandaAA+»",
+   "BUTTON[iss:GOV_SI] 111×23 «SISloveniaAA»",
+   "BUTTON[iss:GOV_BE] 104×23 «BEBelgioAA-»",
+   "BUTTON[iss:GOV_ES] 97×23 «ESSpagnaA+»",
+   "BUTTON[iss:GOV_FR] 104×23 «FRFranciaA+»",
+   "BUTTON[iss:GOV_PT] 125×23 «PTPortogalloA+»",
+   "BUTTON[iss:GOV_EE] 104×23 «EEEstoniaA+»",
+   "BUTTON[iss:GOV_LT] 104×23 «LTLituaniaA»",
+   "BUTTON[iss:GOV_CY] 83×23 «CYCiproA»",
+   "BUTTON[iss:GOV_HR] 97×23 «HRCroaziaA»",
+   "BUTTON[iss:GOV_LV] 104×23 «LVLettoniaA»",
+   "BUTTON[iss:GOV_IT] 111×23 «ITItaliaBBB+»",
+   "BUTTON[iss:GOV_BG] 125×23 «BGBulgariaBBB+»",
+   "BUTTON[iss:GOV_GR] 104×23 «GRGreciaBBB»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:SOV_BEI] 90×23 «BEIBEIAAA»",
+   "BUTTON[iss:SOV_IBRD] 152×23 «IBRDBIRS (IBRD)AAA»",
+   "BUTTON[iss:SOV_EU] 159×23 «EUUnione EuropeaAA+»",
+   "BUTTON[iss:SOV_EFSF] 104×23 «EFSFEFSFAA+»",
+   "BUTTON[iss:SOV_ESM] 132×23 «ESMMES (ESM)AA+»",
+   "BUTTON[iss:SOV_WORLDBANK] 166×23 «WORLBanca MondialeNR»",
+   "INPUT[belowpar] 15×15 «on»"
+  ],
+  "overlaps": [],
+  "phHeight": 115,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 783,
+    "cw": 346
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 495,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 697,
+    "cw": 346
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 727,
+    "cw": 346
+   }
+  ],
+  "secs": 5.197,
+  "logs": []
+ },
+ "tel360-dark": {
+  "scrollW": 360,
+  "clientW": 360,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [
+   "INPUT[xl0] 296×30 «15.000»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xfrom] 71×27 «2027»",
+   "BUTTON 30×27 «+»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xto] 71×27 «2046»",
+   "BUTTON 30×27 «+»",
+   "BUTTON[xsched:yearly] 147×30 «Annuali»",
+   "BUTTON[xsched:semester] 148×30 «Semestrali»",
+   "BUTTON[xidx:FOI] 147×30 «FOI (ISTAT)»",
+   "BUTTON[xidx:HICP] 148×30 «HICP area euro»",
+   "INPUT[xspread] 296×30 «0,50»",
+   "INPUT[xi1] 200×30 «2,60»",
+   "INPUT[xi2] 40×30 «2,10»",
+   "INPUT[xi3] 40×30 «2,30»",
+   "BUTTON[rob:base] 46×23 «Base»",
+   "BUTTON[rob:alto] 80×23 «Alto 3,5%»",
+   "BUTTON[rob:basso] 73×23 «Basso 1%»",
+   "BUTTON[rob:shock] 87×23 «Shock 8→5%»",
+   "BUTTON[rob:basis] 80×23 «FOI +0,5%»",
+   "INPUT[xestr] 296×30 «2,40»",
+   "INPUT[xmin] 296×30 «0»",
+   "INPUT[xcapit] 296×30 «100»",
+   "INPUT[xtcap] 296×30 «100»",
+   "BUTTON[area:euro] 122×23 «Stati area euro»",
+   "BUTTON[area:sov] 115×23 «Sovranazionali»",
+   "BUTTON[area:extra] 149×23 «Altri Stati in euro»",
+   "BUTTON[rating:AA-] 73×30 «≥ AA-»",
+   "BUTTON[rating:A-] 74×30 «≥ A-»",
+   "BUTTON[rating:BBB+] 74×30 «≥ BBB+»",
+   "BUTTON[rating:BBB-] 74×30 «≥ BBB-»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:GOV_DE] 118×23 «DEGermaniaAAA»",
+   "BUTTON[iss:GOV_NL] 138×23 «NLPaesi BassiAAA»",
+   "BUTTON[iss:GOV_AT] 111×23 «ATAustriaAA+»",
+   "BUTTON[iss:GOV_FI] 125×23 «FIFinlandiaAA+»",
+   "BUTTON[iss:GOV_IE] 111×23 «IEIrlandaAA+»",
+   "BUTTON[iss:GOV_SI] 111×23 «SISloveniaAA»",
+   "BUTTON[iss:GOV_BE] 104×23 «BEBelgioAA-»",
+   "BUTTON[iss:GOV_ES] 97×23 «ESSpagnaA+»",
+   "BUTTON[iss:GOV_FR] 104×23 «FRFranciaA+»",
+   "BUTTON[iss:GOV_PT] 125×23 «PTPortogalloA+»",
+   "BUTTON[iss:GOV_EE] 104×23 «EEEstoniaA+»",
+   "BUTTON[iss:GOV_LT] 104×23 «LTLituaniaA»",
+   "BUTTON[iss:GOV_CY] 83×23 «CYCiproA»",
+   "BUTTON[iss:GOV_HR] 97×23 «HRCroaziaA»",
+   "BUTTON[iss:GOV_LV] 104×23 «LVLettoniaA»",
+   "BUTTON[iss:GOV_IT] 111×23 «ITItaliaBBB+»",
+   "BUTTON[iss:GOV_BG] 125×23 «BGBulgariaBBB+»",
+   "BUTTON[iss:GOV_GR] 104×23 «GRGreciaBBB»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:SOV_BEI] 90×23 «BEIBEIAAA»",
+   "BUTTON[iss:SOV_IBRD] 152×23 «IBRDBIRS (IBRD)AAA»",
+   "BUTTON[iss:SOV_EU] 159×23 «EUUnione EuropeaAA+»",
+   "BUTTON[iss:SOV_EFSF] 104×23 «EFSFEFSFAA+»",
+   "BUTTON[iss:SOV_ESM] 132×23 «ESMMES (ESM)AA+»",
+   "BUTTON[iss:SOV_WORLDBANK] 166×23 «WORLBanca MondialeNR»",
+   "INPUT[belowpar] 15×15 «on»"
+  ],
+  "overlaps": [],
+  "phHeight": 115,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 783,
+    "cw": 316
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 495,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 697,
+    "cw": 316
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 727,
+    "cw": 316
+   }
+  ],
+  "secs": 5.531,
+  "logs": []
+ },
+ "desk1440-light": {
+  "scrollW": 1440,
+  "clientW": 1440,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [],
+  "overlaps": [],
+  "phHeight": 61,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 341,
+    "cw": 341
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 1048,
+    "cw": 1048
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 1048,
+    "cw": 1048
+   }
+  ],
+  "secs": 5.203,
+  "logs": []
+ },
+ "desk1280-light": {
+  "scrollW": 1280,
+  "clientW": 1280,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [],
+  "overlaps": [],
+  "phHeight": 94,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 298,
+    "cw": 298
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 918,
+    "cw": 918
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 918,
+    "cw": 918
+   }
+  ],
+  "secs": 4.968,
+  "logs": []
+ },
+ "tel390-light": {
+  "scrollW": 390,
+  "clientW": 390,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [
+   "INPUT[xl0] 326×30 «15.000»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xfrom] 86×27 «2027»",
+   "BUTTON 30×27 «+»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xto] 86×27 «2046»",
+   "BUTTON 30×27 «+»",
+   "BUTTON[xsched:yearly] 162×30 «Annuali»",
+   "BUTTON[xsched:semester] 163×30 «Semestrali»",
+   "BUTTON[xidx:FOI] 162×30 «FOI (ISTAT)»",
+   "BUTTON[xidx:HICP] 163×30 «HICP area euro»",
+   "INPUT[xspread] 326×30 «0,50»",
+   "INPUT[xi1] 200×30 «2,60»",
+   "INPUT[xi2] 55×30 «2,10»",
+   "INPUT[xi3] 55×30 «2,30»",
+   "BUTTON[rob:base] 46×23 «Base»",
+   "BUTTON[rob:alto] 80×23 «Alto 3,5%»",
+   "BUTTON[rob:basso] 73×23 «Basso 1%»",
+   "BUTTON[rob:shock] 87×23 «Shock 8→5%»",
+   "BUTTON[rob:basis] 80×23 «FOI +0,5%»",
+   "INPUT[xestr] 326×30 «2,40»",
+   "INPUT[xmin] 326×30 «0»",
+   "INPUT[xcapit] 326×30 «100»",
+   "INPUT[xtcap] 326×30 «100»",
+   "BUTTON[area:euro] 122×23 «Stati area euro»",
+   "BUTTON[area:sov] 115×23 «Sovranazionali»",
+   "BUTTON[area:extra] 149×23 «Altri Stati in euro»",
+   "BUTTON[rating:AA-] 80×30 «≥ AA-»",
+   "BUTTON[rating:A-] 81×30 «≥ A-»",
+   "BUTTON[rating:BBB+] 81×30 «≥ BBB+»",
+   "BUTTON[rating:BBB-] 81×30 «≥ BBB-»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:GOV_DE] 118×23 «DEGermaniaAAA»",
+   "BUTTON[iss:GOV_NL] 138×23 «NLPaesi BassiAAA»",
+   "BUTTON[iss:GOV_AT] 111×23 «ATAustriaAA+»",
+   "BUTTON[iss:GOV_FI] 125×23 «FIFinlandiaAA+»",
+   "BUTTON[iss:GOV_IE] 111×23 «IEIrlandaAA+»",
+   "BUTTON[iss:GOV_SI] 111×23 «SISloveniaAA»",
+   "BUTTON[iss:GOV_BE] 104×23 «BEBelgioAA-»",
+   "BUTTON[iss:GOV_ES] 97×23 «ESSpagnaA+»",
+   "BUTTON[iss:GOV_FR] 104×23 «FRFranciaA+»",
+   "BUTTON[iss:GOV_PT] 125×23 «PTPortogalloA+»",
+   "BUTTON[iss:GOV_EE] 104×23 «EEEstoniaA+»",
+   "BUTTON[iss:GOV_LT] 104×23 «LTLituaniaA»",
+   "BUTTON[iss:GOV_CY] 83×23 «CYCiproA»",
+   "BUTTON[iss:GOV_HR] 97×23 «HRCroaziaA»",
+   "BUTTON[iss:GOV_LV] 104×23 «LVLettoniaA»",
+   "BUTTON[iss:GOV_IT] 111×23 «ITItaliaBBB+»",
+   "BUTTON[iss:GOV_BG] 125×23 «BGBulgariaBBB+»",
+   "BUTTON[iss:GOV_GR] 104×23 «GRGreciaBBB»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:SOV_BEI] 90×23 «BEIBEIAAA»",
+   "BUTTON[iss:SOV_IBRD] 152×23 «IBRDBIRS (IBRD)AAA»",
+   "BUTTON[iss:SOV_EU] 159×23 «EUUnione EuropeaAA+»",
+   "BUTTON[iss:SOV_EFSF] 104×23 «EFSFEFSFAA+»",
+   "BUTTON[iss:SOV_ESM] 132×23 «ESMMES (ESM)AA+»",
+   "BUTTON[iss:SOV_WORLDBANK] 166×23 «WORLBanca MondialeNR»",
+   "INPUT[belowpar] 15×15 «on»"
+  ],
+  "overlaps": [],
+  "phHeight": 115,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 783,
+    "cw": 346
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 495,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 346,
+    "cw": 346
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 697,
+    "cw": 346
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 727,
+    "cw": 346
+   }
+  ],
+  "secs": 5.388,
+  "logs": []
+ },
+ "tel360-light": {
+  "scrollW": 360,
+  "clientW": 360,
+  "overflowers": [],
+  "clipped": [],
+  "smallTargets": [
+   "INPUT[xl0] 296×30 «15.000»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xfrom] 71×27 «2027»",
+   "BUTTON 30×27 «+»",
+   "BUTTON 30×27 «−»",
+   "INPUT[xto] 71×27 «2046»",
+   "BUTTON 30×27 «+»",
+   "BUTTON[xsched:yearly] 147×30 «Annuali»",
+   "BUTTON[xsched:semester] 148×30 «Semestrali»",
+   "BUTTON[xidx:FOI] 147×30 «FOI (ISTAT)»",
+   "BUTTON[xidx:HICP] 148×30 «HICP area euro»",
+   "INPUT[xspread] 296×30 «0,50»",
+   "INPUT[xi1] 200×30 «2,60»",
+   "INPUT[xi2] 40×30 «2,10»",
+   "INPUT[xi3] 40×30 «2,30»",
+   "BUTTON[rob:base] 46×23 «Base»",
+   "BUTTON[rob:alto] 80×23 «Alto 3,5%»",
+   "BUTTON[rob:basso] 73×23 «Basso 1%»",
+   "BUTTON[rob:shock] 87×23 «Shock 8→5%»",
+   "BUTTON[rob:basis] 80×23 «FOI +0,5%»",
+   "INPUT[xestr] 296×30 «2,40»",
+   "INPUT[xmin] 296×30 «0»",
+   "INPUT[xcapit] 296×30 «100»",
+   "INPUT[xtcap] 296×30 «100»",
+   "BUTTON[area:euro] 122×23 «Stati area euro»",
+   "BUTTON[area:sov] 115×23 «Sovranazionali»",
+   "BUTTON[area:extra] 149×23 «Altri Stati in euro»",
+   "BUTTON[rating:AA-] 73×30 «≥ AA-»",
+   "BUTTON[rating:A-] 74×30 «≥ A-»",
+   "BUTTON[rating:BBB+] 74×30 «≥ BBB+»",
+   "BUTTON[rating:BBB-] 74×30 «≥ BBB-»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:GOV_DE] 118×23 «DEGermaniaAAA»",
+   "BUTTON[iss:GOV_NL] 138×23 «NLPaesi BassiAAA»",
+   "BUTTON[iss:GOV_AT] 111×23 «ATAustriaAA+»",
+   "BUTTON[iss:GOV_FI] 125×23 «FIFinlandiaAA+»",
+   "BUTTON[iss:GOV_IE] 111×23 «IEIrlandaAA+»",
+   "BUTTON[iss:GOV_SI] 111×23 «SISloveniaAA»",
+   "BUTTON[iss:GOV_BE] 104×23 «BEBelgioAA-»",
+   "BUTTON[iss:GOV_ES] 97×23 «ESSpagnaA+»",
+   "BUTTON[iss:GOV_FR] 104×23 «FRFranciaA+»",
+   "BUTTON[iss:GOV_PT] 125×23 «PTPortogalloA+»",
+   "BUTTON[iss:GOV_EE] 104×23 «EEEstoniaA+»",
+   "BUTTON[iss:GOV_LT] 104×23 «LTLituaniaA»",
+   "BUTTON[iss:GOV_CY] 83×23 «CYCiproA»",
+   "BUTTON[iss:GOV_HR] 97×23 «HRCroaziaA»",
+   "BUTTON[iss:GOV_LV] 104×23 «LVLettoniaA»",
+   "BUTTON[iss:GOV_IT] 111×23 «ITItaliaBBB+»",
+   "BUTTON[iss:GOV_BG] 125×23 «BGBulgariaBBB+»",
+   "BUTTON[iss:GOV_GR] 104×23 «GRGreciaBBB»",
+   "BUTTON 34×14 «tutti»",
+   "BUTTON 48×14 «nessuno»",
+   "BUTTON[iss:SOV_BEI] 90×23 «BEIBEIAAA»",
+   "BUTTON[iss:SOV_IBRD] 152×23 «IBRDBIRS (IBRD)AAA»",
+   "BUTTON[iss:SOV_EU] 159×23 «EUUnione EuropeaAA+»",
+   "BUTTON[iss:SOV_EFSF] 104×23 «EFSFEFSFAA+»",
+   "BUTTON[iss:SOV_ESM] 132×23 «ESMMES (ESM)AA+»",
+   "BUTTON[iss:SOV_WORLDBANK] 166×23 «WORLBanca MondialeNR»",
+   "INPUT[belowpar] 15×15 «on»"
+  ],
+  "overlaps": [],
+  "phHeight": 115,
+  "tables": [
+   {
+    "label": "La scala in ogni scenario d'inflazione",
+    "sw": 783,
+    "cw": 316
+   },
+   {
+    "label": "Rate dell'affitto e flussi della scala",
+    "sw": 495,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per indice",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per emittente",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Composizione per rating",
+    "sw": 316,
+    "cw": 316
+   },
+   {
+    "label": "Incassi netti per mese e anno, in euro",
+    "sw": 697,
+    "cw": 316
+   },
+   {
+    "label": "Lista d'acquisto",
+    "sw": 727,
+    "cw": 316
+   }
+  ],
+  "secs": 5.674,
+  "logs": []
+ }
+}

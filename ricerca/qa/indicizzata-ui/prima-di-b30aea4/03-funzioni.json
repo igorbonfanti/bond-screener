@@ -1,0 +1,3089 @@
+{
+ "default": {
+  "issues": [
+   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
+   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
+   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
+   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
+   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
+   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
+   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
+   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
+   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
+   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
+   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "282.745 €",
+    "s": "281.892 € in titoli · 852 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "13 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 282745,
+   "inB": 281892,
+   "inC": 852
+  },
+  "list": {
+   "n": 14,
+   "sumC": 281892,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "238.421",
+    "",
+    "",
+    "281.892"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "13.895",
+   "1086",
+   "−88",
+   "762"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "6723"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "6723",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "1",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "soldi finiti al 2028",
+    "11.645",
+    "339",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "5532",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2031",
+    "−15.219",
+    "11.238",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 3.897,
+  "logs": []
+ },
+ "semestrali": {
+  "issues": [
+   "riga 1/7/2028: liquidità 538 lontana da 501 (prima 633 + flussi − affitto)",
+   "riga 1/7/2029: liquidità 6601 lontana da 6563 (prima 584 + flussi − affitto)",
+   "riga 1/7/2033: liquidità 30697 lontana da 30605 (prima 1385 + flussi − affitto)",
+   "riga 1/7/2037: liquidità 28529 lontana da 28304 (prima 1384 + flussi − affitto)",
+   "riga 1/1/2042: liquidità 97104 lontana da 96583 (prima 4049 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "277.492 €",
+    "s": "277.492 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "40 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "7500 → 12.687",
+    "s": "€ nominali, scenario base · 8103 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "94%",
+    "s": "14 indicizzati su 17 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,87%",
+    "s": "scenario base · duration 9,7 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 277.492 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 7500 € a 12.687 € nello scenario base. Alla fine restano 5397 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 1/7/2027. Per coprirlo servirebbero 384 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 1/1/2031. Per coprirlo servirebbero 12.142 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 292 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.142 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 1/1/2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 277492,
+   "inB": 277492,
+   "inC": 0
+  },
+  "list": {
+   "n": 17,
+   "sumC": 277493,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "240.928",
+    "",
+    "",
+    "277.492"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "1/1/2027",
+   "7500",
+   "7285",
+   "1212",
+   "−88",
+   "918"
+  ],
+  "rateLast": [
+   "1/7/2046",
+   "12.687",
+   "12.253",
+   "127",
+   "−3",
+   "5397"
+  ],
+  "nRate": 40,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "12.687",
+    "tutte pagate",
+    "5397",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "15.801",
+    "tutte pagate",
+    "1",
+    "—",
+    "finisce al 1/1/2043"
+   ],
+   [
+    "Basso 1%",
+    "9952",
+    "soldi finiti al 1/7/2027",
+    "9335",
+    "384",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "15.698",
+    "tutte pagate",
+    "4757",
+    "—",
+    "finisce al 1/1/2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "13.912",
+    "soldi finiti al 1/1/2031",
+    "−16.572",
+    "12.142",
+    "finisce al 1/1/2046"
+   ]
+  ],
+  "secs": 10.251,
+  "logs": []
+ },
+ "fino-a-quando-200k": {
+  "issues": [
+   "riga 2028: liquidità 125 lontana da 60 (prima 592 + flussi − affitto)",
+   "riga 2029: liquidità 773 lontana da 727 (prima 125 + flussi − affitto)",
+   "riga 2030: liquidità 407 lontana da 240 (prima 773 + flussi − affitto)",
+   "riga 2031: liquidità 489 lontana da 343 (prima 407 + flussi − affitto)",
+   "riga 2032: liquidità 4516 lontana da 4361 (prima 489 + flussi − affitto)",
+   "riga 2034: liquidità 20734 lontana da 20331 (prima 2742 + flussi − affitto)",
+   "riga 2037: liquidità 2785 lontana da 2547 (prima 2116 + flussi − affitto)",
+   "riga 2038: liquidità 23170 lontana da 22565 (prima 2785 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale usato": {
+    "v": "190.454 €",
+    "s": "190.454 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2039",
+    "s": "chiesto fino al 2046"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 20.914",
+    "s": "€ nominali, scenario base · 15.839 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "92%",
+    "s": "11 indicizzati su 12 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,53%",
+    "s": "scenario base · duration 5,8 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 190.454 € oggi paghi l'affitto dal 2027 al 2039, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 20.914 € nello scenario base. Alla fine restano 2625 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 328 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2036. Per coprirlo servirebbero 3718 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 146 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 18.244 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2038.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 190454,
+   "inB": 190454,
+   "inC": 0
+  },
+  "list": {
+   "n": 12,
+   "sumC": 190454,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "176.195",
+    "",
+    "",
+    "190.454"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "14.795",
+   "840",
+   "−59",
+   "592"
+  ],
+  "rateLast": [
+   "2039",
+   "20.914",
+   "0",
+   "0",
+   "0",
+   "2625"
+  ],
+  "nRate": 13,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "20.914",
+    "tutte pagate",
+    "2625",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "24.015",
+    "tutte pagate",
+    "1",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "Basso 1%",
+    "17.934",
+    "soldi finiti al 2028",
+    "4770",
+    "328",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "25.877",
+    "tutte pagate",
+    "60",
+    "—",
+    "finisce al 2033"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "22.167",
+    "soldi finiti al 2036",
+    "−4507",
+    "3718",
+    "finisce al 2039"
+   ]
+  ],
+  "secs": 10.971,
+  "logs": []
+ },
+ "quanto-affitto-200k": {
+  "issues": [
+   "riga 2028: liquidità 94 lontana da 40 (prima 374 + flussi − affitto)",
+   "riga 2029: liquidità 270 lontana da 227 (prima 94 + flussi − affitto)",
+   "riga 2030: liquidità 11 lontana da -100 (prima 270 + flussi − affitto)",
+   "riga 2031: liquidità 246 lontana da 146 (prima 11 + flussi − affitto)",
+   "riga 2032: liquidità 3374 lontana da 3248 (prima 246 + flussi − affitto)",
+   "riga 2034: liquidità 11791 lontana da 11535 (prima 2358 + flussi − affitto)",
+   "riga 2036: liquidità 1732 lontana da 1632 (prima 1475 + flussi − affitto)",
+   "riga 2037: liquidità 2117 lontana da 1948 (prima 1732 + flussi − affitto)",
+   "riga 2038: liquidità 14069 lontana da 13685 (prima 2117 + flussi − affitto)",
+   "riga 2040: liquidità 18286 lontana da 17944 (prima 1703 + flussi − affitto)",
+   "riga 2042: liquidità 70721 lontana da 70256 (prima 4647 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale usato": {
+    "v": "200.000 €",
+    "s": "199.999 € in titoli · 1 € in liquidità"
+   },
+   "Affitto sostenibile": {
+    "v": "10.608 €",
+    "s": "il primo anno · 71% di 15.000 €"
+   },
+   "Prima e ultima rata": {
+    "v": "10.608 → 17.944",
+    "s": "€ nominali, scenario base · 11.590 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "13 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,82%",
+    "s": "scenario base · duration 9,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 200.000 € oggi paghi un affitto di 10.608 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 10.608 € a 17.944 € nello scenario base. Alla fine restano 4817 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 479 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2035. Per coprirlo servirebbero 7816 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 14.303 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 200000,
+   "inB": 199999,
+   "inC": 1
+  },
+  "list": {
+   "n": 14,
+   "sumC": 199999,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "169.779",
+    "",
+    "",
+    "199.999"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "10.608",
+   "10.129",
+   "904",
+   "−62",
+   "374"
+  ],
+  "rateLast": [
+   "2046",
+   "17.944",
+   "0",
+   "0",
+   "0",
+   "4817"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "17.944",
+    "tutte pagate",
+    "4817",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "22.350",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Basso 1%",
+    "14.076",
+    "soldi finiti al 2028",
+    "8342",
+    "479",
+    "finisce al 2027"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "22.203",
+    "tutte pagate",
+    "3813",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "19.677",
+    "soldi finiti al 2035",
+    "−10.584",
+    "7816",
+    "finisce al 2027"
+   ]
+  ],
+  "secs": 9.198,
+  "logs": []
+ },
+ "quanto-affitto-500k": {
+  "issues": [
+   "riga 2028: liquidità 385 lontana da 247 (prima 934 + flussi − affitto)",
+   "riga 2029: liquidità 507 lontana da 398 (prima 385 + flussi − affitto)",
+   "riga 2030: liquidità 108 lontana da -174 (prima 507 + flussi − affitto)",
+   "riga 2031: liquidità 858 lontana da 605 (prima 108 + flussi − affitto)",
+   "riga 2032: liquidità 3557 lontana da 3300 (prima 858 + flussi − affitto)",
+   "riga 2033: liquidità 3884 lontana da 3648 (prima 3557 + flussi − affitto)",
+   "riga 2034: liquidità 28829 lontana da 28205 (prima 3884 + flussi − affitto)",
+   "riga 2036: liquidità 3643 lontana da 3404 (prima 3019 + flussi − affitto)",
+   "riga 2037: liquidità 3934 lontana da 3530 (prima 3643 + flussi − affitto)",
+   "riga 2038: liquidità 35672 lontana da 34705 (prima 3934 + flussi − affitto)",
+   "riga 2040: liquidità 39845 lontana da 39044 (prima 4734 + flussi − affitto)",
+   "riga 2042: liquidità 176679 lontana da 175582 (prima 5750 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale usato": {
+    "v": "500.000 €",
+    "s": "499.786 € in titoli · 214 € in liquidità"
+   },
+   "Affitto sostenibile": {
+    "v": "26.536 €",
+    "s": "il primo anno · 177% di 15.000 €"
+   },
+   "Prima e ultima rata": {
+    "v": "26.536 → 44.888",
+    "s": "€ nominali, scenario base · 28.993 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "13 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 500.000 € oggi paghi un affitto di 26.536 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 26.536 € a 44.888 € nello scenario base. Alla fine restano 11.805 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 688 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2030. Per coprirlo servirebbero 19.978 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 35.766 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 500000,
+   "inB": 499786,
+   "inC": 214
+  },
+  "list": {
+   "n": 14,
+   "sumC": 499785,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "422.639",
+    "",
+    "",
+    "499.786"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "26.536",
+   "25.522",
+   "1863",
+   "−156",
+   "934"
+  ],
+  "rateLast": [
+   "2046",
+   "44.888",
+   "0",
+   "0",
+   "0",
+   "11.805"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "44.888",
+    "tutte pagate",
+    "11.805",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "55.908",
+    "tutte pagate",
+    "0",
+    "—",
+    "basta"
+   ],
+   [
+    "Basso 1%",
+    "35.212",
+    "soldi finiti al 2028",
+    "20.443",
+    "688",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "55.541",
+    "tutte pagate",
+    "9810",
+    "—",
+    "basta"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "49.223",
+    "soldi finiti al 2030",
+    "−27.055",
+    "19.978",
+    "basta"
+   ]
+  ],
+  "secs": 6.698,
+  "logs": []
+ },
+ "fino-a-quando-1000": {
+  "issues": [],
+  "kpi": {},
+  "lead": "",
+  "notes": [
+   "ATTENZIONE Con 1000 € non si copre nemmeno il 2027."
+  ],
+  "empty": true,
+  "text": "DA SAPERE\n1 nota\nATTENZIONE\nCon 1000 € non si copre nemmeno il 2027.",
+  "secs": 9.691,
+  "logs": []
+ },
+ "quanto-affitto-1000": {
+  "issues": [],
+  "kpi": {
+   "Capitale usato": {
+    "v": "1000 €",
+    "s": "0 € in titoli · 1000 € in liquidità"
+   },
+   "Affitto sostenibile": {
+    "v": "40 €",
+    "s": "il primo anno · 0% di 15.000 €"
+   },
+   "Prima e ultima rata": {
+    "v": "40 → 67",
+    "s": "€ nominali, scenario base · 44 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 0 titoli"
+   },
+   "Rendimento netto": {
+    "v": "—",
+    "s": "scenario base · duration 0,0 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 1000 € oggi paghi un affitto di 40 € il primo anno dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 40 € a 67 € nello scenario base. Alla fine restano 145 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 69 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 1000,
+   "inB": 0,
+   "inC": 1000
+  },
+  "list": {
+   "n": 0,
+   "sumC": 0,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "0",
+    "",
+    "",
+    "0"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "40",
+   "0",
+   "0",
+   "0",
+   "963"
+  ],
+  "rateLast": [
+   "2046",
+   "67",
+   "0",
+   "0",
+   "0",
+   "145"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "67",
+    "tutte pagate",
+    "145",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "84",
+    "tutte pagate",
+    "61",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Basso 1%",
+    "53",
+    "tutte pagate",
+    "215",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "83",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "74",
+    "tutte pagate",
+    "86",
+    "—",
+    "finisce al 2027"
+   ]
+  ],
+  "secs": 8.333,
+  "logs": []
+ },
+ "copri-tutti": {
+  "issues": [
+   "riga 2028: liquidità 626 lontana da 542 (prima 754 + flussi − affitto)",
+   "riga 2029: liquidità 710 lontana da 640 (prima 626 + flussi − affitto)",
+   "riga 2030: liquidità 588 lontana da 423 (prima 710 + flussi − affitto)",
+   "riga 2031: liquidità 302 lontana da 155 (prima 588 + flussi − affitto)",
+   "riga 2032: liquidità 6268 lontana da 6085 (prima 302 + flussi − affitto)",
+   "riga 2034: liquidità 19267 lontana da 18880 (prima 2769 + flussi − affitto)",
+   "riga 2037: liquidità 5242 lontana da 4969 (prima 4306 + flussi − affitto)",
+   "riga 2038: liquidità 24818 lontana da 24200 (prima 5242 + flussi − affitto)",
+   "riga 2040: liquidità 29712 lontana da 29159 (prima 7303 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "284.773 €",
+    "s": "270.433 € in titoli · 14.340 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "81%",
+    "s": "13 indicizzati su 16 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,99%",
+    "s": "scenario base · duration 10,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 284.773 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 21.909 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 154 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.369 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Lotti interi: il solver si è fermato al limite di tempo; la soluzione rispetta i vincoli ed è entro lo 0,05% dalla scala ideale «a pezzi».",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 284773,
+   "inB": 270433,
+   "inC": 14340
+  },
+  "list": {
+   "n": 16,
+   "sumC": 270433,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "273.000",
+    "",
+    "",
+    "270.433"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "482",
+   "980",
+   "−86",
+   "754"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "24.269",
+   "711",
+   "−20",
+   "21.909"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "21.909",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "387",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1% \nDA COPRIRE",
+    "19.904",
+    "tutte pagate",
+    "40.237",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP \nDA COPRIRE",
+    "27.824",
+    "tutte pagate",
+    "70",
+    "—",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 15.22,
+  "logs": []
+ },
+ "solo-base": {
+  "issues": [
+   "riga 2028: liquidità 370 lontana da 297 (prima 28 + flussi − affitto)",
+   "riga 2029: liquidità 0 lontana da -63 (prima 370 + flussi − affitto)",
+   "riga 2030: liquidità 63 lontana da 5 (prima 0 + flussi − affitto)",
+   "riga 2031: liquidità 603 lontana da 542 (prima 63 + flussi − affitto)",
+   "riga 2032: liquidità 642 lontana da 572 (prima 603 + flussi − affitto)",
+   "riga 2033: liquidità 307 lontana da 237 (prima 642 + flussi − affitto)",
+   "riga 2034: liquidità 0 lontana da -64 (prima 307 + flussi − affitto)",
+   "riga 2035: liquidità 1 lontana da -61 (prima 0 + flussi − affitto)",
+   "riga 2036: liquidità 0 lontana da -63 (prima 1 + flussi − affitto)",
+   "riga 2037: liquidità 31 lontana da -157 (prima 0 + flussi − affitto)",
+   "riga 2038: liquidità 3 lontana da -169 (prima 31 + flussi − affitto)",
+   "riga 2039: liquidità 456 lontana da 371 (prima 3 + flussi − affitto)",
+   "riga 2040: liquidità 353 lontana da 162 (prima 456 + flussi − affitto)",
+   "riga 2041: liquidità 31 lontana da -185 (prima 353 + flussi − affitto)",
+   "riga 2042: liquidità 7 lontana da -239 (prima 31 + flussi − affitto)",
+   "riga 2043: liquidità 22 lontana da -202 (prima 7 + flussi − affitto)",
+   "riga 2044: liquidità 565 lontana da 330 (prima 22 + flussi − affitto)",
+   "riga 2045: liquidità 170 lontana da -39 (prima 565 + flussi − affitto)",
+   "riga 2046: liquidità 0 lontana da -243 (prima 170 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "265.429 €",
+    "s": "265.429 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 20 titoli"
+   },
+   "Rendimento netto": {
+    "v": "4,21%",
+    "s": "scenario base · duration 10,1 anni"
+   },
+   "Scenari coperti": {
+    "v": "2 / 5",
+    "s": "scoperti: Alto 3,5%, Shock 8→5%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 265.429 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 0 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Alto 3,5%»: i soldi finiscono al 2029. Per coprirlo servirebbero 38.408 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «Shock 8→5%»: i soldi finiscono al 2028. Per coprirlo servirebbero 64.044 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2029. Per coprirlo servirebbero 16.646 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 64 € in più della scala ideale «a pezzi».",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 18.983 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2045, con inflazione alta al 2040.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 265429,
+   "inB": 265429,
+   "inC": 0
+  },
+  "list": {
+   "n": 20,
+   "sumC": 265430,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "326.747",
+    "",
+    "",
+    "265.429"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "13.380",
+   "1714",
+   "−82",
+   "28"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "24.269",
+   "711",
+   "−20",
+   "0"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "Alto 3,5%",
+    "31.603",
+    "soldi finiti al 2029",
+    "−56.515",
+    "38.408",
+    "finisce al 2040"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "50.813",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5%",
+    "31.395",
+    "soldi finiti al 2028",
+    "−94.328",
+    "64.044",
+    "finisce al 2034"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2029",
+    "−22.542",
+    "16.646",
+    "finisce al 2042"
+   ]
+  ],
+  "secs": 9.409,
+  "logs": []
+ },
+ "min-indicizzati-100": {
+  "issues": [
+   "riga 2028: liquidità 272 lontana da 191 (prima 757 + flussi − affitto)",
+   "riga 2029: liquidità 36 lontana da -26 (prima 272 + flussi − affitto)",
+   "riga 2030: liquidità 769 lontana da 604 (prima 36 + flussi − affitto)",
+   "riga 2031: liquidità 210 lontana da 64 (prima 769 + flussi − affitto)",
+   "riga 2032: liquidità 1959 lontana da 1812 (prima 210 + flussi − affitto)",
+   "riga 2033: liquidità 2696 lontana da 2562 (prima 1959 + flussi − affitto)",
+   "riga 2034: liquidità 17691 lontana da 17323 (prima 2696 + flussi − affitto)",
+   "riga 2037: liquidità 2167 lontana da 1934 (prima 2568 + flussi − affitto)",
+   "riga 2038: liquidità 20485 lontana da 19934 (prima 2167 + flussi − affitto)",
+   "riga 2040: liquidità 22656 lontana da 22200 (prima 2996 + flussi − affitto)",
+   "riga 2042: liquidità 99911 lontana da 99290 (prima 3384 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "282.755 €",
+    "s": "268.283 € in titoli · 14.472 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "100%",
+    "s": "13 indicizzati su 13 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,7 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 282.755 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6716 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 352 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.243 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 215 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.223 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 282755,
+   "inB": 268283,
+   "inC": 14472
+  },
+  "list": {
+   "n": 13,
+   "sumC": 268283,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "225.000",
+    "",
+    "",
+    "268.283"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "482",
+   "851",
+   "−86",
+   "757"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "6716"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "6716",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "soldi finiti al 2028",
+    "11.629",
+    "352",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "5564",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2031",
+    "−15.225",
+    "11.243",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 7.5,
+  "logs": []
+ },
+ "incompatibili-min100-italia30": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "376.236 €",
+    "s": "0 € in titoli · 376.236 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 0 titoli"
+   },
+   "Rendimento netto": {
+    "v": "—",
+    "s": "scenario base · duration 0,0 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 376.236 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 54.732 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 26.911 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 376236,
+   "inB": 0,
+   "inC": 376236
+  },
+  "list": {
+   "n": 0,
+   "sumC": 0,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "0",
+    "",
+    "",
+    "0"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "0",
+   "0",
+   "0",
+   "362.183"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "54.732"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "54.732",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "22.911",
+    "—",
+    "basta"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "80.931",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "basta"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "32.190",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 10.998,
+  "logs": []
+ },
+ "tetto-italia-0": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "317.946 €",
+    "s": "263.527 € in titoli · 54.419 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 15 titoli"
+   },
+   "Rendimento netto": {
+    "v": "4,26%",
+    "s": "scenario base · duration 11,5 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 61 € in più della scala ideale «a pezzi».",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.743 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 317946,
+   "inB": 263527,
+   "inC": 54419
+  },
+  "list": {
+   "n": 15,
+   "sumC": 263526,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "335.166",
+    "",
+    "",
+    "263.527"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "0",
+   "1764",
+   "−83",
+   "41.240"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "30.094",
+   "882",
+   "−24",
+   "91.094"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "91.094",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "38.501",
+    "—",
+    "basta"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "137.842",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "68.553",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 6.144,
+  "logs": []
+ },
+ "tetto-titolo-5": {
+  "issues": [
+   "riga 2028: liquidità 537 lontana da 453 (prima 298 + flussi − affitto)",
+   "riga 2029: liquidità 9 lontana da -65 (prima 537 + flussi − affitto)",
+   "riga 2030: liquidità 269 lontana da 108 (prima 9 + flussi − affitto)",
+   "riga 2031: liquidità 1197 lontana da 1030 (prima 269 + flussi − affitto)",
+   "riga 2032: liquidità 4833 lontana da 4671 (prima 1197 + flussi − affitto)",
+   "riga 2033: liquidità 14905 lontana da 14644 (prima 4833 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "293.769 €",
+    "s": "293.766 € in titoli · 3 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "57%",
+    "s": "14 indicizzati su 25 titoli"
+   },
+   "Rendimento netto": {
+    "v": "4,04%",
+    "s": "scenario base · duration 10,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "4 / 5",
+    "s": "scoperti: Basso 1%"
+   }
+  },
+  "lead": "Con 293.769 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 42.973 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2029. Per coprirlo servirebbero 141 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 307 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.987 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2045.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 293769,
+   "inB": 293766,
+   "inC": 3
+  },
+  "list": {
+   "n": 25,
+   "sumC": 293764,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "322.405",
+    "",
+    "",
+    "293.766"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "14.592",
+   "778",
+   "−92",
+   "298"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "29.308",
+   "945",
+   "−27",
+   "42.973"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "42.973",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "8818",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "soldi finiti al 2029",
+    "72.760",
+    "141",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2040"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "20.934",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 10.833,
+  "logs": []
+ },
+ "tetto-titolo-1": {
+  "issues": [
+   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
+   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
+   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
+   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
+   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
+   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
+   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
+   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
+   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
+   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
+   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "282.745 €",
+    "s": "281.892 € in titoli · 852 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "13 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 282745,
+   "inB": 281892,
+   "inC": 852
+  },
+  "list": {
+   "n": 14,
+   "sumC": 281892,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "238.421",
+    "",
+    "",
+    "281.892"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "13.895",
+   "1086",
+   "−88",
+   "762"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "6723"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "6723",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "1",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "soldi finiti al 2028",
+    "11.645",
+    "339",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "5532",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2031",
+    "−15.219",
+    "11.238",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 30.943,
+  "logs": []
+ },
+ "fisco-annuale-acquisto-credito": {
+  "issues": [
+   "riga 2028: liquidità 648 lontana da 563 (prima 932 + flussi − affitto)",
+   "riga 2029: liquidità 2676 lontana da 2604 (prima 648 + flussi − affitto)",
+   "riga 2030: liquidità 2852 lontana da 2645 (prima 2676 + flussi − affitto)",
+   "riga 2031: liquidità 3629 lontana da 3409 (prima 2852 + flussi − affitto)",
+   "riga 2032: liquidità 8799 lontana da 8547 (prima 3629 + flussi − affitto)",
+   "riga 2034: liquidità 22980 lontana da 22522 (prima 7918 + flussi − affitto)",
+   "riga 2038: liquidità 24958 lontana da 24328 (prima 7591 + flussi − affitto)",
+   "riga 2040: liquidità 27644 lontana da 27112 (prima 6937 + flussi − affitto)",
+   "riga 2042: liquidità 101928 lontana da 101247 (prima 7934 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "283.223 €",
+    "s": "275.507 € in titoli · 7715 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "97%",
+    "s": "12 indicizzati su 13 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,89%",
+    "s": "scenario base · duration 9,4 anni"
+   },
+   "Scenari coperti": {
+    "v": "4 / 5",
+    "s": "scoperti: FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 283.223 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 8865 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2039. Per coprirlo servirebbero 9580 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 184 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.256 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata ogni anno; base imponibile a scadenza: prezzo d'acquisto. Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 283223,
+   "inB": 275507,
+   "inC": 7715
+  },
+  "list": {
+   "n": 13,
+   "sumC": 275509,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "231.918",
+    "",
+    "",
+    "275.507"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "7254",
+   "1234",
+   "−300",
+   "932"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "8865"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "8865",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "15.328",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "4421",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2039",
+    "−12.974",
+    "9580",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 14.416,
+  "logs": []
+ },
+ "senza-indicizzati": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "317.946 €",
+    "s": "263.527 € in titoli · 54.419 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 15 titoli"
+   },
+   "Rendimento netto": {
+    "v": "4,26%",
+    "s": "scenario base · duration 11,5 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 317.946 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 91.094 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 61 € in più della scala ideale «a pezzi».",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.743 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 317946,
+   "inB": 263527,
+   "inC": 54419
+  },
+  "list": {
+   "n": 15,
+   "sumC": 263526,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "335.166",
+    "",
+    "",
+    "263.527"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "0",
+   "1764",
+   "−83",
+   "41.240"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "30.094",
+   "882",
+   "−24",
+   "91.094"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "91.094",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "38.501",
+    "—",
+    "basta"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "137.842",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "68.553",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 6.012,
+  "logs": []
+ },
+ "hicp": {
+  "issues": [
+   "riga 2028: liquidità 277 lontana da 196 (prima 762 + flussi − affitto)",
+   "riga 2029: liquidità 41 lontana da -21 (prima 277 + flussi − affitto)",
+   "riga 2030: liquidità 774 lontana da 609 (prima 41 + flussi − affitto)",
+   "riga 2031: liquidità 215 lontana da 69 (prima 774 + flussi − affitto)",
+   "riga 2032: liquidità 1964 lontana da 1817 (prima 215 + flussi − affitto)",
+   "riga 2033: liquidità 2701 lontana da 2567 (prima 1964 + flussi − affitto)",
+   "riga 2034: liquidità 17697 lontana da 17328 (prima 2701 + flussi − affitto)",
+   "riga 2037: liquidità 2172 lontana da 1940 (prima 2574 + flussi − affitto)",
+   "riga 2038: liquidità 20490 lontana da 19939 (prima 2172 + flussi − affitto)",
+   "riga 2040: liquidità 22662 lontana da 22206 (prima 3002 + flussi − affitto)",
+   "riga 2042: liquidità 99917 lontana da 99295 (prima 3389 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "282.745 €",
+    "s": "281.892 € in titoli · 852 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "13 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,3 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 282.745 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione europea (HICP) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 6723 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 339 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 11.238 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 212 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.222 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 282745,
+   "inB": 281892,
+   "inC": 852
+  },
+  "list": {
+   "n": 14,
+   "sumC": 281892,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "238.421",
+    "",
+    "",
+    "281.892"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "13.895",
+   "1086",
+   "−88",
+   "762"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "6723"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "6723",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "1",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "soldi finiti al 2028",
+    "11.645",
+    "339",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "5532",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "soldi finiti al 2031",
+    "−15.219",
+    "11.238",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 7.356,
+  "logs": []
+ },
+ "primo-anno-2026": {
+  "issues": [
+   "riga 2028: liquidità 1333 lontana da 1243 (prima 1016 + flussi − affitto)",
+   "riga 2029: liquidità 1878 lontana da 1794 (prima 1333 + flussi − affitto)",
+   "riga 2030: liquidità 2361 lontana da 2164 (prima 1878 + flussi − affitto)",
+   "riga 2031: liquidità 6501 lontana da 6286 (prima 2361 + flussi − affitto)",
+   "riga 2034: liquidità 25970 lontana da 25479 (prima 8383 + flussi − affitto)",
+   "riga 2038: liquidità 33655 lontana da 32891 (prima 14309 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "319.421 €",
+    "s": "289.046 € in titoli · 30.374 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "21 rate dal 2026"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 26.160",
+    "s": "€ nominali, scenario base · 16.897 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "100%",
+    "s": "12 indicizzati su 12 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,81%",
+    "s": "scenario base · duration 9,6 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 319.421 € oggi paghi l'affitto dal 2026 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 26.160 € nello scenario base. Alla fine restano 27.081 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 158 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 21.303 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2044.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 319421,
+   "inB": 289046,
+   "inC": 30374
+  },
+  "list": {
+   "n": 12,
+   "sumC": 289045,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "243.000",
+    "",
+    "",
+    "289.046"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2026",
+   "15.000",
+   "0",
+   "0",
+   "0",
+   "15.374"
+  ],
+  "rateLast": [
+   "2046",
+   "26.160",
+   "0",
+   "0",
+   "0",
+   "27.081"
+  ],
+  "nRate": 21,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "26.160",
+    "tutte pagate",
+    "27.081",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "32.867",
+    "tutte pagate",
+    "18.198",
+    "—",
+    "finisce al 2044"
+   ],
+   [
+    "Basso 1%",
+    "20.203",
+    "tutte pagate",
+    "35.624",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "34.064",
+    "tutte pagate",
+    "7",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "28.825",
+    "tutte pagate",
+    "1993",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 6.269,
+  "logs": []
+ },
+ "ultimo-anno-2080": {
+  "issues": [
+   "riga 2028: liquidità 139 lontana da 40 (prima 8 + flussi − affitto)",
+   "riga 2029: liquidità 104 lontana da 3 (prima 139 + flussi − affitto)",
+   "riga 2030: liquidità 164 lontana da 42 (prima 104 + flussi − affitto)",
+   "riga 2031: liquidità 726 lontana da 601 (prima 164 + flussi − affitto)",
+   "riga 2032: liquidità 1052 lontana da 915 (prima 726 + flussi − affitto)",
+   "riga 2033: liquidità 607 lontana da 472 (prima 1052 + flussi − affitto)",
+   "riga 2034: liquidità 4502 lontana da 4319 (prima 607 + flussi − affitto)",
+   "riga 2036: liquidità 1539 lontana da 1393 (prima 1292 + flussi − affitto)",
+   "riga 2037: liquidità 1752 lontana da 1578 (prima 1539 + flussi − affitto)",
+   "riga 2038: liquidità 5331 lontana da 5086 (prima 1752 + flussi − affitto)",
+   "riga 2040: liquidità 6508 lontana da 6274 (prima 1138 + flussi − affitto)",
+   "riga 2042: liquidità 27203 lontana da 26913 (prima 1705 + flussi − affitto)",
+   "riga 2047: liquidità 38601 lontana da 37834 (prima 2591 + flussi − affitto)",
+   "riga 2052: liquidità 48105 lontana da 47366 (prima 5172 + flussi − affitto)",
+   "riga 2057: liquidità 1030675 lontana da 1020021 (prima 7868 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "651.822 €",
+    "s": "651.822 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2080",
+    "s": "54 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 64.885",
+    "s": "€ nominali, scenario base · 19.344 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "98%",
+    "s": "15 indicizzati su 17 titoli"
+   },
+   "Rendimento netto": {
+    "v": "4,50%",
+    "s": "scenario base · duration 24,1 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 651.822 € oggi paghi l'affitto dal 2027 al 2080, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 64.885 € nello scenario base. Alla fine restano 168.332 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2027. Per coprirlo servirebbero 5 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2029. Per coprirlo servirebbero 102.891 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 296 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 29.771 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2079, con inflazione alta al 2064.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 651822,
+   "inB": 651822,
+   "inC": 0
+  },
+  "list": {
+   "n": 17,
+   "sumC": 651821,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "648.368",
+    "",
+    "",
+    "651.822"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "8489",
+   "6704",
+   "−206",
+   "8"
+  ],
+  "rateLast": [
+   "2080",
+   "64.885",
+   "0",
+   "0",
+   "0",
+   "168.332"
+  ],
+  "nRate": 54,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "64.885",
+    "tutte pagate",
+    "168.332",
+    "—",
+    "finisce al 2079"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "119.911",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2064"
+   ],
+   [
+    "Basso 1%",
+    "33.021",
+    "soldi finiti al 2027",
+    "214.255",
+    "5",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "80.284",
+    "tutte pagate",
+    "220.540",
+    "—",
+    "finisce al 2065"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "83.912",
+    "soldi finiti al 2029",
+    "−238.644",
+    "102.891",
+    "finisce al 2074"
+   ]
+  ],
+  "secs": 12.554,
+  "logs": []
+ },
+ "un-anno-2027": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "14.946 €",
+    "s": "14.946 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2027",
+    "s": "1 rata dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 15.000",
+    "s": "€ nominali, scenario base · 14.939 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 1 titoli"
+   },
+   "Rendimento netto": {
+    "v": "2,74%",
+    "s": "scenario base · duration 0,1 anni"
+   },
+   "Scenari coperti": {
+    "v": "4 / 5",
+    "s": "scoperti: Basso 1%"
+   }
+  },
+  "lead": "Con 14.946 € oggi paghi l'affitto dal 2027 al 2027, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 15.000 € nello scenario base. Alla fine restano 0 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2027. Per coprirlo servirebbero 5 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 14.994 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2027, con inflazione alta al 2027.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 14946,
+   "inB": 14946,
+   "inC": 0
+  },
+  "list": {
+   "n": 1,
+   "sumC": 14946,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "14.739",
+    "",
+    "",
+    "14.946"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "14.731",
+   "258",
+   "−3",
+   "0"
+  ],
+  "rateLast": [
+   "2027",
+   "15.000",
+   "14.731",
+   "258",
+   "−3",
+   "0"
+  ],
+  "nRate": 1,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "15.000",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "15.000",
+    "tutte pagate",
+    "3",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "Basso 1%",
+    "15.000",
+    "soldi finiti al 2027",
+    "−5",
+    "5",
+    "finisce al 2027"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "15.000",
+    "tutte pagate",
+    "18",
+    "—",
+    "finisce al 2027"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "15.000",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2027"
+   ]
+  ],
+  "secs": 4.064,
+  "logs": []
+ },
+ "spread-10": {
+  "issues": [
+   "riga 2028: liquidità 4 lontana da -132 (prima 720 + flussi − affitto)",
+   "riga 2029: liquidità 379 lontana da 249 (prima 4 + flussi − affitto)",
+   "riga 2030: liquidità 590 lontana da 384 (prima 379 + flussi − affitto)",
+   "riga 2031: liquidità 237 lontana da 24 (prima 590 + flussi − affitto)",
+   "riga 2032: liquidità 1675 lontana da 1438 (prima 237 + flussi − affitto)",
+   "riga 2033: liquidità 1229 lontana da 1003 (prima 1675 + flussi − affitto)",
+   "riga 2034: liquidità 24582 lontana da 24004 (prima 1229 + flussi − affitto)",
+   "riga 2036: liquidità 430 lontana da 154 (prima 1059 + flussi − affitto)",
+   "riga 2037: liquidità 528 lontana da 54 (prima 430 + flussi − affitto)",
+   "riga 2038: liquidità 48330 lontana da 46984 (prima 528 + flussi − affitto)",
+   "riga 2040: liquidità 67789 lontana da 66434 (prima 1573 + flussi − affitto)",
+   "riga 2042: liquidità 449702 lontana da 447113 (prima 3697 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "715.694 €",
+    "s": "715.694 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 136.048",
+    "s": "€ nominali, scenario base · 87.874 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "98%",
+    "s": "12 indicizzati su 14 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,92%",
+    "s": "scenario base · duration 11,5 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 715.694 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 10,0% l'anno: da 15.000 € a 136.048 € nello scenario base. Alla fine restano 7882 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2028. Per coprirlo servirebbero 270 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2031. Per coprirlo servirebbero 46.674 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 200 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 51.196 € l'anno sempre uguali: nello scenario base i soldi finiscono al 2046, con inflazione alta al 2045.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 715694,
+   "inB": 715694,
+   "inC": 0
+  },
+  "list": {
+   "n": 14,
+   "sumC": 715694,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "564.746",
+    "",
+    "",
+    "715.694"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "14.063",
+   "1868",
+   "−226",
+   "720"
+  ],
+  "rateLast": [
+   "2046",
+   "136.048",
+   "0",
+   "0",
+   "0",
+   "7882"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "136.048",
+    "tutte pagate",
+    "7882",
+    "—",
+    "finisce al 2046"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "166.346",
+    "tutte pagate",
+    "61",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "Basso 1%",
+    "108.950",
+    "soldi finiti al 2028",
+    "13.343",
+    "270",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "165.392",
+    "tutte pagate",
+    "32.844",
+    "—",
+    "finisce al 2044"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "148.029",
+    "soldi finiti al 2031",
+    "−63.207",
+    "46.674",
+    "finisce al 2045"
+   ]
+  ],
+  "secs": 6.318,
+  "logs": []
+ },
+ "inflazione-0": {
+  "issues": [
+   "riga 2029: liquidità 636 lontana da 569 (prima 930 + flussi − affitto)",
+   "riga 2030: liquidità 75 lontana da -78 (prima 636 + flussi − affitto)",
+   "riga 2031: liquidità 364 lontana da 233 (prima 75 + flussi − affitto)",
+   "riga 2032: liquidità 15223 lontana da 15007 (prima 364 + flussi − affitto)",
+   "riga 2034: liquidità 16629 lontana da 16292 (prima 3185 + flussi − affitto)",
+   "riga 2037: liquidità 4430 lontana da 4207 (prima 4298 + flussi − affitto)",
+   "riga 2038: liquidità 19910 lontana da 19421 (prima 4430 + flussi − affitto)",
+   "riga 2040: liquidità 23556 lontana da 23123 (prima 6644 + flussi − affitto)",
+   "riga 2042: liquidità 77945 lontana da 77391 (prima 9600 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "280.052 €",
+    "s": "254.395 € in titoli · 25.657 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 16.491",
+    "s": "€ nominali, scenario base · 16.491 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "100%",
+    "s": "11 indicizzati su 11 titoli"
+   },
+   "Rendimento netto": {
+    "v": "1,69%",
+    "s": "scenario base · duration 9,4 anni"
+   },
+   "Scenari coperti": {
+    "v": "4 / 5",
+    "s": "scoperti: FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 280.052 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 16.491 € nello scenario base. Alla fine restano 15.989 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2030. Per coprirlo servirebbero 433 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 140 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 20.031 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 280052,
+   "inB": 254395,
+   "inC": 25657
+  },
+  "list": {
+   "n": 11,
+   "sumC": 254394,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "215.000",
+    "",
+    "",
+    "254.395"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "462",
+   "870",
+   "−81",
+   "11.974"
+  ],
+  "rateLast": [
+   "2046",
+   "16.491",
+   "0",
+   "0",
+   "0",
+   "15.989"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "16.491",
+    "tutte pagate",
+    "15.989",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "12.737",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "22.871",
+    "tutte pagate",
+    "14.965",
+    "—",
+    "finisce al 2041"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "18.122",
+    "soldi finiti al 2030",
+    "−586",
+    "433",
+    "basta"
+   ]
+  ],
+  "secs": 14.035,
+  "logs": []
+ },
+ "nessun-emittente": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "376.236 €",
+    "s": "0 € in titoli · 376.236 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 0 titoli"
+   },
+   "Rendimento netto": {
+    "v": "—",
+    "s": "scenario base · duration 0,0 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 376.236 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 54.732 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "ATTENZIONE Solo 0 titoli rispettano i filtri: allarga il paniere.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 376236,
+   "inB": 0,
+   "inC": 376236
+  },
+  "list": {
+   "n": 0,
+   "sumC": 0,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "0",
+    "",
+    "",
+    "0"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "0",
+   "0",
+   "0",
+   "362.183"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "0",
+   "0",
+   "0",
+   "54.732"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "54.732",
+    "—"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "22.911",
+    "—"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "80.931",
+    "—"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "32.190",
+    "—"
+   ]
+  ],
+  "secs": 5.714,
+  "logs": []
+ },
+ "rating-AA": {
+  "issues": [],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "329.472 €",
+    "s": "261.106 € in titoli · 68.366 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "15.000 → 25.373",
+    "s": "€ nominali, scenario base · 16.389 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "0%",
+    "s": "0 indicizzati su 13 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,88%",
+    "s": "scenario base · duration 11,6 anni"
+   },
+   "Scenari coperti": {
+    "v": "5 / 5",
+    "s": "tutti"
+   }
+  },
+  "lead": "Con 329.472 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 15.000 € a 25.373 € nello scenario base. Alla fine restano 89.548 € di liquidità nello scenario base.",
+  "notes": [
+   "OK La scala regge in tutti gli 5 scenari d'inflazione simulati.",
+   "NOTA Comprare a lotti interi costa 65 € in più della scala ideale «a pezzi».",
+   "NOTA Gli indicizzati pesano poco: la scala costa meno nello scenario base, ma regge meno se l'inflazione sale. Prova «Quota minima indicizzata» o aggiungi «Alto» agli scenari da coprire.",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 22.806 € l'anno sempre uguali: nello scenario base basta, e anche con inflazione alta.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 329472,
+   "inB": 261106,
+   "inC": 68366
+  },
+  "list": {
+   "n": 13,
+   "sumC": 261107,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "308.503",
+    "",
+    "",
+    "261.106"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "15.000",
+   "0",
+   "0",
+   "−82",
+   "53.455"
+  ],
+  "rateLast": [
+   "2046",
+   "25.373",
+   "29.435",
+   "984",
+   "−28",
+   "89.548"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "25.373",
+    "tutte pagate",
+    "89.548",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "31.603",
+    "tutte pagate",
+    "37.564",
+    "—",
+    "basta"
+   ],
+   [
+    "Basso 1%",
+    "19.904",
+    "tutte pagate",
+    "135.692",
+    "—",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "31.395",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2045"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "27.824",
+    "tutte pagate",
+    "67.006",
+    "—",
+    "basta"
+   ]
+  ],
+  "secs": 4.895,
+  "logs": []
+ },
+ "affitto-1000": {
+  "issues": [
+   "riga 2034: liquidità 2215 lontana da 2180 (prima 392 + flussi − affitto)",
+   "riga 2038: liquidità 1837 lontana da 1794 (prima 450 + flussi − affitto)",
+   "riga 2040: liquidità 3667 lontana da 3612 (prima 671 + flussi − affitto)"
+  ],
+  "kpi": {
+   "Capitale da investire": {
+    "v": "19.002 €",
+    "s": "19.002 € in titoli · 0 € in liquidità"
+   },
+   "Coperto fino al": {
+    "v": "2046",
+    "s": "20 rate dal 2027"
+   },
+   "Prima e ultima rata": {
+    "v": "1000 → 1692",
+    "s": "€ nominali, scenario base · 1093 € di oggi"
+   },
+   "Quota indicizzata": {
+    "v": "95%",
+    "s": "9 indicizzati su 10 titoli"
+   },
+   "Rendimento netto": {
+    "v": "3,87%",
+    "s": "scenario base · duration 8,9 anni"
+   },
+   "Scenari coperti": {
+    "v": "3 / 5",
+    "s": "scoperti: Basso 1%, FOI +0,5% su HICP"
+   }
+  },
+  "lead": "Con 19.002 € oggi paghi l'affitto dal 2027 al 2046, che cresce con l'inflazione italiana (FOI) più 0,5% l'anno: da 1000 € a 1692 € nello scenario base. Alla fine restano 552 € di liquidità nello scenario base.",
+  "notes": [
+   "ATTENZIONE Scenario «Basso 1%»: i soldi finiscono al 2030. Per coprirlo servirebbero 61 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "ATTENZIONE Scenario «FOI +0,5% su HICP»: i soldi finiscono al 2046. Per coprirlo servirebbero 637 € in più oggi (non è fra gli scenari da coprire per forza).",
+   "NOTA Comprare a lotti interi costa 167 € in più della scala ideale «a pezzi».",
+   "NOTA Una scala a importo fisso con lo stesso capitale paga 1356 € l'anno sempre uguali: nello scenario base basta, con inflazione alta al 2043.",
+   "NOTA Dati d'inflazione aggiornati al 03/11/2026; prezzi dei titoli del 02/11/2026.",
+   "OK Controllo del 03/11/2026: 19 coefficienti d'indicizzazione ricalcolati su 19 coincidono con quelli ufficiali MEF.",
+   "ATTENZIONE DA VERIFICARE · rivalutazione dei BTP€i tassata a scadenza; base imponibile a scadenza: prezzo di emissione (prudente). Le minusvalenze che ne nascono non sono usate.",
+   "ATTENZIONE DA VERIFICARE · BTP Italia comprati sul secondario: nessun credito d'imposta sulla rivalutazione già maturata nel prezzo. I premi fedeltà non spettano (solo all'emissione).",
+   "NOTA Le rate sono pagate all'inizio del periodo (1/1, o 1/1 e 1/7). Bollo 0,2% l'anno sul valore stimato dei titoli. I titoli si tengono fino a scadenza."
+  ],
+  "cap": {
+   "capV": 19002,
+   "inB": 19002,
+   "inC": 0
+  },
+  "list": {
+   "n": 10,
+   "sumC": 19001,
+   "foot": [
+    "Totale titoli",
+    "",
+    "",
+    "17.003",
+    "",
+    "",
+    "19.002"
+   ]
+  },
+  "rateMeta": "scenario Base · € nominali",
+  "rateFirst": [
+   "2027",
+   "1000",
+   "1045",
+   "128",
+   "−6",
+   "168"
+  ],
+  "rateLast": [
+   "2046",
+   "1692",
+   "0",
+   "0",
+   "0",
+   "552"
+  ],
+  "nRate": 20,
+  "stress": [
+   [
+    "Base \nDA COPRIRE",
+    "1692",
+    "tutte pagate",
+    "552",
+    "—",
+    "basta"
+   ],
+   [
+    "Alto 3,5% \nDA COPRIRE",
+    "2107",
+    "tutte pagate",
+    "0",
+    "—",
+    "finisce al 2043"
+   ],
+   [
+    "Basso 1%",
+    "1327",
+    "soldi finiti al 2030",
+    "960",
+    "61",
+    "basta"
+   ],
+   [
+    "Shock 8→5% \nDA COPRIRE",
+    "2093",
+    "tutte pagate",
+    "337",
+    "—",
+    "finisce al 2038"
+   ],
+   [
+    "FOI +0,5% su HICP",
+    "1855",
+    "soldi finiti al 2046",
+    "−863",
+    "637",
+    "finisce al 2046"
+   ]
+  ],
+  "secs": 5.334,
+  "logs": []
+ }
+}

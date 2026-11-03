@@ -1,0 +1,439 @@
+Uscita -MEF-DT- Prot Num:0030031/2026 del 12/06/2026
+
+Ministero dell' Economia e delle Finanze
+DIPARTIMENTO DEL TESORO
+DIREZIONE II
+
+IL DIRETTORE GENERALE DEL TESORO
+
+VISTO il decreto del Presidente della Repubblica 30 dicembre 2003, n. 398, e successive
+modificazioni, con il quale è stato approvato il “Testo unico delle disposizioni legislative e
+regolamentari in materia di debito pubblico”, (di seguito “Testo unico”) e in particolare l’articolo 3,
+ove si prevede che il Ministro dell’Economia e delle Finanze è autorizzato, in ogni anno finanziario,
+ad emanare decreti cornice che consentano, fra l’altro, al Tesoro di effettuare operazioni di
+indebitamento sul mercato interno o estero nelle forme di prodotti e strumenti finanziari a breve,
+medio e lungo termine, indicandone l’ammontare nominale, il tasso di interesse o i criteri per la sua
+determinazione, la durata, l’importo minimo sottoscrivibile, il sistema di collocamento ed ogni altra
+caratteristica e modalità;
+VISTO il decreto ministeriale n. 58779 del 31 dicembre 2025, emanato in attuazione
+dell’articolo 3 del “Testo unico” (di seguito “decreto cornice”), ove si definiscono per l’anno
+finanziario 2026 gli obiettivi, i limiti e le modalità cui il Dipartimento del Tesoro dovrà attenersi
+nell’effettuare le operazioni finanziarie di cui al medesimo articolo prevedendo che le operazioni
+stesse vengano disposte dal Direttore Generale del Tesoro o, per sua delega, dal Direttore della
+Direzione Seconda del Dipartimento medesimo e che, in caso di assenza o impedimento di
+quest’ultimo, le operazioni predette possano essere disposte dal medesimo Direttore Generale del
+Tesoro, anche in presenza di delega continuativa;
+VISTO il decreto ministeriale n. 216 del 22 dicembre 2009 ed in particolare l’articolo 23,
+relativo agli operatori “Specialisti in titoli di Stato italiani”;
+VISTO il Decreto Dirigenziale n. 993039 dell’11 novembre 2011 (Decreto Dirigenziale
+Specialisti), e successive modificazioni, concernente la selezione e valutazione degli specialisti in
+titoli di Stato;
+VISTI gli articoli 24 e seguenti del “Testo unico”, in materia di gestione accentrata dei titoli
+di Stato;
+VISTO il decreto ministeriale 17 aprile 2000 n. 143, con cui è stato adottato il regolamento
+concernente la disciplina della gestione accentrata dei titoli di Stato;
+
+VISTO il decreto 23 agosto 2000, con cui è stato affidato alla Monte Titoli S.p.A. (oggi
+Euronext Securities Milan S.p.A.) il servizio di gestione accentrata dei titoli di Stato;
+VISTO il Regolamento (UE) n. 909/2014 del Parlamento europeo e del Consiglio del 23
+luglio 2014, relativo al miglioramento del regolamento titoli nell’Unione europea e ai depositari
+centrali di titoli e recante modifica delle direttive 98/26/CE e 2014/65/UE e del Regolamento (UE) n.
+236/2012, come successivamente modificato dal Regolamento (UE) n. 2023/2845 del Parlamento
+europeo e del Consiglio del 13 dicembre 2023 per quanto riguarda la disciplina di regolamento, la
+prestazione di servizi transfrontalieri, la cooperazione in materia di vigilanza, la prestazione di servizi
+accessori di tipo bancario e i requisiti per i depositari centrali di titoli di paesi terzi, e come integrato
+dal Regolamento delegato (UE) n. 2017/389 della Commissione dell’11 novembre 2016 per quanto
+riguarda i parametri per il calcolo delle penali pecuniarie per mancati regolamenti e le operazioni dei
+depositari centrali di titoli (CSD) negli Stati membri ospitanti e dal Regolamento delegato (UE) n.
+2018/1229 della Commissione del 25 maggio 2018 per quanto riguarda le norme tecniche di
+regolamentazione sulla disciplina del regolamento, come modificato dal Regolamento delegato (UE)
+n. 2021/70 della Commissione del 23 ottobre 2020 con riferimento all’entrata in vigore dello stesso,
+dal Regolamento delegato (UE) n. 2022/1930 della Commissione del 6 luglio 2022 per quanto
+riguarda la data di applicazione delle disposizioni relative alla procedura di acquisto forzoso e, da
+ultimo, dal Regolamento delegato (UE) n. 2023/1626 della Commissione del 19 aprile 2023 per
+quanto riguarda il meccanismo di penalizzazione per i mancati regolamenti relativi alle operazioni
+compensate che le controparti centrali presentano a fini di regolamento;
+VISTO il decreto ministeriale n. 12953 del 17 febbraio 2023 e successive modificazioni,
+concernente le “Disposizioni contabili in caso di ritardo nel regolamento delle operazioni di emissione,
+concambio e riacquisto di titoli di Stato, nonché nelle operazioni di pronti contro termine svolte dal
+Ministero dell’Economia e delle Finanze.”;
+VISTO il decreto ministeriale n. 96717 del 7 dicembre 2012, recante l’introduzione delle
+clausole di azione collettiva (CACs) nei titoli di Stato;
+VISTO il decreto ministeriale n. 3088 del 15 gennaio 2015, recante norme per la trasparenza
+nelle operazioni di collocamento dei titoli di Stato, (di seguito “Decreto trasparenza”);
+VISTO il decreto legislativo 24 febbraio 1998, n. 58 e successive modificazioni ed
+integrazioni, recante il testo unico delle disposizioni in materia di intermediazione finanziaria (“Testo
+Unico della Finanza”);
+VISTO il decreto legislativo 31 marzo 2023, n. 36 e successive modificazioni, recante il
+“Codice dei contratti pubblici”, ed in particolare l’articolo 56, comma 1, lettera i), ove si stabilisce
+che le disposizioni del codice stesso non si applicano ai contratti concernenti servizi finanziari relativi
+all’emissione, all’acquisto, alla vendita ed al trasferimento di titoli o di altri strumenti finanziari;
+VISTA la legge 30 dicembre 2025, n. 199, recante il “bilancio di previsione dello Stato per
+l’anno finanziario 2026 e il bilancio pluriennale per il triennio 2026-2028”, ed in particolare l’articolo
+3, comma 2, con cui è stato stabilito il limite massimo di emissione dei prestiti pubblici per l’anno
+stesso;
+
+VISTA la determinazione n. 101204 del 23 novembre 2023, con la quale il Direttore Generale
+del Tesoro ha conferito a decorrere dal 1° gennaio 2024 la delega al Dirigente Generale Capo della
+Direzione II in relazione alle attribuzioni in materia di debito pubblico, di cui al menzionato art. 3 del
+D.P.R.398/2003, al fine di assicurare la continuità e la tempestività dell’azione amministrativa;
+VISTO il regolamento dei mercati organizzati e gestiti da Borsa Italiana S.p.A. del 28 giugno
+2011, approvato dalla Consob con delibera n. 17904 del 25 agosto 2011, e successive modificazioni;
+CONSIDERATO che l’importo delle emissioni disposte a tutto l’11 giugno 2026 ammonta,
+al netto dei rimborsi di prestiti pubblici già effettuati, a 42.346 milioni di euro;
+RITENUTO opportuno disporre una prima emissione di buoni del Tesoro poliennali legati
+all’inflazione italiana (Indice FOI senza tabacchi), “BTP Italia Sì” con godimento 23 giugno 2026 e
+scadenza 23 giugno 2031, da offrire tramite il Mercato Telematico delle Obbligazioni – MOT, diretto
+dalla Borsa Italiana S.p.A.;
+VISTE le linee guida della gestione del debito pubblico 2026;
+CONSIDERATA l’opportunità di affidare la gestione della raccolta delle adesioni all’offerta
+dei citati buoni a Intesa Sanpaolo S.p.A. e UniCredit S.p.A. nella qualità di Dealers, nonché a Banca
+Monte dei Paschi di Siena S.p.A. e a Banco BPM S.p.A., nella qualità di co-dealers, con il compito di
+coadiuvare le predette banche nelle operazioni medesime;
+CONSIDERATO che l’offerta dei suddetti buoni avverrà in conformità all’“Information
+Memorandum” del 12 giugno 2026
+
+DECRETA
+
+Art. 1
+Ai sensi e per gli effetti dell'articolo 3 del “Testo unico” nonché del “decreto cornice”, è
+disposta una prima emissione dei buoni del Tesoro poliennali legati all’inflazione italiana (Indice FOI
+senza tabacchi) (di seguito: “BTP Italia Sì”) con le seguenti caratteristiche:
+
+decorrenza:
+
+23 giugno 2026
+
+scadenza:
+
+23 giugno 2031
+
+interessi:
+
+cedole semestrali, con ciclo cedolare: 23 giugno e
+23 dicembre di ogni anno di durata del prestito, a
+partire dal 23 dicembre 2026, determinate dalla
+somma di due componenti: Fissa (tasso cedolare
+annuo) e Inflazione, secondo le disposizioni di cui
+all’articolo 4 del presente decreto
+
+Tasso cedolare annuo:
+
+il tasso cedolare annuo sarà annunciato
+successivamente alla chiusura del periodo di
+collocamento, il giorno 19 giugno, salvo
+chiusura anticipata, ed il medesimo non potrà
+essere inferiore a 1,60%. In caso di chiusura
+anticipata, il tasso cedolare annuo sarà fissato e
+reso noto al pubblico (mediante comunicato
+stampa) entro il giorno successivo a quello di
+chiusura anticipata
+
+Premio Finale Extra:
+
+pari allo 0,6% del capitale nominale sottoscritto
+riconosciuto
+all’acquirente
+del
+titolo
+all’emissione che detenga lo stesso fino alla
+scadenza finale (23 giugno 2031)
+
+prezzo di emissione:
+
+100 (alla pari)
+
+taglio unitario:
+
+1.000 euro
+
+regolamento
+
+23 giugno 2026.
+
+Il capitale nominale verrà rimborsato in unica soluzione alla scadenza.
+Ai sensi del decreto ministeriale del 7 dicembre 2012, citato nelle premesse, i predetti titoli
+sono soggetti alle clausole di azione collettiva di cui ai “Termini Comuni di Riferimento” allegati al
+decreto medesimo (Allegato A).
+Il Ministero dell’Economia e delle Finanze procederà all’offerta dei “BTP Italia Sì” in conformità
+e secondo le modalità descritte nell’ “Information Memorandum” del 12 giugno 2026.
+Art. 2
+Il periodo di collocamento avrà inizio alle ore 9.00 del 15 giugno 2026 e terminerà alle ore 13.00
+del 19 giugno 2026, salvo chiusura anticipata.
+
+Il collocamento non prevede eventuali riparti, né sarà applicato alcun tetto massimo
+assicurando la completa soddisfazione degli ordini, salvo facoltà da parte del Ministero
+dell’Economia e delle Finanze di chiudere anticipatamente l’emissione.
+Tale chiusura anticipata, che comunque non potrà avere luogo prima delle ore 17.30 del terzo
+giorno di collocamento (17 giugno 2026), verrà comunicata entro il termine del secondo giorno di
+collocamento (16 giugno 2026) oppure entro le ore 13.00 dello stesso terzo giorno (17 giugno 2026).
+Dell’eventuale chiusura anticipata verrà data contestuale comunicazione, da parte del Ministero
+dell’Economia e delle Finanze e di Borsa Italiana S.p.A. secondo le rispettive prassi.
+Qualora la chiusura anticipata avvenga nella quarta giornata di collocamento (18 giugno
+2026), la medesima avrà luogo non prima delle ore 14.00 e la relativa comunicazione verrà effettuata
+entro il termine del terzo giorno di collocamento (17 giugno 2026) contestualmente dal Ministero
+dell’Economia e delle Finanze e da Borsa Italiana S.p.A. secondo le rispettive prassi.
+L’emissione verrà poi perfezionata con successivo decreto di accertamento, da emanarsi entro
+il 19 giugno 2026, con il quale sarà accertata la quantità nominale emessa finale, nonché il tasso
+cedolare annuo, fissato sulla base dell’andamento del mercato.
+Nel caso in cui la chiusura anticipata si verificasse alle ore 17.30 del terzo giorno di
+collocamento (17 giugno 2026) o del quarto giorno di collocamento (18 giugno 2026), il decreto di
+accertamento verrà emanato entro la giornata successiva.
+I titoli verranno collocati al prezzo di emissione di cui all’articolo 1.
+Sono ammessi a partecipare al collocamento i risparmiatori individuali e gli affini, ed in
+particolare le seguenti categorie di investitori, così come riportati nell’allegato alla Scheda informativa
+del titolo –“ BTP Italia Sì” – Prima Emissione – pubblicata dal Ministero dell’Economia e delle Finanze
+ed individuati nel citato Information Memorandum del 12 giugno 2026, sono: A) persone fisiche
+comunque classificate; B) soggetti al dettaglio, con esclusione di controparti qualificate e clienti
+professionali di diritto (di cui all’Allegato 3 del Regolamento CONSOB n. 20307/2018 e sue
+successive modificazioni ed integrazioni). Sono quindi inclusi i clienti al dettaglio divenuti
+professionali su richiesta (di cui al numero II dell’Allegato 3 del Regolamento CONSOB n.
+20307/2018 e sue successive modificazioni ed integrazioni), che ai fini dell’operazione dovranno
+farsi identificare come soggetti al dettaglio dall’intermediario a cui inviano o sottomettono l’ordine
+di acquisto o comunque far risultare all’intermediario tale loro qualifica; C) società di gestione
+autorizzate alla prestazione del servizio di gestione su base individuale di portafogli di investimento
+per conto delle categorie definite ai punti A) e B); D) intermediari autorizzati abilitati alla gestione
+dei portafogli individuali per conto delle categorie definite ai punti A) e B); E) società fiduciarie che
+prestano servizi di gestione di portafogli di investimento, anche mediante intestazione fiduciaria,
+esclusivamente per conto di clienti appartenenti alle categorie definite ai punti A) e B).
+La gestione degli ordini di acquisto dei titoli tramite il MOT, organizzato e gestito da Borsa
+Italiana S.p.A., è affidata a Intesa Sanpaolo S.p.A. e UniCredit S.p.A. nella qualità di dealers, e ai codealers Banca Monte dei Paschi di Siena S.p.A. e a Banco BPM S.p.A., con il compito di coadiuvare le
+predette banche nelle operazioni medesime.
+
+Con i medesimi istituti è concluso un Accordo di sottoscrizione in data 12 giugno 2026, al fine
+di regolare l’attività connessa all’emissione dei titoli.
+Ai predetti istituti, Intesa Sanpaolo S.p.A., UniCredit S.p.A., Banca Monte dei Paschi di Siena
+S.p.A. e a Banco BPM S.p.A., a fronte del servizio di supporto reso al Ministero dell’Economia e delle
+Finanze per il collocamento dell’emissione e per l’attività di quotazione sul mercato secondario con
+le modalità previste dall’Accordo di sottoscrizione datato 12 giugno 2026, verrà corrisposta una
+commissione complessivamente pari allo 0,075% del valore nominale dei titoli emessi, così
+suddivisa:
+-
+
+0,060% suddiviso in parti uguali fra Intesa Sanpaolo S.p.A., UniCredit S.p.A.;
+0,015% suddiviso in parti uguali fra Banca Monte dei Paschi di Siena S.p.A. e a Banco BPM
+S.p.A..
+
+La commissione da attribuire ai co-dealers verrà corrisposta per il tramite di Intesa Sanpaolo
+S.p.A., UniCredit S.p.A., in conformità all’Accordo di sottoscrizione.
+Agli intermediari finanziari che partecipano alla raccolta degli ordini della clientela ammessa alla
+distribuzione dei “BTP Italia Sì” viene riconosciuta una commissione di importo pari allo 0,6%
+dell’ammontare nominale complessivo degli ordini di acquisto rispettivamente raccolti nel periodo di
+collocamento.
+Tale commissione verrà corrisposta tramite le sopra nominate Intesa Sanpaolo S.p.A. e
+Unicredit S.p.A., che la riverseranno agli altri operatori partecipanti al MOT ai fini del riconoscimento
+agli intermediari che ne hanno diritto. Per aventi diritto si intendono gli intermediari che prestano il
+servizio di investimento nei confronti dell’acquirente finale del titolo ovvero che, nell’ambito dell’attività
+di raccolta degli ordini di acquisto di titoli dalla propria clientela e della trasmissione di tali ordini,
+direttamente o indirettamente, dalla propria clientela ai fini della loro immissione sul MOT, presteranno
+i servizi e le attività di investimento dell’esecuzione di ordini per conto dei clienti o della ricezione e
+trasmissione di ordini, come definiti nel Testo Unico della Finanza, in conformità con le disposizioni del
+“Decreto trasparenza”.
+Gli intermediari che prestano un servizio di gestione di portafogli individuali e le società
+fiduciarie che partecipano al collocamento, per conto di soggetti ammessi a partecipare alla
+medesima, non riceveranno tale commissione in quanto considerati alla stregua di acquirenti finali.
+La responsabilità di accertare la natura dell’investitore e, dunque, la legittimazione a partecipare
+alla procedura di collocamento, spetta all’intermediario di prossimità rispetto all’investitore, ossia
+all’intermediario che riceve l’ordine direttamente dall’acquirente finale.
+Tale ordine potrà essere effettuato allo sportello o mediante il sistema home banking, abilitato al
+trading on line.
+Alla clientela non dovrà essere applicato alcun onere, da parte dei predetti intermediari, a fronte
+della raccolta degli ordini durante il sopraindicato periodo di collocamento, in applicazione di quanto
+previsto dal Decreto trasparenza.
+
+Tutte le predette commissioni verranno corrisposte alla data del 25 giugno 2026 per il tramite
+di Intesa Sanpaolo S.p.A. e Unicredit S.p.A..
+Terminato il periodo di collocamento, le proposte di acquisto validamente inserite, divengono
+ordini di acquisto non revocabili.
+Il MOT, gestito da Borsa Italiana S.p.A., provvederà all’attività concernente la distribuzione dei
+titoli ed i relativi ordini di acquisto, nonché ad ogni attività connessa e conseguente, in conformità al
+regolamento dei mercati organizzati e gestiti da Borsa Italiana S.p.A..
+I titoli saranno distribuiti attraverso il MOT prima della data di regolamento e mediante
+l’abbinamento tra le proposte di vendita, immesse dai dealers nel corso del periodo di distribuzione,
+e le proposte di acquisto, immesse dagli operatori partecipanti al MOT, ivi inclusi i dealers, sia per
+conto proprio che per conto terzi. I contratti conclusi saranno regolati alla data del 23 giugno 2026.
+Ferme restando le limitazioni applicabili ai destinatari dell’offerta e al “Premio finale extra”
+di cui all’Information Memorandum, i dealers ed i co-dealers, al fine di adempiere agli impegni di
+quotazione, a partire dall’avvio delle negoziazioni ufficiali immetteranno nel corso del periodo di
+distribuzione proposte di acquisto dei titoli per conto proprio, conformemente a quanto indicato nel
+“Testo unico”, per un ammontare nominale di titoli pari a euro 10.000.000 (dieci milioni) per ciascun
+dealer e pari a euro 5.000.000 (cinque milioni) per ciascun co-dealer. Nella specifica ipotesi ai
+dealers e co-dealers non verrà corrisposta alcuna commissione. Ai titoli così acquistati dai dealers e
+dai co-dealers non si attribuisce alcun “Premio finale extra” in conformità a quanto indicato
+nell’Information Memorandum stesso. Inoltre, i dealers ed i co-dealers, si impegnano a chiedere a
+Monte Titoli S.p.A. (oggi Euronext Securities Milan S.p.A.), entro cinque giorni lavorativi dalla data
+di regolamento, la modifica del codice ISIN dei titoli dagli stessi acquistati (dal codice con “Premio
+finale extra” al codice senza “Premio finale extra”), in conformità alle disposizioni operative impartite
+da Monte Titoli S.p.A. (oggi Euronext Securities Milan S.p.A.).
+Ai “BTP Italia Sì” verrà assegnato un codice ISIN con “Premio finale extra” durante il periodo
+di collocamento sul MOT e un codice ISIN senza “Premio finale extra”, che sarà quello di mercato.
+A partire dalla data di regolamento, il codice ISIN con “Premio finale extra” verrà sostituito dal codice
+ISIN senza “Premio finale extra” al momento dell’eventuale vendita dei titoli sul mercato secondario.
+Lo stesso verrà corrisposto esclusivamente ai possessori di titoli individuati tramite il codice ISIN
+con “Premio finale extra”, da calcolarsi sull’importo nominale acquistato.
+Gli intermediari dovranno mantenere l’individuazione dei risparmiatori individuali e affini
+che detengono i titoli con codice ISIN con “Premio finale extra” sino alla scadenza dei medesimi,
+dando comunicazione delle relative quantità alla Monte Titoli S.p.A. (oggi Euronext Securities Milan
+S.p.A.), che a sua volta comunicherà mensilmente al Ministero dell’Economia e delle Finanze e alla
+Banca d’Italia i dati stessi.
+Art. 3
+L'importo minimo acquistabile durante il collocamento dei “BTP Italia Sì” di cui al presente
+
+decreto è di 1.000 euro nominali; gli acquisti potranno quindi avvenire per tale importo o multipli di tale
+cifra.
+Ai sensi dell'articolo 39 del decreto legislativo 24 giugno del 1998 n. 213 e successive
+modificazioni, i buoni sono rappresentati da iscrizioni contabili che continuano a godere dello stesso
+trattamento fiscale, comprese le agevolazioni e le esenzioni, che la vigente normativa riconosce ai
+titoli di Stato.
+In applicazione della convenzione stipulata in data 8 novembre 2016 tra il Ministero
+dell’Economia e delle Finanze, la Monte Titoli S.p.A. (oggi Euronext Securities Milan S.p.A.) e Banca
+d’Italia, in forza dell’articolo 26 del “Testo Unico”, il capitale nominale collocato verrà riconosciuto
+mediante accreditamento nei conti di deposito in titoli in essere presso la predetta società a nome degli
+operatori.
+Art. 4
+Gli interessi sui “BTP Italia Sì” da corrispondere al tasso determinato alla scadenza semestrale della
+Cedola sono ottenuti applicando al capitale nominale sottoscritto la somma della Componente Fissa e
+della Componente Inflazione:
+Cedolat= capitale nominale minimo *[ Componente Fissa + Componente Inflazionet]
+Il risultato ottenuto, comprensivo di un numero di cifre decimali non inferiore a dieci, è moltiplicato
+per il numero di volte in cui detto importo minimo è compreso nel capitale nominale oggetto del
+pagamento. Ai fini del pagamento medesimo, il valore così determinato è arrotondato al secondo
+decimale.
+dove:
+Componente Fissa, indica il tasso cedolare annuo diviso due;
+Componente Inflazione, indica, con riferimento ad una data, la variazione su base semestrale
+dell’Indice FOI senza tabacchi, a tale data, espressa in termini percentuali, con un minimo di zero.
+Componente Inflazionet indica, con riferimento ad una Cedola (la “Cedolat”), la Componente
+Inflazione calcolata alla relativa Data di Pagamento della Cedola.
+Si precisa che il limite minimo pari a zero previsto per la Componente Inflazione si applica anche ai
+fini del calcolo del rateo di interesse maturato sui Titoli in occasione delle negoziazioni sul mercato
+secondario; conseguentemente, ai fini di tale calcolo, la Componente Inflazione non potrà assumere
+in alcun caso un valore negativo.
+Indice FOI senza tabacchi o Indice indica l’indice nazionale dei prezzi al consumo per le famiglie
+di operai ed impiegati (FOI) al netto dei tabacchi.
+
+La Componente Inflazionet è calcolata a partire dalla seguente formula:
+𝑀𝐴𝑋[0% ; 100% ∗ (𝐶𝐼(𝑑,𝑚) − 1)]
+
+dove:
+𝐶𝐼(𝑑,𝑚)
+
+indica, con riferimento alla Componente Inflazione, al giorno d del mese m, il Coefficiente di
+Inflazione calcolato sulla base dell’inflazione rilevata dall’Indice FOI senza tabacchi, mediante la
+seguente formula
+𝐶𝐼(𝑑,𝑚) =
+
+𝑁𝑢𝑚𝑒𝑟𝑜 𝐼𝑛𝑑𝑖𝑐𝑒(𝑑,𝑚)
+𝑁𝑢𝑚𝑒𝑟𝑜 𝐼𝑛𝑑𝑖𝑐𝑒(𝑑,𝑚)−1
+
+dove:
+Il valore del Coefficiente di Inflazione così ottenuto è troncato alla sesta decimale e arrotondato alla
+quinta decimale.
+Numero Indice(d,m) indica, con riferimento ad una Cedola, il valore dell’Indice (numero indice dei
+prezzi) al giorno d del mese m di pagamento della Cedola, vale a dire alla relativa Data di Pagamento
+della Cedola;
+Numero Indice(d,m)-1 indica, con riferimento ad una Cedola, il valore dell’Indice (numero indice dei
+prezzi), (i) alla Data di Pagamento della Cedola immediatamente precedente (ossia la Cedola pagata
+6 mesi prima), ovvero, (ii) con riferimento alla prima Cedola, alla Data di Regolamento.
+Per calcolare il valore dell’Indice ad una data generica (giorno d del mese m), si procede con la
+seguente modalità di calcolo per interpolazione:
+d −1
+Numero Indiced,m = NIfoim-3 +
+* (NIfoim-2 - NIfoim-3)
+gg
+dove:
+Numero Indiced,m indica il valore dell’Indice (numero indice dei prezzi) al giorno d del mese m;
+NIfoim-3 indica l’Indice FOI senza tabacchi pubblicato per il mese che precede di tre mesi quello per
+il quale viene effettuato il calcolo;
+NIfoim-2 indica l’Indice FOI senza tabacchi pubblicato per il mese che precede di due mesi quello per
+il quale viene effettuato il calcolo;
+d è il numero dei giorni dall’inizio del mese m, ovvero il mese per il quale viene effettuato il calcolo;
+gg è il numero di giorni effettivi del mese m, ovvero il mese per il quale viene effettuato il calcolo.
+
+Il valore dell’Indice così ottenuto è troncato alla sesta cifra decimale e arrotondato alla quinta cifra
+decimale.
+Qualora l’Indice FOI senza tabacchi subisca revisioni successivamente alla sua iniziale
+pubblicazione, ai fini dei predetti calcoli si continuerà ad utilizzare l’indice pubblicato prima della
+revisione.
+Qualora l’Indice FOI senza tabacchi per il mese “m” non dovesse essere pubblicato in tempo
+utile, sarà utilizzato un numero indice sostitutivo (il “Numero Indice Sostitutivo”), calcolato mediante
+la seguente formula:
+NIfoim−1 1/12
+)
+NISm = NIfoim−1 ∗ (
+NIfoim−13
+dove:
+NISm indica il Numero Indice Sostitutivo relativo al mese per il quale l’indice FOI senza tabacchi
+non è stato pubblicato in tempo utile;
+NIfoim−1 indica il valore dell’Indice FOI senza tabacchi pubblicato per il mese precedente quello per
+il quale viene effettuato il calcolo del Numero Indice Sostitutivo;
+NIfoim−13 indica il valore dell’Indice FOI senza tabacchi pubblicato per il mese che precede di tredici
+mesi quello per il quale viene effettuato il calcolo del Numero Indice Sostitutivo
+Il Numero Indice Sostitutivo sarà utilizzato ai fini della determinazione dei pagamenti di
+cedole effettuati precedentemente alla pubblicazione dell’Indice definitivo. L’Indice definitivo sarà
+applicato ai pagamenti di cedole effettuati successivamente alla sua pubblicazione. Eventuali
+pagamenti già effettuati sulla base dell’Indice sostitutivo non saranno rettificati.
+Qualora l’ISTAT cessi di calcolare l’Indice FOI senza tabacchi, il Ministero dell’Economia e
+delle Finanze, fermi restando i pagamenti già effettuati, individuerà un indice (cosiddetto “Indice
+Successivo”) che succeda all’Indice FOI senza tabacchi con riferimento ai “BTP Italia Sì”. Ai fini del
+calcolo della Componente Inflazione, si prenderanno in considerazione i valori dell’Indice Successivo
+rilevati alla data di pagamento della Cedola precedente.
+Il Ministero dell’Economia e delle Finanze provvederà a rendere noti, tramite i mezzi di
+informazione in uso sui mercati finanziari, gli elementi necessari per il calcolo degli importi dovuti
+Successivamente all’emissione, per gli scambi sul mercato secondario, il rateo di interesse in
+corso di maturazione relativo al giorno di regolamento dello scambio verrà calcolato secondo le
+convenzioni utilizzate per i Buoni del Tesoro Poliennali applicando all’ammontare nominale
+acquistato la somma della Componente Fissa e della Componente Inflazione, quest’ultima calcolata
+
+secondo il Coefficiente di Inflazione relativo alla data di regolamento dello scambio troncato alla
+sesta cifra decimale e arrotondato alla quinta cifra decimale. L’importo del rateo di interesse da
+corrispondere si ottiene moltiplicando l’ammontare nominale acquistato per il valore ottenuto diviso
+per 100.
+
+Art. 5
+Ferme restando le disposizioni vigenti relative alle esenzioni fiscali in materia di debito pubblico,
+in ordine al pagamento degli interessi e del “Premio Finale Extra”, ai “BTP Italia Sì” emessi con il
+presente decreto si applicano le disposizioni del decreto legislativo del 1° aprile 1996, n. 239 e successive
+modificazioni, nonché quelle del decreto legislativo del 21 novembre 1997, n. 461.
+I buoni medesimi verranno ammessi alla quotazione ufficiale e sono compresi tra le attività
+ammesse a garanzia delle operazioni di rifinanziamento presso la Banca Centrale Europea.
+Art. 6
+Il giorno 23 giugno 2026 la Banca d'Italia riceverà, dalle banche di cui all’articolo 2, l’importo
+corrispondente ai titoli collocati.
+A tal fine, la Banca d’Italia provvederà ad inserire le relative partite nel servizio di
+liquidazione con valuta pari al giorno di regolamento.
+In caso di ritardo nel regolamento dei titoli di cui al presente decreto, troveranno applicazione le
+disposizioni del Regolamento (UE) n. 909/2014 del Parlamento europeo e del Consiglio del 23 luglio
+2014 e del decreto ministeriale n. 12953 del 17 febbraio 2023, citati nelle premesse.
+Il giorno 23 giugno 2026 la Banca d'Italia provvederà a versare l’importo introitato presso la
+Sezione di Roma della Tesoreria dello Stato, con valuta stesso giorno.
+La predetta Sezione di Tesoreria rilascerà, per detto versamento, apposita quietanza di entrata al
+bilancio dello Stato, con imputazione al Capo X, capitolo 5100, articolo 3 (unità di voto parlamentare
+4.1.171), per l'importo relativo al netto ricavo dell'emissione.
+Gli importi delle commissioni di cui all’articolo 2 saranno scritturati dalla Sezione di Roma della
+Tesoreria dello Stato fra i “pagamenti da regolare”, alla data del 25 giugno 2026.
+L'onere relativo al pagamento delle suddette commissioni farà carico al capitolo 2242 (unità di
+voto parlamentare 21.1) dello stato di previsione della spesa del Ministero dell’Economia e delle Finanze
+per l’anno finanziario 2026.
+
+Art. 7
+Il Direttore della Direzione II del Dipartimento del Tesoro del Ministero dell’Economia e delle
+Finanze firmerà i documenti relativi al prestito di cui al presente decreto.
+Art. 8
+Gli oneri per interessi relativi all’anno finanziario 2026 faranno carico al capitolo 2214 (unità di
+voto parlamentare 21.1) dello stato di previsione della spesa del Ministero dell’Economia e delle
+Finanze, per l’anno stesso, ed a quelli corrispondenti, per gli anni successivi.
+L’onere per il rimborso del capitale relativo all’anno finanziario 2031 farà carico al capitolo che
+verrà iscritto nello stato di previsione della spesa del Ministero dell’Economia e delle Finanze per l’anno
+stesso, corrispondente al capitolo 9502 (unità di voto parlamentare 21.2) dello stato di previsione per
+l’anno in corso.
+L’onere per il pagamento del “Premio Finale Extra”, di cui all’articolo 1 del presente decreto,
+farà carico ad apposito capitolo che verrà istituito nello stato di previsione della spesa del Ministero
+dell’Economia e delle Finanze per l’anno 2031 e corrispondente al capitolo 2224 (unità di voto
+parlamentare 21.1) dello stato di previsione per l’anno in corso.
+Il presente decreto sarà pubblicato nella Gazzetta Ufficiale della Repubblica Italiana.
+p. IL DIRETTORE GENERALE DEL TESORO
+Firmato digitalmente da:
+Davide Iacovoni
+
+

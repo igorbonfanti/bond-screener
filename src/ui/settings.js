@@ -28,10 +28,10 @@ export function renderSettings() {
   const root = ctx.root;
   const ptf = ctx.portfolio && ctx.portfolio.count ? ctx.portfolio : null;
   root.replaceChildren(...[
-    ptf ? panel('Il mio portafoglio', `${ptf.count} titoli · ${fmtEur(ptf.value)}`, portfolioSection(st, ptf)) : null,
-    panel(st.goal === 'income' ? 'Capitale e scadenze' : 'Importi e scadenze', st.goal === 'income' ? 'rendita mensile' : 'capitale a scadenza',
+    ptf && st.goal !== 'indexed' ? panel('Il mio portafoglio', `${ptf.count} titoli · ${fmtEur(ptf.value)}`, portfolioSection(st, ptf)) : null,
+    ...(st.goal === 'indexed' ? indexedSections(st) : [panel(st.goal === 'income' ? 'Capitale e scadenze' : 'Importi e scadenze', st.goal === 'income' ? 'rendita mensile' : 'capitale a scadenza',
       [st.goal === 'income' ? incomeSection(st) : capitalSection(st),
-        ptf ? null : h('p', { class: 'note' }, 'Hai già dei titoli? ', h('button', { type: 'button', class: 'linkbtn', text: 'Caricali nel portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } }), ': la scala si costruisce attorno, senza venderli.')]),
+        ptf ? null : h('p', { class: 'note' }, 'Hai già dei titoli? ', h('button', { type: 'button', class: 'linkbtn', text: 'Caricali nel portafoglio', on: { click: () => ctx.onEditPortfolio && ctx.onEditPortfolio() } }), ': la scala si costruisce attorno, senza venderli.')])]),
     panel('Titoli ammessi', ctx.basketMeta || null, basketSection(st), 'basketMeta'),
     optionsSection(st)
   ].filter(Boolean));
@@ -184,14 +184,82 @@ function incomeSection(st) {
   ];
 }
 
+/* ---------- 2c. Passività indicizzata ---------- */
+const SCEN_NAMES = [['base', 'Base'], ['alto', 'Alto 3,5%'], ['basso', 'Basso 1%'], ['shock', 'Shock 8→5%'], ['basis', 'FOI +0,5% su HICP']];
+
+/** Percentuale: si scrive in punti (2,3) e si salva in decimali (0,023). */
+function pctInput(k, value, onValue, { min = -5, max = 30, dec = 2, empty = null } = {}) {
+  // empty: testo segnaposto quando il valore è null (campo vuoto = valore automatico)
+  const show = v => (v == null ? '' : fmtNum(v * 100, dec));
+  const input = h('input', { class: 'input', inputmode: 'decimal', value: show(value), placeholder: empty || '', data: { k } });
+  input.addEventListener('change', () => {
+    if (empty && input.value.trim() === '') { onValue(null); return; }
+    const v = parseUserNumber(input.value);
+    if (Number.isFinite(v) && v >= min && v <= max) onValue(v / 100); else input.value = show(value);
+  });
+  return h('div', { class: 'input-wrap' }, input, h('span', { class: 'suffix', 'aria-hidden': 'true', text: '%' }));
+}
+
+function indexedSections(st) {
+  const a = st.indexed.alm, minYear = ctx.ds ? parts(ctx.ds.refDate).y : new Date().getFullYear();
+  const setA = (fn, structural = true) => set(s => fn(s.indexed.alm), structural);
+  const years = h('div', { class: 'years' },
+    yearStepper('xfrom', a.yearFrom, minYear, 2080, v => setA(x => { x.yearFrom = v; if (x.yearTo < v) x.yearTo = v; }), 'Primo anno'),
+    h('span', { class: 'sep', text: 'al' }),
+    yearStepper('xto', a.yearTo, minYear, 2080, v => setA(x => { x.yearTo = v; if (x.yearFrom > v) x.yearFrom = v; }), 'Ultimo anno'));
+  const modeNote = {
+    mincost: 'Il capitale minimo che paga l\'affitto ogni anno fino all\'ultimo anno, negli scenari che scegli di coprire.',
+    maxhorizon: 'Con il capitale che hai: fino a che anno l\'affitto è pagato.',
+    maxscale: 'Con il capitale che hai: quanto affitto puoi pagare fino all\'ultimo anno (lo stesso profilo di crescita).'
+  }[a.mode];
+  const liab = [
+    field('Cosa cerco', seg('xmode', [['mincost', 'Capitale minimo'], ['maxhorizon', 'Fino a quando'], ['maxscale', 'Quanto affitto']], a.mode, v => setA(x => { x.mode = v; }), 'Cosa cerco'), modeNote),
+    a.mode === 'mincost' ? null : field('Capitale da investire', moneyInput('xbudget', a.budget, '€', v => setA(x => { x.budget = v; }, false))),
+    field('Affitto del primo anno', moneyInput('xl0', a.L0, '€', v => setA(x => { x.L0 = v; }, false)), 'Importo annuo nel primo anno; poi cresce con l\'inflazione.'),
+    field('Anni da pagare', years, a.mode === 'maxhorizon' ? 'L\'ultimo anno è il massimo che cerco.' : null),
+    field('Rate', seg('xsched', [['yearly', 'Annuali'], ['semester', 'Semestrali']], a.schedule, v => setA(x => { x.schedule = v; }), 'Rate'),
+      a.schedule === 'yearly' ? 'Ogni anno di affitto dev\'essere in cassa il 1° gennaio (prudente).' : 'Ogni semestre di affitto dev\'essere in cassa il 1° gennaio e il 1° luglio.'),
+    field('L\'affitto segue', seg('xidx', [['FOI', 'FOI (ISTAT)'], ['HICP', 'HICP area euro']], a.liabIndex, v => setA(x => { x.liabIndex = v; }), 'Indice dell\'affitto'),
+      'L\'aggiornamento ISTAT dei canoni usa il FOI.'),
+    field('Più, ogni anno', pctInput('xspread', a.realSpread, v => setA(x => { x.realSpread = v; }), { min: -5, max: 10 }), 'Crescita reale oltre l\'inflazione (0,5% = l\'affitto sale un po\' più dei prezzi).')
+  ];
+  const baseRates = a.inflBase;
+  const y1 = minYear + 1, y2 = minYear + 2, y3 = minYear + 3;
+  const scen = [
+    field('Inflazione attesa (scenario base)', h('div', { class: 'infl3' },
+      [[y1, 'xi1', 0.026, String(y1)], [y2, 'xi2', 0.021, String(y2)], [y3, 'xi3', 0.023, `dal ${y3}`]].map(([yy, k, dflt, lbl]) =>
+        h('label', { class: 'infl1' }, h('span', { class: 'sep', text: lbl }),
+          pctInput(k, baseRates[yy] ?? dflt, v => setA(x => { x.inflBase = { ...x.inflBase, [yy]: v }; }))))),
+      'HICP area euro. Il FOI dello scenario base è uguale; lo scenario «FOI +0,5%» lo alza di mezzo punto.'),
+    field('Scenari da coprire per forza', h('div', { class: 'chips', role: 'group', 'aria-label': 'Scenari da coprire' },
+      SCEN_NAMES.map(([id, name]) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(a.robust.includes(id)), data: { k: 'rob:' + id }, disabled: id === 'base',
+        on: { click: () => setA(x => { x.robust = x.robust.includes(id) ? x.robust.filter(r => r !== id) : [...x.robust, id]; }) } }, name))),
+      'La scala deve pagare l\'affitto in tutti gli scenari scelti: costa di più, ma regge. Gli altri si simulano e si mostrano nel pannello stress.'),
+    field('€STR di oggi (tasso del conto XEON)', pctInput('xestr', a.estr, v => setA(x => { x.estr = v; }), { min: -1, max: 10, empty: 'ultimo BCE' }),
+      'Vuoto = l\'ultimo valore pubblicato dalla BCE (lo vedi nel pannello «Conto XEON o BOT»). Cedole e rimborsi in attesa restano su un ETF monetario (XEON): €STR + 0,085% − costi 0,10%, tassato al 26%, meno il bollo 0,2%. Negli scenari l\'€STR segue l\'inflazione (metà della differenza).')
+  ];
+  const caps = a.issuerCaps || {};
+  const cons = [
+    field('Quota minima di indicizzati', pctInput('xmin', a.minLinker, v => setA(x => { x.minLinker = Math.min(1, Math.max(0, v)); }), { min: 0, max: 100, dec: 0 }),
+      'Sul costo dei titoli. 0 = decide l\'ottimizzatore. Oggi gli indicizzati in universo sono solo italiani (BTP€i e BTP Italia).'),
+    field('Tetto per l\'Italia', pctInput('xcapit', caps.GOV_IT ?? 1, v => setA(x => { x.issuerCaps = { ...x.issuerCaps, GOV_IT: Math.min(1, Math.max(0, v)) }; }), { min: 0, max: 100, dec: 0 }),
+      '100% = nessun tetto. Con un tetto all\'Italia la quota indicizzata non può superarlo.'),
+    field('Tetto per singolo titolo', pctInput('xtcap', a.titleCap || 1, v => setA(x => { x.titleCap = v >= 1 ? 0 : Math.max(0, v); }), { min: 0, max: 100, dec: 0 }), '100% = nessun tetto.')
+  ];
+  return [panel('Affitto da pagare', 'passività indicizzata', liab), panel('Inflazione e scenari', null, scen), panel('Vincoli della scala', null, cons)];
+}
+
+/** Paniere in uso: la modalità «Passività indicizzata» ha il suo (indicizzati inclusi), le altre quello comune. */
+const bk = s => s.goal === 'indexed' ? s.indexed.basket : s.basket;
+
 /* ---------- 3. Titoli ammessi ---------- */
 function basketSection(st) {
-  const b = st.basket;
+  const b = bk(st);
   const catalog = ctx.ds ? issuerCatalog(ctx.ds) : [];
   const minScore = ratingScore(b.minRating) ?? 0;
   const excluded = new Set(b.excluded);
   const areaChip = (key, label) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(!!b.groups[key]), data: { k: 'area:' + key },
-    on: { click: () => set(s => { s.basket.groups[key] = !s.basket.groups[key]; }, true) } }, label);
+    on: { click: () => set(s => { bk(s).groups[key] = !bk(s).groups[key]; }, true) } }, label);
   const groups = ['euro', 'sov', 'extra'].filter(a => b.groups[a]).map(area => {
     const list = catalog.filter(e => e.area === area);
     if (!list.length) return null;
@@ -201,42 +269,58 @@ function basketSection(st) {
       return h('button', { type: 'button', class: 'chip', 'aria-pressed': String(on), disabled: !okRating, data: { k: 'iss:' + e.issuer },
         title: okRating ? `${e.name}: ${e.count} titoli` : `${e.name}: rating ${e.rating || 'n.d.'} sotto la soglia`,
         'aria-label': `${e.name}, rating ${e.rating || 'non disponibile'}${okRating ? '' : ', sotto la soglia'}`,
-        on: { click: () => set(s => { const x = new Set(s.basket.excluded); x.has(e.issuer) ? x.delete(e.issuer) : x.add(e.issuer); s.basket.excluded = [...x]; }, true) } },
+        on: { click: () => set(s => { const x = new Set(bk(s).excluded); x.has(e.issuer) ? x.delete(e.issuer) : x.add(e.issuer); bk(s).excluded = [...x]; }, true) } },
         h('span', { class: 'cc', text: e.area === 'sov' ? e.issuer.replace('SOV_', '').slice(0, 4) : e.country }),
         h('span', { text: e.name }), h('span', { class: 'rt', text: e.rating || 'NR' }));
     });
     const codes = list.map(e => e.issuer);
     return h('div', { class: 'chip-group', role: 'group', 'aria-label': AREAS[area] },
       h('div', { class: 'lbl' }, h('span', { text: AREAS[area] }), h('span', null,
-        h('button', { type: 'button', class: 'linkbtn', text: 'tutti', 'aria-label': `${AREAS[area]}: tutti`, on: { click: () => set(s => { s.basket.excluded = s.basket.excluded.filter(x => !codes.includes(x)); }, true) } }), ' · ',
-        h('button', { type: 'button', class: 'linkbtn', text: 'nessuno', 'aria-label': `${AREAS[area]}: nessuno`, on: { click: () => set(s => { s.basket.excluded = [...new Set([...s.basket.excluded, ...codes])]; }, true) } }))),
+        h('button', { type: 'button', class: 'linkbtn', text: 'tutti', 'aria-label': `${AREAS[area]}: tutti`, on: { click: () => set(s => { bk(s).excluded = bk(s).excluded.filter(x => !codes.includes(x)); }, true) } }), ' · ',
+        h('button', { type: 'button', class: 'linkbtn', text: 'nessuno', 'aria-label': `${AREAS[area]}: nessuno`, on: { click: () => set(s => { bk(s).excluded = [...new Set([...bk(s).excluded, ...codes])]; }, true) } }))),
       h('div', { class: 'chips' }, chips));
   });
   return [
     field('Emittenti', h('div', { class: 'chips', role: 'group', 'aria-label': 'Gruppi di emittenti' }, areaChip('euro', 'Stati area euro'), areaChip('sov', 'Sovranazionali'), areaChip('extra', 'Altri Stati in euro'))),
-    field('Rischio: rating minimo', seg('rating', RATING_OPTS, b.minRating, v => set(s => { s.basket.minRating = v; }, true), 'Rating minimo'),
+    field('Rischio: rating minimo', seg('rating', RATING_OPTS, b.minRating, v => set(s => { bk(s).minRating = v; }, true), 'Rating minimo'),
       'Da BBB- in su è «investment grade»: i titoli con rating più basso, o senza rating, restano fuori.'),
     groups.filter(Boolean).length ? h('div', { class: 'form' }, groups) : h('p', { class: 'note', text: 'Scegli almeno un gruppo di emittenti.' }),
-    sw('belowpar', b.belowPar, 'Solo titoli sotto la pari', 'Prezzo ≤ 100: a scadenza nessuna minusvalenza (che non si potrebbe compensare con le cedole).', v => set(s => { s.basket.belowPar = v; }, true)),
-    b.belowPar ? null : field('Prezzo massimo', seg('maxprice', PRICE_OPTS, b.maxPrice ?? null, v => set(s => { s.basket.maxPrice = v; }, true), 'Prezzo massimo')),
-    field('Liquidità minima', seg('liq', LIQ_OPTS, b.minLiquidity, v => set(s => { s.basket.minLiquidity = v; }, true), 'Liquidità minima'),
+    sw('belowpar', b.belowPar, 'Solo titoli sotto la pari', 'Prezzo ≤ 100: a scadenza nessuna minusvalenza (che non si potrebbe compensare con le cedole).', v => set(s => { bk(s).belowPar = v; }, true)),
+    b.belowPar ? null : field('Prezzo massimo', seg('maxprice', PRICE_OPTS, b.maxPrice ?? null, v => set(s => { bk(s).maxPrice = v; }, true), 'Prezzo massimo')),
+    field('Liquidità minima', seg('liq', LIQ_OPTS, b.minLiquidity, v => set(s => { bk(s).minLiquidity = v; }, true), 'Liquidità minima'),
       'Classe di volume STFI (media 20 giorni): già «Bassa» esclude i titoli senza contrattazioni.'),
-    field('Quota massima per emittente', seg('cap', CAP_OPTS, CAP_OPTS.find(([v]) => Math.abs(v - b.issuerCap) < 1e-6)?.[0] ?? b.issuerCap, v => set(s => { s.basket.issuerCap = v; }, true), 'Quota massima per emittente'))
+    st.goal === 'indexed' ? null : field('Quota massima per emittente', seg('cap', CAP_OPTS, CAP_OPTS.find(([v]) => Math.abs(v - b.issuerCap) < 1e-6)?.[0] ?? b.issuerCap, v => set(s => { bk(s).issuerCap = v; }, true), 'Quota massima per emittente'))
   ];
 }
 
 /* ---------- Opzioni ---------- */
 function optionsSection(st) {
-  const b = st.basket;
+  const b = bk(st);
   const items = [
-    sw('zainetto', b.zainetto, 'Ho minusvalenze da recuperare', 'Usa il rendimento "super netto" di STFI: la plusvalenza a scadenza compensa lo zainetto fiscale e non viene tassata.', v => set(s => { s.basket.zainetto = v; })),
-    sw('stepup', b.includeStepUp, 'Includi titoli step-up', 'BTP Valore, Futura, Più: cedola crescente, flussi con il calendario degli scalini del Tesoro.', v => set(s => { s.basket.includeStepUp = v; })),
-    sw('infl', b.includeInflation, 'Includi BTP Italia e BTP€i', 'Nel file il loro rendimento è "senza indicizzazione": non è confrontabile con gli altri.', v => set(s => { s.basket.includeInflation = v; }))
+    sw('zainetto', b.zainetto, 'Ho minusvalenze da recuperare', 'Usa il rendimento "super netto" di STFI: la plusvalenza a scadenza compensa lo zainetto fiscale e non viene tassata.', v => set(s => { bk(s).zainetto = v; })),
+    sw('stepup', b.includeStepUp, 'Includi titoli step-up', 'BTP Valore, Futura, Più: cedola crescente, flussi con il calendario degli scalini del Tesoro.', v => set(s => { bk(s).includeStepUp = v; })),
+    sw('infl', b.includeInflation, 'Includi BTP Italia e BTP€i', st.goal === 'indexed'
+      ? 'Sono i titoli che crescono con l\'inflazione: togliendoli la scala usa solo titoli a tasso fisso.'
+      : 'Nel file il loro rendimento è "senza indicizzazione": non è confrontabile con gli altri.', v => set(s => { bk(s).includeInflation = v; }))
   ];
+  if (st.goal === 'indexed') {
+    // regole fiscali che le fonti non chiariscono: parametri espliciti (src/core/fisco-parametri.js), mai scelti in silenzio
+    const fz = st.indexed.alm.fisco || {};
+    const setF = (k, v) => set(s => { s.indexed.alm.fisco = { ...s.indexed.alm.fisco, [k]: v }; }, true);
+    items.push(field('Rivalutazione dei BTP€i tassata', seg('xtax', [['scadenza', 'A scadenza'], ['annuale', 'Ogni anno']], fz.rivalutazioneBtpEi || 'scadenza',
+      v => setF('rivalutazioneBtpEi', v), 'Quando si tassa la rivalutazione dei BTP€i'),
+      "DA VERIFICARE. «A scadenza» segue la Nota MEF citata dall'Agenzia delle Entrate (Risposta 67/2022). «Ogni anno» anticipa l'uscita di cassa."));
+    items.push(field('BTP€i: imposta a scadenza calcolata su', seg('xbase', [['emissione', 'Prezzo di emissione'], ['acquisto', 'Prezzo d\'acquisto']], fz.baseImponibileBtpEi || 'emissione',
+      v => setF('baseImponibileBtpEi', v), 'Base imponibile del provento dei BTP€i'),
+      "DA VERIFICARE con la banca. «Emissione» è prudente: chi compra sul secondario paga il 12,5% su tutta la rivalutazione dalla prima emissione; la minusvalenza che ne nasce non si usa."));
+    items.push(field('BTP Italia: credito sulla rivalutazione già nel prezzo', seg('xriv', [['nessuno', 'No'], ['credito', 'Sì']], fz.rateoRivalutazioneBtpItalia || 'nessuno',
+      v => setF('rateoRivalutazioneBtpItalia', v), 'Credito d\'imposta sulla rivalutazione maturata dei BTP Italia'),
+      "DA VERIFICARE. «No» è prudente: la rivalutazione incassata alla prima cedola si tassa tutta, anche la parte pagata nel prezzo."));
+  }
   if (st.goal === 'capital' && st.capital.start !== 'budget') items.push(field('Arrotondamento ai lotti',
     seg('round', [['up', 'Almeno l\'importo'], ['nearest', 'Il più vicino']], st.capital.rounding, v => set(s => { s.capital.rounding = v; }, true), 'Arrotondamento ai lotti')));
   if ((b.excludedIsins || []).length) items.push(h('div', { class: 'field' }, h('span', { class: 'lbl', text: `Titoli esclusi a mano (${b.excludedIsins.length})` }),
-    h('button', { type: 'button', class: 'mini', data: { k: 'restore' }, text: 'Ripristina tutti', on: { click: () => set(s => { s.basket.excludedIsins = []; }, true) } })));
+    h('button', { type: 'button', class: 'mini', data: { k: 'restore' }, text: 'Ripristina tutti', on: { click: () => set(s => { bk(s).excludedIsins = []; }, true) } })));
   const det = h('details', { class: 'panel adv', open: advOpen },
     h('summary', { class: 'ph' }, h('h2', { text: 'Opzioni avanzate' }), h('span', { class: 'meta', text: `${items.length} opzioni` })),
     h('div', { class: 'pb form' }, items));

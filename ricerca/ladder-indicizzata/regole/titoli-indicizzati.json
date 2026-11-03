@@ -1,0 +1,746 @@
+{
+  "_meta": {
+    "generato": "2026-11-03",
+    "fonteDati": "MEF - Dipartimento del Tesoro (dt.mef.gov.it): coefficienti di indicizzazione novembre 2026, decreti di emissione/accertamento, Information Memorandum, decreto di massima 19.12.2022 coordinato",
+    "note": [
+      "cedolaReale in % annuo; mesiCedola = mesi di pagamento (giorno = giorno della scadenza, slittamento al giorno lavorativo T2 successivo senza interessi aggiuntivi)",
+      "indiceBase BTPEI: Inflazione di Riferimento alla data di godimento, base 2025=100 (dal 1/3/2026); usare indici HICP ex-tabacco Eurostat in base 2025",
+      "indiceBase BTPITALIA: base del semestre corrente (cambia a ogni cedola, regola del massimo), base 2025=100",
+      "Indici rivisti dopo la prima pubblicazione: si usa sempre la prima pubblicazione; indice mancante: IS = I(m-1)*(I(m-1)/I(m-13))^(1/12)"
+    ]
+  },
+  "titoli": [
+    {
+      "isin": "IT0003745541",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.35,
+      "freq": 2,
+      "mesiCedola": [
+        3,
+        9
+      ],
+      "godimento": "2004-09-15",
+      "scadenza": "2035-09-15",
+      "indiceBase": {
+        "valore": 65.4231,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2004-09-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.58446
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_09_04_5_30anni/",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0004545890",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.55,
+      "freq": 2,
+      "mesiCedola": [
+        3,
+        9
+      ],
+      "godimento": "2009-09-15",
+      "scadenza": "2041-09-15",
+      "indiceBase": {
+        "valore": 71.98379,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2009-09-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.44005
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_09_09_30anni/",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005138828",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 1.25,
+      "freq": 2,
+      "mesiCedola": [
+        3,
+        9
+      ],
+      "godimento": "2015-09-15",
+      "scadenza": "2032-09-15",
+      "indiceBase": {
+        "valore": 78.29443,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2015-09-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.32398
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_09_15_15anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005246134",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 1.3,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2016-11-15",
+      "scadenza": "2028-05-15",
+      "indiceBase": {
+        "valore": 78.3138,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2016-11-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.32365
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_11_16_10anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005387052",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 0.4,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2019-05-15",
+      "scadenza": "2030-05-15",
+      "indiceBase": {
+        "valore": 80.81051,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2019-05-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.28275
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_05_19_10anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005436701",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 0.15,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2020-11-15",
+      "scadenza": "2051-05-15",
+      "indiceBase": {
+        "valore": 81.56521,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2020-11-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.27088
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_11_20_30anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005482994",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 0.1,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2021-11-15",
+      "scadenza": "2033-05-15",
+      "indiceBase": {
+        "valore": 84.13387,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2021-11-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.23208
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_11_21_10anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005543803",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 1.5,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2023-04-26",
+      "scadenza": "2029-05-15",
+      "indiceBase": {
+        "valore": 94.27683,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2023-04-26"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.09953
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "dedotto da scadenza (cedole semestrali posticipate a giorno/mese di scadenza e sei mesi prima); DA VERIFICARE sul decreto di emissione",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_26_04_23_5_anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf"
+      ]
+    },
+    {
+      "isin": "IT0005547812",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.4,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2023-05-15",
+      "scadenza": "2039-05-15",
+      "indiceBase": {
+        "valore": 94.778,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2023-05-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.09371
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_05_23_15anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005588881",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 1.8,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2023-11-15",
+      "scadenza": "2036-05-15",
+      "indiceBase": {
+        "valore": 96.67324,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2023-11-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.07227
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_11_23_10anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005647273",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.55,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2024-11-15",
+      "scadenza": "2056-05-15",
+      "indiceBase": {
+        "valore": 98.44725,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2024-11-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.05295
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_11_24_30anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005657348",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 1.1,
+      "freq": 2,
+      "mesiCedola": [
+        2,
+        8
+      ],
+      "godimento": "2025-06-27",
+      "scadenza": "2031-08-15",
+      "indiceBase": {
+        "valore": 99.9642,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2025-06-27"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.03697
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_27_06_25_5anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005706293",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.25,
+      "freq": 2,
+      "mesiCedola": [
+        2,
+        8
+      ],
+      "godimento": "2026-02-15",
+      "scadenza": "2046-02-15",
+      "indiceBase": {
+        "valore": 100.52804,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2026-02-15"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.03116
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_15_02_26_20anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005725160",
+      "tipo": "BTPEI",
+      "indice": "HICP_XT",
+      "cedolaReale": 2.0,
+      "freq": 2,
+      "mesiCedola": [
+        2,
+        8
+      ],
+      "godimento": "2026-07-30",
+      "scadenza": "2037-02-15",
+      "indiceBase": {
+        "valore": 103.09484,
+        "base": "2025=100",
+        "tipo": "Inflazione di Riferimento alla data di godimento (ribasata da MEF dopo il cambio base Eurostat 2015->2025)",
+        "data": "2026-07-30"
+      },
+      "ciNoto": {
+        "data": "2026-11-01",
+        "valore": 1.00548
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100 * max(CI(scadenza), 1); floor solo sul capitale a scadenza, MAI sulle cedole (anche l'ultima cedola usa CI < 1)"
+      },
+      "regolaRivalutazione": "BTPEI_CUMULATIVA_A_SCADENZA: cedola_t = cedolaReale/2 * 100 * CI(t); rimborso = 100*max(CI(T),1); CI(d) = IR(d)/IR(godimento), IR(d,m) = HICP_xt(m-3) + (d-1)/gg(m) * (HICP_xt(m-2) - HICP_xt(m-3)); troncamento 6a cifra e arrotondamento 5a su IR e CI",
+      "mesiCedolaFonte": "comunicato MEF di emissione 2026",
+      "premioFedelta": null,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btpei/coefficienti_indicizzazione_30_07_26_10anni/index.html",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btpei/",
+        "https://www.dt.mef.gov.it/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Testo-coordinato-del-Decreto-di-massima-per-le-aste-dei-Titoli-di-Stato-del-19.12.2022-n.-0101633-e-s.m.i.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/emissioni_titoli_di_stato_interni/comunicazioni_emissioni_ctz_e_btpei/"
+      ]
+    },
+    {
+      "isin": "IT0005388175",
+      "isinConPremio": "IT0005388167",
+      "tipo": "BTPITALIA",
+      "indice": "FOI_XT",
+      "cedolaReale": 0.65,
+      "freq": 2,
+      "mesiCedola": [
+        4,
+        10
+      ],
+      "godimento": "2019-10-28",
+      "scadenza": "2027-10-28",
+      "indiceBase": {
+        "valore": 103.62258,
+        "base": "2025=100",
+        "tipo": "numero indice base del semestre corrente",
+        "data": "2026-10-28",
+        "validoFino": "2027-04-28"
+      },
+      "indiceBaseAlRegolamento": null,
+      "notaIndiceBase": "Il numero indice alla data di regolamento originario (in base 2010 o 2015) non e' riportato nei file correnti; per i flussi futuri serve la base del semestre corrente (riportata) e, per la regola del massimo, il massimo storico di NI alle date cedola: DA RICAVARE dall'archivio coefficienti MEF.",
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso a scadenza = 100 (valore nominale non rivalutato); floor semestrale: cedola su max(CI,1), rivalutazione max(CI-1,0)"
+      },
+      "regolaRivalutazione": "BTPITALIA_SEMESTRALE_MAXBASE: CI_t = NI(t)/NIbase_t, NIbase_1 = NI(regolamento); NIbase_t = max(NI(t-1), max storico di NI alle date cedola precedenti e al regolamento); cedola_t = cedolaReale/2 * 100 * max(CI_t,1); rivalutazione_t = 100 * max(CI_t - 1, 0) pagata ogni sei mesi; rimborso = 100 (non rivalutato). NI(d,m) = FOI_xt(m-3) + (d-1)/gg(m) * (FOI_xt(m-2) - FOI_xt(m-3)); deflazione del semestre: nessun addebito, e la rivalutazione riparte solo sopra il massimo precedente (nessun recupero a favore dell'investitore)",
+      "premioFedelta": "Premio fedeltà finale 0,4% del nominale (solo acquisti all'emissione tenuti a scadenza)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/btp_italia/Information_Memorandum_BTP_Italia_28.10.2027.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btp_italia/coefficienti_indicizzazione_btp_italia_28_10_2027/index.html",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto_di_Accertamento_BTP_Italia_28.10.2027_x15x.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btp_italia/"
+      ]
+    },
+    {
+      "isin": "IT0005497000",
+      "isinConPremio": "IT0005496994",
+      "tipo": "BTPITALIA",
+      "indice": "FOI_XT",
+      "cedolaReale": 1.6,
+      "freq": 2,
+      "mesiCedola": [
+        6,
+        12
+      ],
+      "godimento": "2022-06-28",
+      "scadenza": "2030-06-28",
+      "indiceBase": {
+        "valore": 102.4,
+        "base": "2025=100",
+        "tipo": "numero indice base del semestre corrente",
+        "data": "2026-06-28",
+        "validoFino": "2026-12-28"
+      },
+      "indiceBaseAlRegolamento": null,
+      "notaIndiceBase": "Il numero indice alla data di regolamento originario (in base 2010 o 2015) non e' riportato nei file correnti; per i flussi futuri serve la base del semestre corrente (riportata) e, per la regola del massimo, il massimo storico di NI alle date cedola: DA RICAVARE dall'archivio coefficienti MEF.",
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso a scadenza = 100 (valore nominale non rivalutato); floor semestrale: cedola su max(CI,1), rivalutazione max(CI-1,0)"
+      },
+      "regolaRivalutazione": "BTPITALIA_SEMESTRALE_MAXBASE: CI_t = NI(t)/NIbase_t, NIbase_1 = NI(regolamento); NIbase_t = max(NI(t-1), max storico di NI alle date cedola precedenti e al regolamento); cedola_t = cedolaReale/2 * 100 * max(CI_t,1); rivalutazione_t = 100 * max(CI_t - 1, 0) pagata ogni sei mesi; rimborso = 100 (non rivalutato). NI(d,m) = FOI_xt(m-3) + (d-1)/gg(m) * (FOI_xt(m-2) - FOI_xt(m-3)); deflazione del semestre: nessun addebito, e la rivalutazione riparte solo sopra il massimo precedente (nessun recupero a favore dell'investitore)",
+      "premioFedelta": "Premio fedeltà intermedio 0,4% (28/06/2026, già pagato) + finale 0,6% (solo acquisti nella Prima Fase tenuti fino alle date)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/btp_italia/Information-Memorandum-BTP-Italia-28.06.2030-17.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btp_italia/coefficienti_indicizzazione_btp_italia_28_06_2030/index.html",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-di-Accertamento-BTP-Italia-28.06.2030-17.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btp_italia/"
+      ]
+    },
+    {
+      "isin": "IT0005517195",
+      "isinConPremio": "IT0005517187",
+      "tipo": "BTPITALIA",
+      "indice": "FOI_XT",
+      "cedolaReale": 1.6,
+      "freq": 2,
+      "mesiCedola": [
+        5,
+        11
+      ],
+      "godimento": "2022-11-22",
+      "scadenza": "2028-11-22",
+      "indiceBase": {
+        "valore": 104.12,
+        "base": "2025=100",
+        "tipo": "numero indice base del semestre corrente",
+        "data": "2026-11-22",
+        "validoFino": "2027-05-22"
+      },
+      "indiceBaseAlRegolamento": null,
+      "notaIndiceBase": "Il numero indice alla data di regolamento originario (in base 2010 o 2015) non e' riportato nei file correnti; per i flussi futuri serve la base del semestre corrente (riportata) e, per la regola del massimo, il massimo storico di NI alle date cedola: DA RICAVARE dall'archivio coefficienti MEF.",
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso a scadenza = 100 (valore nominale non rivalutato); floor semestrale: cedola su max(CI,1), rivalutazione max(CI-1,0)"
+      },
+      "regolaRivalutazione": "BTPITALIA_SEMESTRALE_MAXBASE: CI_t = NI(t)/NIbase_t, NIbase_1 = NI(regolamento); NIbase_t = max(NI(t-1), max storico di NI alle date cedola precedenti e al regolamento); cedola_t = cedolaReale/2 * 100 * max(CI_t,1); rivalutazione_t = 100 * max(CI_t - 1, 0) pagata ogni sei mesi; rimborso = 100 (non rivalutato). NI(d,m) = FOI_xt(m-3) + (d-1)/gg(m) * (FOI_xt(m-2) - FOI_xt(m-3)); deflazione del semestre: nessun addebito, e la rivalutazione riparte solo sopra il massimo precedente (nessun recupero a favore dell'investitore)",
+      "premioFedelta": "Premio fedeltà finale 0,8% (solo Prima Fase, tenuto a scadenza)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/btp_italia/Information-Memorandum-BTP-Italia-22.11.2028-18.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btp_italia/coefficenti_indicizzazione_btp_italia_22_11_2028/index.html",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-di-Accertamento-BTP-Italia-22.11.2028-18.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btp_italia/"
+      ]
+    },
+    {
+      "isin": "IT0005532723",
+      "isinConPremio": "IT0005532715",
+      "tipo": "BTPITALIA",
+      "indice": "FOI_XT",
+      "cedolaReale": 2.0,
+      "freq": 2,
+      "mesiCedola": [
+        3,
+        9
+      ],
+      "godimento": "2023-03-14",
+      "scadenza": "2028-03-14",
+      "indiceBase": {
+        "valore": 102.93,
+        "base": "2025=100",
+        "tipo": "numero indice base del semestre corrente",
+        "data": "2026-09-14",
+        "validoFino": "2027-03-14"
+      },
+      "indiceBaseAlRegolamento": null,
+      "notaIndiceBase": "Il numero indice alla data di regolamento originario (in base 2010 o 2015) non e' riportato nei file correnti; per i flussi futuri serve la base del semestre corrente (riportata) e, per la regola del massimo, il massimo storico di NI alle date cedola: DA RICAVARE dall'archivio coefficienti MEF.",
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso a scadenza = 100 (valore nominale non rivalutato); floor semestrale: cedola su max(CI,1), rivalutazione max(CI-1,0)"
+      },
+      "regolaRivalutazione": "BTPITALIA_SEMESTRALE_MAXBASE: CI_t = NI(t)/NIbase_t, NIbase_1 = NI(regolamento); NIbase_t = max(NI(t-1), max storico di NI alle date cedola precedenti e al regolamento); cedola_t = cedolaReale/2 * 100 * max(CI_t,1); rivalutazione_t = 100 * max(CI_t - 1, 0) pagata ogni sei mesi; rimborso = 100 (non rivalutato). NI(d,m) = FOI_xt(m-3) + (d-1)/gg(m) * (FOI_xt(m-2) - FOI_xt(m-3)); deflazione del semestre: nessun addebito, e la rivalutazione riparte solo sopra il massimo precedente (nessun recupero a favore dell'investitore)",
+      "premioFedelta": "Premio fedeltà finale 0,8% (solo Prima Fase, tenuto a scadenza)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/btp_italia/Information-Memorandum-BTP-Italia-14.03.2028-19.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btp_italia/coefficenti_indicizzazione_btp_italia_14_03_2028/index.html",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-di-Accertamento-BTP-Italia-14.03.2028-19.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btp_italia/"
+      ]
+    },
+    {
+      "isin": "IT0005648255",
+      "isinConPremio": "IT0005648248",
+      "tipo": "BTPITALIA",
+      "indice": "FOI_XT",
+      "cedolaReale": 1.85,
+      "freq": 2,
+      "mesiCedola": [
+        6,
+        12
+      ],
+      "godimento": "2025-06-04",
+      "scadenza": "2032-06-04",
+      "indiceBase": {
+        "valore": 101.6,
+        "base": "2025=100",
+        "tipo": "numero indice base del semestre corrente",
+        "data": "2026-06-04",
+        "validoFino": "2026-12-04"
+      },
+      "indiceBaseAlRegolamento": null,
+      "notaIndiceBase": "Il numero indice alla data di regolamento originario (in base 2010 o 2015) non e' riportato nei file correnti; per i flussi futuri serve la base del semestre corrente (riportata) e, per la regola del massimo, il massimo storico di NI alle date cedola: DA RICAVARE dall'archivio coefficienti MEF.",
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso a scadenza = 100 (valore nominale non rivalutato); floor semestrale: cedola su max(CI,1), rivalutazione max(CI-1,0)"
+      },
+      "regolaRivalutazione": "BTPITALIA_SEMESTRALE_MAXBASE: CI_t = NI(t)/NIbase_t, NIbase_1 = NI(regolamento); NIbase_t = max(NI(t-1), max storico di NI alle date cedola precedenti e al regolamento); cedola_t = cedolaReale/2 * 100 * max(CI_t,1); rivalutazione_t = 100 * max(CI_t - 1, 0) pagata ogni sei mesi; rimborso = 100 (non rivalutato). NI(d,m) = FOI_xt(m-3) + (d-1)/gg(m) * (FOI_xt(m-2) - FOI_xt(m-3)); deflazione del semestre: nessun addebito, e la rivalutazione riparte solo sopra il massimo precedente (nessun recupero a favore dell'investitore)",
+      "premioFedelta": "Premio finale extra 1% (solo Prima Fase, tenuto a scadenza)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/btp_italia/Information-Memorandum-BTP-Italia-04.06.2032-20.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/dati_statistici/coefficienti_di_indicizzazione_btp_italia/Coefficienti-di-indicizzazione-BTP-Italia-04_06_2032/index.html",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-accertamento-BTP-Italia-20-04.06.2032.pdf",
+        "https://www.dt.mef.gov.it/it/debito_pubblico/titoli_di_stato/quali_sono_titoli/btp_italia/"
+      ]
+    },
+    {
+      "isin": "IT0005713547",
+      "isinConPremio": "IT0005713539",
+      "tipo": "BTPITALIA",
+      "sottotipo": "BTP_ITALIA_SI",
+      "indice": "FOI_XT",
+      "cedolaReale": 1.6,
+      "freq": 2,
+      "mesiCedola": [
+        6,
+        12
+      ],
+      "godimento": "2026-06-23",
+      "scadenza": "2031-06-23",
+      "indiceBase": {
+        "valore": 102.23333,
+        "base": "2025=100 (dedotto: regolamento 23/06/2026, dopo il ribasamento ISTAT; la base non e' scritta nel comunicato)",
+        "tipo": "numero indice FOI alla data di regolamento",
+        "data": "2026-06-23"
+      },
+      "floorCapitale": {
+        "applica": true,
+        "regola": "rimborso = 100; il capitale NON si rivaluta mai"
+      },
+      "regolaRivalutazione": "BTPITALIA_SI_FISSO_PIU_INFLAZIONE: cedola_t = 100 * [cedolaReale/2/100 + max(0, NI(t)/NI(t-1) - 1)]; NI(t-1) = indice alla data cedola immediatamente precedente (prima cedola: regolamento), SENZA regola del massimo; nessuna rivalutazione del capitale; floor 0 sulla componente inflazione anche nel rateo",
+      "premioFedelta": "Premio finale extra 0,6% (solo acquisti nel collocamento con ISIN IT0005713539 tenuti a scadenza)",
+      "premioSpettaSecondario": false,
+      "lottoMinimo": 1000,
+      "fonte": [
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-di-emissione-BTP-Italia-Si-23.06.2031-1.pdf",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/normativa_spalla_destra/Decreto-di-Accertamento-BTP-Italia-Si-23.06.2031-1.pdf",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/risultati_aste/risultati_aste_btp_italia_si/BTP-Italia-Si-23.06.2031-1-Risultati-collocamento.pdf",
+        "https://www.dt.mef.gov.it/export/sites/sitodt/modules/documenti_it/debito_pubblico/comunicazioni_emissioni/btp_italia_si_comunicazione_emissione/Information-Memorandum-BTP-Italia-Si-23.06.2031-1.pdf"
+      ]
+    }
+  ]
+}

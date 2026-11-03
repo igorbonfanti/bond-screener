@@ -2,6 +2,7 @@
 import { loadText } from './data/stfi.js';
 import { enrich } from './core/basket.js';
 import { compute } from './engine.js';
+import { computeIndexed } from './engine-indexed.js';
 
 let ds = null;
 
@@ -13,6 +14,12 @@ self.onmessage = (e) => {
       self.postMessage({ type: 'loaded', id });
     } else if (type === 'compute') {
       if (!ds) throw new Error('Dati non caricati.');
+      if (e.data.settings.goal === 'indexed') {
+        // asincrono: la prima volta carica il solver HiGHS (WebAssembly) e i dati d'inflazione
+        computeIndexed(ds, e.data.settings).then(result => self.postMessage({ type: 'result', id, result }))
+          .catch(err => self.postMessage({ type: 'error', id, message: err && err.message ? err.message : String(err) }));
+        return;
+      }
       self.postMessage({ type: 'result', id, result: compute(ds, e.data.settings) });
     }
   } catch (err) {

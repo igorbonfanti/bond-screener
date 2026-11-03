@@ -1,0 +1,10 @@
+{
+ "tag": "anno_da_oggi_2026",
+ "secs": 0.003,
+ "empty": true,
+ "warnings": [
+  "La prima rata (1/1/2026) non è dopo la data di regolamento dei prezzi (04/11/2026): scegli come primo anno il 2027 o dopo."
+ ],
+ "basketCount": 737,
+ "settle": "2026-11-04"
+}

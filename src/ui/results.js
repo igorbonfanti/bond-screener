@@ -4,6 +4,7 @@
    della proposta prodotta dal motore. */
 import { h, fmtEur, fmtPct, fmtNum, fmtSigned, copyText, toast, downloadFile, badge, MINUS } from './dom.js';
 import { columnChart, yieldMap, legend } from './charts.js';
+import { renderIndexed } from './indexed.js';
 import { fmt, fmtMonthYear, parts, MONTHS, MONTHS_LONG } from '../core/dates.js';
 
 let A = {};   // azioni fornite da main.js
@@ -12,29 +13,30 @@ export function renderResults(root, { st, result, actions }) {
   A = actions || {};
   const plan = result && result.plan;
   if (!plan) { root.replaceChildren(); return; }
+  if (plan.mode === 'indexed') { root.replaceChildren(...renderIndexed(st, result, A)); return; }
   if (plan.mode === 'capital') root.replaceChildren(...(plan.holdings ? portfolioCapitalView(st, result, plan) : capitalView(st, result, plan)));
   else root.replaceChildren(...(plan.holdings ? portfolioIncomeView(st, result, plan) : incomeView(st, result, plan)));
 }
 
 /* ------------------------------ comuni ------------------------------ */
-const kpi = (k, v, sub, small, title) => h('div', { class: 'kpi', title }, h('span', { class: 'k', text: k }),
+export const kpi = (k, v, sub, small, title) => h('div', { class: 'kpi', title }, h('span', { class: 'k', text: k }),
   h('span', { class: 'v num' }, v, small ? [' ', h('small', { text: small })] : null), sub ? h('span', { class: 's', text: sub }) : null);
 
 /** Osservazione: tipo → badge di stato (forma + parola) e motivo accanto. */
 const KIND = { good: ['trig', 'OK'], warn: ['watch', 'Attenzione'], info: ['normal', 'Nota'], bad: ['fail', 'Problema'] };
-const insight = (kind, text) => ({ kind, text });
-function notesPanel(items) {
+export const insight = (kind, text) => ({ kind, text });
+export function notesPanel(items) {
   return panel('Da sapere', `${items.length} ${items.length === 1 ? 'nota' : 'note'}`,
     h('div', { class: 'pb' }, h('div', { class: 'states' }, items.map(it => h('div', { class: 'srow' }, badge(...KIND[it.kind]), h('span', { text: it.text }))))));
 }
 
-function panel(title, meta, ...body) {
+export function panel(title, meta, ...body) {
   return h('section', { class: 'panel' },
     h('div', { class: 'ph' }, h('h2', { text: title }), meta == null ? null : typeof meta === 'string' ? h('span', { class: 'meta', text: meta }) : meta),
     ...body);
 }
 
-const miniBtn = (text, onClick, attrs = {}) => h('button', { type: 'button', class: 'mini', ...attrs, on: { click: onClick } }, text);
+export const miniBtn = (text, onClick, attrs = {}) => h('button', { type: 'button', class: 'mini', ...attrs, on: { click: onClick } }, text);
 const liqDots = n => '●'.repeat(Math.max(0, Math.min(4, n))) + '○'.repeat(4 - Math.max(0, Math.min(4, n)));
 const monthsText = b => b.months && b.months.length ? b.months.map(m => MONTHS[m - 1]).join(' · ') : 'zero coupon';
 const csvNum = (n, dec) => fmtNum(n, dec).replace(MINUS, '-');   // nel CSV il meno ASCII: i fogli di calcolo lo leggono come numero
@@ -52,7 +54,7 @@ function bondTags(b, extra = []) {
 }
 
 /** Titolo in una cella: nome, ISIN (si copia con un clic) ed etichette. */
-function bondCell(b, extra) {
+export function bondCell(b, extra) {
   return h('span', { class: 'ttl' },
     h('b', { text: b.desc }),
     h('span', { class: 'tags' }, h('span', { class: 'code', role: 'button', tabindex: -1, title: 'Copia ISIN', text: b.isin,
@@ -163,7 +165,7 @@ function purchasePanel(positions, settle, title = 'Lista d\'acquisto') {
       miniBtn('Stampa', () => window.print()))), table);
 }
 
-function actionsBar(compare = false) {
+export function actionsBar(compare = false) {
   return h('div', { class: 'actions' },
     miniBtn('Salva la scala', () => A.onSave && A.onSave()),
     miniBtn('Condividi il link', () => A.onShare && A.onShare()),

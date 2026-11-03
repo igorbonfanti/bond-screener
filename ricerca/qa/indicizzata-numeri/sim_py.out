@@ -1,0 +1,30 @@
+== semestrale
+base n 40 diffSaldo 0.166 diffRate 0.0 min 35.76 2031-01-01 defl 1.3322676295501878e-15
+alto n 40 diffSaldo 0.43 diffRate 0.0 min 0.53 2046-07-01 defl 0.0
+basso n 40 diffSaldo 0.263 diffRate 0.0 min -397.92 2031-01-01 defl 0.0
+shock n 40 diffSaldo 0.231 diffRate 0.0 min 325.74 2037-01-01 defl 1.9984014443252818e-15
+basis n 40 diffSaldo 0.104 diffRate 0.0 min -16571.75 2046-07-01 defl 0.0
+== maxscale200k
+base n 20 diffSaldo 0.211 diffRate 0.0 min 10.84 2030-01-01 defl 1.3322676295501878e-15
+alto n 20 diffSaldo 0.28 diffRate 0.0 min -0.28 2046-01-01 defl 0.0
+basso n 20 diffSaldo 0.235 diffRate 0.0 min -495.39 2030-01-01 defl 0.0
+shock n 20 diffSaldo 0.188 diffRate 0.0 min 152.84 2035-01-01 defl 1.9984014443252818e-15
+basis n 20 diffSaldo 0.075 diffRate 0.0 min -10583.89 2046-01-01 defl 0.0
+== minLinker50_titleCap20_maxscale
+base n 20 diffSaldo 0.232 diffRate 0.0 min -0.17 2029-01-01 defl 1.3322676295501878e-15
+alto n 20 diffSaldo 0.283 diffRate 0.0 min 2.5 2039-01-01 defl 0.0
+basso n 20 diffSaldo 0.105 diffRate 0.0 min -273.26 2029-01-01 defl 0.0
+shock n 20 diffSaldo 0.142 diffRate 0.0 min -0.12 2036-01-01 defl 1.9984014443252818e-15
+basis n 20 diffSaldo 0.059 diffRate 0.0 min -5791.48 2046-01-01 defl 0.0
+== maxhorizon200k
+base n 13 diffSaldo 0.392 diffRate 0 min 124.75 2028-01-01 defl 4.440892098500626e-16
+alto n 13 diffSaldo 0.41 diffRate 0 min 0.75 2039-01-01 defl 0.0
+basso n 13 diffSaldo 0.111 diffRate 0 min -331.71 2028-01-01 defl 0.0
+shock n 13 diffSaldo 0.191 diffRate 0 min 21.99 2036-01-01 defl 8.881784197001252e-16
+basis n 13 diffSaldo 0.112 diffRate 0 min -4506.96 2039-01-01 defl 0.0
+== tutti_robusti
+base n 20 diffSaldo 0.289 diffRate 0 min 342.0 2027-01-01 defl 1.3322676295501878e-15
+alto n 20 diffSaldo 0.369 diffRate 0 min 300.26 2046-01-01 defl 0.0
+basso n 20 diffSaldo 0.418 diffRate 0 min 264.12 2030-01-01 defl 0.0
+shock n 20 diffSaldo 0.287 diffRate 0 min 66.96 2046-01-01 defl 1.9984014443252818e-15
+basis n 20 diffSaldo 0.147 diffRate 0 min 1.42 2046-01-01 defl 0.0

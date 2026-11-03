@@ -1,0 +1,322 @@
+{
+ "scen": {
+  "Base | € nominali": {
+   "meta": "scenario Base · € nominali",
+   "pressed": [
+    "Base",
+    "€ nominali"
+   ],
+   "first": [
+    "2027",
+    "15.000",
+    "13.895",
+    "1086",
+    "−88",
+    "762"
+   ],
+   "last": [
+    "2046",
+    "25.373",
+    "0",
+    "0",
+    "0",
+    "6723"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Base"
+  },
+  "Base | € di oggi": {
+   "meta": "scenario Base · € di oggi",
+   "pressed": [
+    "Base",
+    "€ di oggi"
+   ],
+   "first": [
+    "2027",
+    "14.939",
+    "13.839",
+    "1081",
+    "−88",
+    "759"
+   ],
+   "last": [
+    "2046",
+    "16.389",
+    "0",
+    "0",
+    "0",
+    "4342"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Base"
+  },
+  "Alto 3,5% | € nominali": {
+   "meta": "scenario Alto 3,5% · € nominali",
+   "pressed": [
+    "Alto 3,5%",
+    "€ nominali"
+   ],
+   "first": [
+    "2027",
+    "15.000",
+    "13.902",
+    "1089",
+    "−88",
+    "775"
+   ],
+   "last": [
+    "2046",
+    "31.603",
+    "0",
+    "0",
+    "0",
+    "1"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Alto 3,5%"
+  },
+  "Alto 3,5% | € di oggi": {
+   "meta": "scenario Alto 3,5% · € di oggi",
+   "pressed": [
+    "Alto 3,5%",
+    "€ di oggi"
+   ],
+   "first": [
+    "2027",
+    "14.918",
+    "13.826",
+    "1083",
+    "−88",
+    "771"
+   ],
+   "last": [
+    "2046",
+    "16.348",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Alto 3,5%"
+  },
+  "Basso 1% | € nominali": {
+   "meta": "scenario Basso 1% · € nominali",
+   "pressed": [
+    "Basso 1%",
+    "€ nominali"
+   ],
+   "first": [
+    "2027",
+    "15.000",
+    "13.883",
+    "1080",
+    "−88",
+    "738"
+   ],
+   "last": [
+    "2046",
+    "19.904",
+    "0",
+    "0",
+    "0",
+    "11.645"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Basso 1%"
+  },
+  "Basso 1% | € di oggi": {
+   "meta": "scenario Basso 1% · € di oggi",
+   "pressed": [
+    "Basso 1%",
+    "€ di oggi"
+   ],
+   "first": [
+    "2027",
+    "14.976",
+    "13.861",
+    "1078",
+    "−88",
+    "736"
+   ],
+   "last": [
+    "2046",
+    "16.449",
+    "0",
+    "0",
+    "0",
+    "9624"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Basso 1%"
+  },
+  "Shock 8→5% | € nominali": {
+   "meta": "scenario Shock 8→5% · € nominali",
+   "pressed": [
+    "Shock 8→5%",
+    "€ nominali"
+   ],
+   "first": [
+    "2027",
+    "15.000",
+    "13.935",
+    "1105",
+    "−89",
+    "842"
+   ],
+   "last": [
+    "2046",
+    "31.395",
+    "0",
+    "0",
+    "0",
+    "5532"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Shock 8→5%"
+  },
+  "Shock 8→5% | € di oggi": {
+   "meta": "scenario Shock 8→5% · € di oggi",
+   "pressed": [
+    "Shock 8→5%",
+    "€ di oggi"
+   ],
+   "first": [
+    "2027",
+    "14.818",
+    "13.766",
+    "1091",
+    "−87",
+    "831"
+   ],
+   "last": [
+    "2046",
+    "16.239",
+    "0",
+    "0",
+    "0",
+    "2862"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario Shock 8→5%"
+  },
+  "FOI +0,5% su HICP | € nominali": {
+   "meta": "scenario FOI +0,5% su HICP · € nominali",
+   "pressed": [
+    "FOI +0,5% su HICP",
+    "€ nominali"
+   ],
+   "first": [
+    "2027",
+    "15.000",
+    "13.899",
+    "1087",
+    "−88",
+    "767"
+   ],
+   "last": [
+    "2046",
+    "27.824",
+    "0",
+    "0",
+    "0",
+    "−15.219"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario FOI +0,5% su HICP"
+  },
+  "FOI +0,5% su HICP | € di oggi": {
+   "meta": "scenario FOI +0,5% su HICP · € di oggi",
+   "pressed": [
+    "FOI +0,5% su HICP",
+    "€ di oggi"
+   ],
+   "first": [
+    "2027",
+    "14.927",
+    "13.832",
+    "1082",
+    "−88",
+    "764"
+   ],
+   "last": [
+    "2046",
+    "16.369",
+    "0",
+    "0",
+    "0",
+    "−8953"
+   ],
+   "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario FOI +0,5% su HICP"
+  }
+ },
+ "nRects": 59,
+ "tooltip": "Rata 2036\n€ di oggi\nRimborsi\n11.361 €\nCedole\n3358 €\nDalla liquidità\n876 €\nAffitto\n15.594 €\nAvanzo messo da parte\n0 €\nLiquidità dopo la rata\n−815 €",
+ "dopoRicalcolo": {
+  "meta": "scenario FOI +0,5% su HICP · € di oggi",
+  "pressed": [
+   "FOI +0,5% su HICP",
+   "€ di oggi"
+  ],
+  "first": [
+   "1/1/2027",
+   "7464",
+   "7253",
+   "1210",
+   "−87",
+   "920"
+  ],
+  "last": [
+   "1/7/2046",
+   "8073",
+   "7111",
+   "74",
+   "−2",
+   "−9617"
+  ],
+  "chartLabel": "Affitto di ogni scadenza e da dove arriva, scenario FOI +0,5% su HICP"
+ },
+ "sortOggi": "14.939 15.012 15.085 15.159 15.233 15.308 15.382 15.457 15.533 15.609 15.685 15.762 15.839 15.917 15.994 16.072 16.151 16.230 16.309 16.389",
+ "csvName": "scala-affitto-2026-11-03.csv",
+ "csv": [
+  "﻿\"ISIN\";\"Titolo\";\"Tipo\";\"Scadenza\";\"Nominale\";\"Prezzo (reale per gli indicizzati)\";\"CI al regolamento\";\"Controvalore stimato\"",
+  "\"DE000BU22072\";\"GERMANIA 10/12/2026 2%\";\"nominale\";\"10/12/2026\";\"13.421\";\"99,865\";\"\";\"13.609,17\"",
+  "\"IT0005388175\";\"BTP Italia 28/10/2027 0,65%(senza indicizzazione)\";\"BTP Italia\";\"28/10/2027\";\"10.000\";\"101,404\";\"1,00133\";\"10.154,98\"",
+  "\"IT0005517195\";\"BTP Italia 22/11/2028 1,6%(senza indicizzazione)\";\"BTP Italia\";\"22/11/2028\";\"11.000\";\"101,940\";\"1,02422\";\"11.556,14\""
+ ],
+ "toastCopia": "Elenco ISIN e nominali copiato",
+ "clip": [
+  "DE000BU22072\t13421",
+  "IT0005388175\t10000",
+  "IT0005517195\t11000"
+ ],
+ "isinCells": 14,
+ "azioni": [
+  "Salva la scala",
+  "Condividi il link",
+  "Stampa"
+ ],
+ "toastCondividi": "Link copiato: chi lo apre vede la stessa configurazione con i dati del giorno",
+ "urlCondividi": "http://localhost:8790/#/s/eyJnb2FsIjoiaW5kZXhlZCIsImNhcGl0YWwiOnsic3RhcnQiOiJhbW91bnRzIiwic2NoZWR1bGUiOiJ5ZWFybHkiLCJieU1vbnRoIjowLCJ5ZWFyRnJvbSI6MjAyNywieWVhclRvIjoyMDM2LCJhbW91bnQiOjEwMDAwLCJidWRnZXQiOjEwMDAwMCwiZGF0ZXMiOlt7ImxhYmVsIjoiT2JpZXR0aXZvIDEiLCJkYXRlIjoiMjAyOC0wOS0wMSIsImFtb3VudCI6MjAwMDB9LHsibGFiZWwiOiJPYmlldHRpdm8gMiIsImRhdGUiOiIyMDMxLTA2LTMwIiwiYW1vdW50IjozMDAwMH1dLCJmbGV4TW9udGhzIjo2LCJ1c2VDb3Vwb25zIjp0cnVlLCJhY2N1bXVsYXRlIjpmYWxzZSwicm91bmRpbmciOiJ1cCJ9LCJpbmNvbWUiOnsic3RhcnQiOiJjYXBpdGFsIiwiY2FwaXRhbCI6MTAwMDAwLCJtb250aGx5VGFyZ2V0IjozMDAsInllYXJGcm9tIjoyMDI4LCJ5ZWFyVG8iOjIwMzYsImxhZGRlciI6dHJ1ZSwidHJhZGVvZmYiOjF9LCJiYXNrZXQiOnsiZ3JvdXBzIjp7ImV1cm8iOnRydWUsImV4dHJhIjpmYWxzZSwic292Ijp0cnVlfSwiZXhjbHVkZWQiOltdLCJtaW5SYXRpbmciOiJCQkItIiwiYmVsb3dQYXIiOnRydWUsIm1heFByaWNlIjoxMDAsIm1pbkxpcXVpZGl0eSI6MSwiaXNzdWVyQ2FwIjowLjMzMzMzMzMzMzMzMzMzMzMsInphaW5ldHRvIjpmYWxzZSwiaW5jbHVkZUluZmxhdGlvbiI6ZmFsc2UsImluY2x1ZGVTdGVwVXAiOnRydWV9LCJpbmRleGVkIjp7ImJhc2tldCI6eyJncm91cHMiOnsiZXVybyI6dHJ1ZSwiZXh0cmEiOmZhbHNlLCJzb3YiOnRydWV9LCJleGNsdWRlZCI6W10sImV4Y2x1ZGVkSXNpbnMiOltdLCJtaW5SYXRpbmciOiJCQkItIiwiYmVsb3dQYXIiOmZhbHNlLCJtYXhQcmljZSI6bnVsbCwibWluTGlxdWlkaXR5IjoxLCJpc3N1ZXJDYXAiOjEsInphaW5ldHRvIjpmYWxzZSwiaW5jbHVkZUluZmxhdGlvbiI6dHJ1ZSwiaW5jbHVkZVN0ZXBVcCI6dHJ1ZX0sImFsbSI6eyJtb2RlIjoibWluY29zdCIsImJ1ZGdldCI6MzAwMDAwLCJMMCI6MTUwMDAsInllYXJGcm9tIjoyMDI3LCJ5ZWFyVG8iOjIwNDYsInNjaGVkdWxlIjoieWVhcmx5IiwicmVhbFNwcmVhZCI6MC4wMDUsImxpYWJJbmRleCI6IkZPSSIsImluZmxCYXNlIjp7IjIwMjciOjAuMDI2LCIyMDI4IjowLjAyMSwiMjAyOSI6MC4wMjN9LCJzY2VuYXJpb3MiOlsiYmFzZSIsImFsdG8iLCJiYXNzbyIsInNob2NrIiwiYmFzaXMiXSwicm9idXN0IjpbImJhc2UiLCJhbHRvIiwic2hvY2siXSwiZXN0ciI6bnVsbCwibWluTGlua2VyIjowLCJpc3N1ZXJDYXBzIjp7fSwidGl0bGVDYXAiOjAsImZpc2NvIjp7InJpdmFsdXRhemlvbmVCdHBFaSI6InNjYWRlbnphIiwiYmFzZUltcG9uaWJpbGVCdHBFaSI6ImVtaXNzaW9uZSIsInJhdGVvUml2YWx1dGF6aW9uZUJ0cEl0YWxpYSI6Im5lc3N1bm8ifX19LCJmaXhlZCI6e30sInVzZVBvcnRmb2xpbyI6dHJ1ZSwicG9ydGZvbGlvUHJlZiI6ImJhbGFuY2VkIiwicG9ydGZvbGlvQ2FycnkiOnRydWV9",
+ "dopoSalva": {
+  "toast": "Accedi per salvare, poi premi di nuovo «Salva la scala». La consultazione resta libera."
+ },
+ "linkAperto": {
+  "hash": "#/capitale",
+  "tab": "1 Capitale a scadenza",
+  "kpi": "DA INVESTIRE OGGI\n83.572 €\nper 100.000 € in 10 scadenze"
+ },
+ "guida": "GUIDA\nmetodo, tasse, tasti\n×\nLE VISTE\n1 Capitale a scadenza: somme disponibili a date precise (università, casa, auto…) oppure la stessa cifra ogni anno o semestre. Parti dagli importi che servono o dal capitale che hai.\n2 Rendita mensile: cedole ogni mese nel modo più regolare possibile; il capitale torna man mano che i titoli scadono.\n3 Portafoglio: i titoli che hai già, caricati dall'export della banca (per esempio Fineco, in Excel), incollati o inseriti a mano: valore di oggi, rendimento da qui a scadenza con la tassa sul tuo prezzo di carico, calendario degli incassi. Nelle viste 1 e 2 la scala si costruisce attorno a questi titoli, senza venderli. Il portafoglio resta solo in questo browser.\n4 Le mie scale: le scale salvate, confrontate con i prezzi di oggi: valore, cedole e rimborsi incassati, risultato.\n5 Un titolo: per comprare un solo titolo senza costruire una scala: filtri per emittente (per esempio Germania per i Bund), anni di scadenza, tipo di cedola, rating, prezzo e liquidità; ordinamento per rendimento netto o super netto, cedola, prezzo, scadenza, durata o liquidità. Il primo è il migliore; con l'importo che indichi vedi nominale, costo vero (credito d'imposta compreso) e incassi netti. In «Prezzo a cui compri» scrivi la lettera del book: tutto si ricalcola a quel prezzo.\n6 Affitto indicizzato: la scala più economica che paga una spesa che cresce con l'inflazione (per esempio un affitto), dal primo all'ultimo anno che scegli. Usa anche BTP€i e BTP Italia e la prova in cinque scenari d'inflazione.\nAFFITTO INDICIZZATO\n\nLa rata del primo anno cresce ogni anno con l'inflazione dell'anno prima (FOI italiano o HICP europeo) più uno spread che scegli; è dovuta all'inizio del periodo (1/1, o 1/1 e 1/7). Un programma lineare (solver HiGHS) sceglie quanti titoli comprare per spendere il meno possibile oggi, con il vincolo che la liquidità non vada mai sotto zero dopo nessuna rata negli scenari «da coprire»; poi arrotonda ai lotti interi. Rimborsi e cedole che arrivano prima restano su un ETF monetario tipo XEON (€STR più 0,085%, meno costi 0,10%, tassato al 26%, meno bollo). Gli scenari: inflazione base (la imposti tu), alta 3,5% e bassa 1% ogni anno, shock 8% → 5% nei primi anni, FOI che supera l'HICP di 0,5 punti; l'€STR segue l'inflazione per metà. BTP€i: cedola e rimborso moltiplicati per il coefficiente d'indicizzazione (CI) dell'HICP, rimborso almeno 100. BTP Italia: ogni sei mesi cedola e rivalutazione sul FOI con la regola del massimo; il BTP Italia Sì paga una cedola fissa più l'inflazione del semestre. I CI vengono dai dati ufficiali (Eurostat, ISTAT, MEF), controllati ogni giorno contro quelli pubblicati dal MEF. Le altre modalità: con il capitale che hai, l'affitto più alto che puoi pagare, oppure fino a che anno arrivi. Nella prova di stress vedi l'esito in ogni scenario e il confronto con una scala a importo fisso dello stesso capitale. Tre regole fiscali sui titoli indicizzati non sono chiare nelle fonti: sono opzioni «DA VERIFICARE» nelle opzioni avanzate, con la scelta prudente come default.\n\nDA DOVE ARRIVANO I DATI\n\nDal file \"Rendimenti e durate calcolati End of Day\" di simpletoolsforinvestors.eu: prezzi di chiusura e rendimenti lordi, netti e \"super netti\" del giorno. Ogni sera un'automazione lo scarica e lo pubblica qui, e all'avvio l'app usa quello; un file caricato a mano resta in uso solo se è più recente. La data EOD in alto dice di quando sono i prezzi e se sono aggiornati; toccandola vedi quale file stai usando e puoi riscaricarlo, caricarne uno tuo, salvarlo o cancellare la copia nel browser. Gli acquisti si intendono con valuta a due giorni lavorativi (T+2).\n\nCAPITALE A SCADENZA\n\nPer ogni scadenza (un anno, un semestre o una data precisa) l'app guarda i titoli del paniere che scadono in quella finestra e parte dalla combinazione con il rendimento netto più alto, rispettando la quota massima per emittente (con un algoritmo esatto: non lascia mai scoperta una scadenza che si può coprire). Poi calcola quanto comprare partendo dall'ultima scadenza: ogni importo è il rimborso del suo titolo più le cedole incassate da tutti i titoli nel suo periodo, cioè il suo anno o semestre o i 12 mesi prima della data (se l'opzione è attiva), a lotti interi. Infine prova a cambiare titoli, uno o due alla volta, e tiene il cambio se tutta la scala costa meno con le stesse somme garantite: il rendimento a scadenza presume le cedole reinvestite allo stesso tasso, mentre nella scala quelle che arrivano prima che servano restano ferme, e contano anche i lotti. Per questo un titolo con un rendimento un po' più basso (spesso uno zero coupon che scade quando servono i soldi) può costare meno. Partendo dal capitale, la somma per scadenza mostrata arriva davvero a ogni scadenza, con i lotti interi. Le cedole incassate prima della scala, o fra due date lontane, non contano: restano a te. Con «Accantona le cedole di prima» restano invece da parte, senza interessi, e pagano in ordine le prime scadenze. Con le date precise conta il \"rendimento effettivo alla data\": se il titolo scade prima, i soldi restano fermi fino a quel giorno. Con le scadenze annuali puoi chiedere i soldi «entro fine» di un mese (rette, tasse): ogni anno il titolo scade nei 12 mesi prima di quella data.\n\nRENDITA MENSILE\n\nUn calcolo di programmazione lineare massimizza la cedola netta del mese più povero, cioè la rendita che ricevi ogni mese; a parità sceglie il rendimento complessivo più alto. Rispetta la distribuzione delle scadenze negli anni, la quota per emittente e per titolo, poi toglie le posizioni troppo piccole e arrotonda ai lotti spostando i lotti dove la rendita resta più regolare. Il cursore «Priorità» concede un po' di regolarità in cambio di rendimento.\n\nATTORNO AL TUO PORTAFOGLIO\n\nCon i titoli caricati nella vista 3 e «Costruisci attorno al mio portafoglio» attivo, l'app non vende nulla: rimborsi e cedole nette dei tuoi titoli sono flussi fissi e compra solo la differenza. Nel capitale a scadenza ogni scadenza compra quello che manca dopo i tuoi titoli del suo periodo; con «Usa le eccedenze per le scadenze dopo» quello che i tuoi titoli danno in più (e i rimborsi che arrivano prima della scala) resta da parte, senza interessi, e paga le scadenze successive: oggi compri meno, ma quei soldi restano fermi. Spegnendola le eccedenze tornano a te e le scadenze scoperte le copri con acquisti di oggi; l'app mostra sempre quanto costerebbe l'altra scelta e quanto renderebbe la differenza (capitale in più oggi contro soldi che tornano), confrontata con i titoli del paniere di pari durata. Partendo dal capitale, trova per bisezione la somma per scadenza più alta che il capitale nuovo, insieme ai tuoi titoli, garantisce (anche con capitale zero: quanto rendono da soli). Nella rendita mensile le cedole dei tuoi titoli sono la base di ogni mese e i nuovi acquisti alzano il mese più povero; i titoli che scadono prima dell'orizzonte non contano, perché smetterebbero presto di pagare. Il limite per emittente vale sul portafoglio complessivo: se un emittente pesa già più del limite, non si comprano altri suoi titoli. «Nuovi acquisti» decide quanto preferire i titoli che hai già: I miei titoli (altri pezzi dei tuoi quando ce n'è uno nella finestra), Equilibrato (un titolo nuovo solo se conviene un po' di più: vale come 0,10 punti di rendimento l'anno), Rendimento (il migliore, a parità il tuo).\n\nTASSE (PERSONA FISICA, REGIME AMMINISTRATO)\n\n12,5% su titoli di Stato e sovranazionali, 26% sugli altri. Le cedole sono tassate alla fonte; sulla prima si paga solo la parte maturata dopo l'acquisto. La plusvalenza a scadenza (100 − prezzo) è tassata; con «Ho minusvalenze da recuperare» si usa il rendimento super netto di STFI, perché la plusvalenza compensa lo zainetto. Chi compra sopra la pari ha una minusvalenza a scadenza che non si compensa con le cedole: per questo di norma il paniere ammette solo titoli sotto la pari. Per i titoli che hai già: cedole future tassate per intero, plusvalenza sul tuo prezzo di carico (non su quello di oggi) e scarto di emissione (100 − prezzo di emissione) sempre tassato a scadenza, anche con lo zainetto. Per i BTP Valore, Più, Italia e Futura cedole crescenti e premio fedeltà arrivano da una tabella dell'app; il premio vale solo con l'ISIN «con premio», quello del collocamento.\n\nCOSA NON È INCLUSO\n\nCommissioni, imposta di bollo (0,20% annuo sul valore; inclusa solo nell'affitto indicizzato) e differenza fra prezzo di chiusura e prezzo lettera a cui compri davvero. Per i BTP Valore, Più e Futura le cedole future seguono il calendario degli scalini del Tesoro; gli altri step-up sono stimati con la cedola attuale. I BTP Italia e BTP€i sono esclusi di default perché nel file il loro rendimento è \"senza indicizzazione\".\n\nGLOSSARIO\nRendimento netto\nrendimento annuo a scadenza dopo le tasse su cedole e plusvalenza, al prezzo del file.\nSuper netto\ncome il netto, ma senza la tassa sulla plusvalenza: vale se hai minusvalenze da compensare.\nObiettivo\nl'importo che vuoi a ogni scadenza: nei grafici è la linea blu.\nCassa\ni soldi che arrivano prima che servano (cedole incassate prima della scala, quello che una scadenza riceve oltre l'obiettivo, rimborsi fuori dai periodi): restano sul conto senza interessi e pagano le scadenze dopo. Il pannello «Movimenti di cassa» mostra entrate, prelievi, saldo e attesa.\nRendimento alle scadenze\ndal capitale di oggi (con il portafoglio, anche i tuoi titoli ai prezzi di oggi) alle somme alle date che ti servono, più i soldi che tornano liberi; la cassa ferma rende zero. A parità di somme, la proposta che costa meno rende di più: per questo è il rendimento del confronto fra le alternative.\nSotto la pari\nprezzo sotto 100: a scadenza incassi più di quanto hai pagato.\nDuration\ndurata finanziaria media (modificata), in anni: quanto il prezzo reagisce ai tassi.\nLotto minimo\nil taglio minimo acquistabile; i nominali sono multipli del lotto.\nLiquidità\nclasse di volume STFI da 0 a 4 (media di 20 giorni): quanto il titolo si scambia.\nColori\nambra per navigare; blu per l'obiettivo; verde e rosso, con ▲ ▼, solo per variazioni di prezzo o di valore (CVD li passa ad azzurro e rosso).\nTema\nl'interruttore CHIARO in alto passa al fondo bianco, con le stesse regole di colore; la scelta resta salvata nel browser.\nTASTI E COMANDI\n\nTasti: 1–6 viste (anche con ← → sulle schede) · / comando · ? guida · Esc chiude.\n\nComandi (poi Invio): CAP, REN, PTF, SCALE, TIT, IND per le viste; DATI per i dati del giorno; CVD per i colori per daltonici; CHIARO o SCURO per il tema; HELP per questa guida; un ISIN per trovare il titolo nella proposta.\n\nScorciatoie da un tasto attive\n\nStrumento di studio: non è consulenza finanziaria né una raccomandazione di investimento. I rendimenti passati non indicano quelli futuri.",
+ "cmd_IND": "#/indicizzata",
+ "cmd_AFFITTO": "#/indicizzata",
+ "cmd_CAP": "#/capitale",
+ "cmd_6": "#/indicizzata",
+ "cmdIsin": {
+  "hash": "#/indicizzata",
+  "hint": "Comando: CAP, REN, PTF, SCALE, TIT, IND, DATI, un ISIN, HELP · poi Invio",
+  "toast": "Accedi per salvare, poi premi di nuovo «Salva la scala». La consultazione resta libera.",
+  "status": ""
+ },
+ "tetto1": {
+  "before": "282.745 €",
+  "after": "282.745 €",
+  "toasts": [
+   "Errore di calcolo: il calcolo richiedeva troppo tempo ed è stato interrotto: prova a cambiare le impostazioni",
+   "Errore di calcolo: con queste impostazioni il calcolo si blocca: cambiane una"
+  ],
+  "input": "1",
+  "busy": false
+ },
+ "logs": []
+}
