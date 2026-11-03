@@ -10,7 +10,7 @@ import { xeonNet } from './core/fisco-parametri.js';
 import { fallbackSolver } from './core/lp-fallback.js';
 import { monteCarlo } from './core/montecarlo.js';
 
-let highsP = null, inflP = null;
+let highsP = null, inflP = null, lastPlan = null;
 
 /** Solver HiGHS (WebAssembly), caricato una volta sola. */
 export function loadSolver() {
@@ -48,14 +48,22 @@ export async function computeIndexed(ds, st, deps = {}) {
   const banned = new Set(ix.basket.excludedIsins || []);
   if (banned.size) bonds = bonds.filter(b => !banned.has(b.isin));
   const cfg = withDefaults({ ...ix.alm, estr: ix.alm.estr ?? infl.estr ?? 0.024 });
-  const plan = planIndexed(ds, bonds, cfg, infl, highs);
-  if (highs.fallback && !plan.empty) plan.notes.push('Solver di riserva (javascript-lp-solver): HiGHS non si è caricato. Lotti interi approssimati, costo un po\' più alto.');
+  // la scala si ricalcola solo se cambiano paniere, affitto o vincoli (non per i parametri del Monte Carlo)
+  const key = JSON.stringify([ds.refDate, ds.settle, bonds.length, ix.basket, ix.alm, infl.asOf, !!highs.fallback]);
+  if (!lastPlan || lastPlan.key !== key) {
+    const plan = planIndexed(ds, bonds, cfg, infl, highs);
+    if (highs.fallback && !plan.empty) plan.notes.push('Solver di riserva (javascript-lp-solver): HiGHS non si è caricato. Lotti interi approssimati, costo un po\' più alto.');
+    lastPlan = { key, plan, flat: plan.empty ? null : flatCompare(ds, bonds, cfg, infl, plan, highs) };
+  }
+  const plan = lastPlan.plan;
   const out = { goal: 'indexed', plan, basketCount: bonds.length, excluded, refDate: ds.refDate, settle: ds.settle, infl: { asOf: infl.asOf, meta: infl.meta.controlli || null } };
   if (!plan.empty) {
-    out.flat = flatCompare(ds, bonds, cfg, infl, plan, highs);
+    out.flat = lastPlan.flat;
     out.cash = cashInfo(ds, bonds, cfg, infl, plan);
     const mc = ix.mc;
-    if (mc && mc.on) out.mc = monteCarlo(ds, plan, infl, mc.total, { eqMu: mc.eqMu, eqSd: mc.eqSd, inflMean: mc.inflMean, inflSd: mc.inflSd,
+    // con molte rate (semestrali, orizzonti lunghi) meno percorsi, per restare in pochi secondi
+    const nPaths = plan.byScen.base.length > 30 ? 1000 : 2000;
+    if (mc && mc.on) out.mc = monteCarlo(ds, plan, infl, mc.total, { n: nPaths, eqMu: mc.eqMu, eqSd: mc.eqSd, inflMean: mc.inflMean, inflSd: mc.inflSd,
       stress: mc.stress, extras: mc.extra && mc.extra.amount > 0 ? [mc.extra] : [] });
   }
   return out;

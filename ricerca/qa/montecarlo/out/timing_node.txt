@@ -1,0 +1,4 @@
+base senza MC 3605 ms, con MC 6345 ms, MC 2739 ms; orizzonte 2046 rate 20
+semest senza MC 6117 ms, con MC 11110 ms, MC 4992 ms; orizzonte 2046 rate 40
+heavy senza MC 10901 ms, con MC 22500 ms, MC 11598 ms; orizzonte 2066 rate 80
+maxhor senza MC 11184 ms, con MC 18326 ms, MC 7142 ms; orizzonte 2056 rate 30

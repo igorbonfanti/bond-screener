@@ -1,0 +1,80 @@
+out/eqcost.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 0.5995  fallimenti 801  vendono 0.0000  patrimonio 1° anno p10/p50/p90 [254000. 268842. 285564.]  ultimo [   0. 1995. 6032.]  percorsi con patrimonio 0 all'ultimo anno 0.4005
+etf: pAll 0.5650  fallimenti 870  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [260740. 268165. 274290.]  ultimo [     0.  23129. 382595.]  percorsi con patrimonio 0 all'ultimo anno 0.4350
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 283270, p10 268455, p90 299960; costo titoli 282729; corr. con inflazione media del percorso 0.800
+capitale 282730; patrimonio mediano al 1/1/2027 scala+ETF 268842, tutto ETF 268165 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.8
+
+out/vol0.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.3995  patrimonio 1° anno p10/p50/p90 [421460. 436302. 453024.]  ultimo [231784. 265853. 305979.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 1.0000  fallimenti 0  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [435571. 435571. 435571.]  ultimo [243224. 300064. 368236.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 283270, p10 268455, p90 299960; costo titoli 282729; corr. con inflazione media del percorso 0.800
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 436302, tutto ETF 435571 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.8
+
+out/crollo.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.3995  patrimonio 1° anno p10/p50/p90 [420261. 436227. 453557.]  ultimo [ 71960. 152294. 342198.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.4855  fallimenti 1029  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [423838. 435656. 445404.]  ultimo [     0.      0. 234954.]  percorsi con patrimonio 0 all'ultimo anno 0.5145
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 283270, p10 268455, p90 299960; costo titoli 282729; corr. con inflazione media del percorso 0.800
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 436227, tutto ETF 435656 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.768
+
+out/stagfl.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [475373. 486996. 499800.]  ultimo [ 68898. 140184. 300273.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.5435  fallimenti 913  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [423838. 435656. 445404.]  ultimo [     0.  11038. 212947.]  percorsi con patrimonio 0 all'ultimo anno 0.4565
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 333882, p10 323101, p90 345999; costo titoli 282729; corr. con inflazione media del percorso 0.768
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 486996, tutto ETF 435656 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.715
+
+out/extra.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 0.0985  fallimenti 1803  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [420261. 436227. 453557.]  ultimo [0. 0. 0.]  percorsi con patrimonio 0 all'ultimo anno 0.9015
+etf: pAll 0.2575  fallimenti 1485  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [423838. 435656. 445404.]  ultimo [     0.      0. 357059.]  percorsi con patrimonio 0 all'ultimo anno 0.7425
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 283270, p10 268455, p90 299960; costo titoli 282729; corr. con inflazione media del percorso 0.800
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 436227, tutto ETF 435656 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.768
+
+out/extraEq.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 0.0000  fallimenti 2000  vendono 0.0000  patrimonio 1° anno p10/p50/p90 [254000. 268842. 285564.]  ultimo [0. 0. 0.]  percorsi con patrimonio 0 all'ultimo anno 1.0000
+etf: pAll 0.3280  fallimenti 1344  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [260740. 268165. 274290.]  ultimo [     0.      0. 213508.]  percorsi con patrimonio 0 all'ultimo anno 0.6720
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 283270, p10 268455, p90 299960; costo titoli 282729; corr. con inflazione media del percorso 0.800
+capitale 282730; patrimonio mediano al 1/1/2027 scala+ETF 268842, tutto ETF 268165 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.8
+
+out/semest.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.7040  patrimonio 1° anno p10/p50/p90 [427672. 443699. 461229.]  ultimo [126146. 269327. 667592.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.9450  fallimenti 110  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [431308. 443125. 452874.]  ultimo [  35780.  280577. 1007935.]  percorsi con patrimonio 0 all'ultimo anno 0.0550
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8665%: mediana 277938, p10 262950, p90 294734; costo titoli 277435; corr. con inflazione media del percorso 0.810
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 443699, tutto ETF 443125 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.776
+
+out/maxscale.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.6185  patrimonio 1° anno p10/p50/p90 [418616. 435341. 453644.]  ultimo [110846. 236123. 582539.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.9220  fallimenti 156  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [422924. 434742. 444490.]  ultimo [ 15166. 251812. 948961.]  percorsi con patrimonio 0 all'ultimo anno 0.0780
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 300567, p10 284850, p90 318283; costo titoli 300000; corr. con inflazione media del percorso 0.801
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 435341, tutto ETF 434742 (dopo la prima rata del 2027: 15918)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.777
+
+out/maxhor.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.4075  patrimonio 1° anno p10/p50/p90 [425836. 436043. 446314.]  ultimo [186004. 349071. 676490.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.9965  fallimenti 7  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [423223. 435820. 445654.]  ultimo [140522. 364436. 826367.]  percorsi con patrimonio 0 all'ultimo anno 0.0035
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.5324%: mediana 191089, p10 183433, p90 199077; costo titoli 190435; corr. con inflazione media del percorso 0.807
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 436043, tutto ETF 435820 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.597
+
+out/hicp.json: 150 percorsi, 300 simulazioni rifatte; differenze: 0
+mix: pAll 1.0000  fallimenti 0  vendono 0.6295  patrimonio 1° anno p10/p50/p90 [399292. 434939. 479063.]  ultimo [ 56328. 141149. 340766.]  percorsi con patrimonio 0 all'ultimo anno 0.0000
+etf: pAll 0.7070  fallimenti 586  vendono 1.0000  patrimonio 1° anno p10/p50/p90 [421160. 433617. 443307.]  ultimo [     0.  64280. 400225.]  percorsi con patrimonio 0 all'ultimo anno 0.2930
+controlli statistiche: OK
+titoli al regolamento, flussi del percorso scontati all'irr 3.8161%: mediana 282884, p10 248119, p90 327005; costo titoli 282729; corr. con inflazione media del percorso 0.797
+capitale 450000; patrimonio mediano al 1/1/2027 scala+ETF 434939, tutto ETF 433617 (dopo la prima rata del 2027: 15000)
+corr. patrimonio scala+ETF al primo 1/1 con inflazione media futura: 0.79
+

@@ -179,7 +179,7 @@ function computeAsync(st) {
         app.pending.clear();
         startWorker(app.text);
         for (const p of waiting) p.reject(new Error('il calcolo richiedeva troppo tempo ed è stato interrotto: prova a cambiare le impostazioni'));
-      }, COMPUTE_TIMEOUT);
+      }, input.goal === 'indexed' ? 2 * COMPUTE_TIMEOUT : COMPUTE_TIMEOUT);   // affitto indicizzato: ottimizzazione e Monte Carlo
       app.pending.set(id, { resolve: v => { clearTimeout(timer); resolve(v); }, reject: e => { clearTimeout(timer); reject(e); } });
       app.worker.postMessage({ type: 'compute', id, settings: input });
     });

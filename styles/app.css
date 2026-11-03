@@ -381,7 +381,6 @@ h3.lbl { margin: 2px 0 0; }
 .chart path.ln { fill: none; stroke-width: 2; }
 .chart path.ln.mc-a { stroke: var(--blue); }
 .chart path.ln.mc-b { stroke: var(--ink-3); stroke-dasharray: 4 3; }
-.chart path.band.mc-a { fill: var(--blue-soft); stroke: none; }
 .chart path.band.mc-b { fill: var(--ink-3); opacity: 0.12; stroke: none; }
 .legend .kb.mc-a { background: var(--blue); }
 .legend .kb.mc-b { background: var(--ink-3); }

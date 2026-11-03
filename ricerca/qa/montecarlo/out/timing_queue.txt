@@ -1,0 +1,2 @@
+modifiche distanziate 65610 ms: ok
+modifiche ravvicinate 31850 ms: Il calcolo non è riuscito: il calcolo richiedeva troppo tempo ed è stato interrotto: prova a cambiare le impostazioni.

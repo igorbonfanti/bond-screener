@@ -8,3 +8,7 @@ __pycache__/
 
 # documenti privati del piano (mai nel repository pubblico)
 docs/ladder-indicizzata/
+
+# dati grezzi dei controlli (rigenerabili con gli script, troppo grandi)
+ricerca/qa/montecarlo/out/*.json
+ricerca/qa/montecarlo/out/*.bin

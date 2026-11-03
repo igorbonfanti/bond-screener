@@ -272,14 +272,17 @@ function assumptionsPanel(plan, result) {
 
 /* ---------------- Monte Carlo: la scala + il resto del capitale in ETF ---------------- */
 function mcPanel(mc, plan) {
-  if (mc.error) return notesPanel([insight('warn', mc.error)]);
+  const nTxt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (mc.error) return panel('Monte Carlo: scala + ETF', null, h('div', { class: 'pb prose' }, h('p', { class: 'hl',
+    text: `Il capitale complessivo (${fmtEur(mc.total)}) è minore del costo della scala (${fmtEur(mc.cost)}): alzalo nel pannello «Resto del capitale» per simulare il resto in ETF.` })));
   const a = mc.mix, b = mc.allEtf, K = mc.dues.length;
   const lastY = mc.dues[K - 1].year;
   const p = v => fmtPct(v * 100, 1);
   const kpis = h('div', { class: 'kpis' },
     kpi('Affitto pagato fino al ' + lastY, p(a.pAll), `scala + ETF · tutto in ETF: ${p(b.pAll)}`),
     kpi('In ETF all\'inizio', fmtEur(mc.etf0), `su ${fmtEur(mc.total)} · scala ${fmtEur(plan.totalCost)}`),
-    kpi('Percorsi che vendono ETF', p(a.soldShare), 'per pagare l\'affitto o le spese extra'),
+    kpi('Percorsi che vendono ETF', p(a.soldShare), a.bondSaleShare > 0.0005 ? `e ${p(a.bondSaleShare)} vendono anche titoli della scala` : 'per pagare l\'affitto o le spese extra'),
+    ...(mc.params.extras && mc.params.extras.length ? [kpi('Spese extra non pagate', p(a.extraShortShare), `percorsi con una parte non pagata · tutto in ETF: ${p(b.extraShortShare)}`)] : []),
     kpi(`Patrimonio nel ${a.wealth[a.wealth.length - 1].year}`, fmtEur(a.wealth[a.wealth.length - 1].p50), `mediana · 10% peggiore ${fmtEur(a.wealth[a.wealth.length - 1].p10)}`));
   const survBox = h('div', { class: 'chart' }), fanBox = h('div', { class: 'chart' });
   requestAnimationFrame(() => {
@@ -291,8 +294,8 @@ function mcPanel(mc, plan) {
   });
   const leg = legend([{ el: h('span', { class: 'kb mc-a' }), label: 'scala + ETF (linea: mediana; fascia: dal 10% peggiore al 10% migliore)' }, { el: h('span', { class: 'kb mc-b' }), label: 'tutto il capitale in ETF, affitto pagato vendendo (tratteggio: mediana, 10% e 90%)' }]);
   const params = mc.params;
-  const note = `${fmtNum(mc.n, 0)} percorsi, seme fisso. ETF: ${fmtPct(params.eqMu * 100, 1)} composto atteso, volatilità ${fmtPct(params.eqSd * 100, 0)}, code grasse, TER 0,15%, 26% sulle plusvalenze quando si vende, bollo 0,2%. Inflazione: media ${fmtPct(params.inflMean * 100, 1)}, deviazione ${fmtPct(params.inflSd * 100, 1)}, persistenza 0,6.${params.stress === 'crollo' ? ' Stress: borsa −35% e −10% nei primi due anni.' : params.stress === 'stagflazione' ? ' Stress: inflazione 8→5% per cinque anni, borsa ferma.' : ''} Patrimonio in euro di oggi: ETF al netto delle tasse, conto XEON e titoli della scala (flussi ancora da incassare scontati al rendimento della scala di oggi: all'inizio valgono quanto sono costati). I numeri dipendono dalle ipotesi: servono a confrontare scelte, non a prevedere.`;
-  return panel('Monte Carlo: scala + ETF', `${fmtNum(mc.n, 0)} percorsi di inflazione e borsa`, kpis,
+  const note = `${nTxt(mc.n)} percorsi, seme fisso. Se conto ed ETF non bastano si vende una parte dei titoli della scala (al loro valore). ETF: ${fmtPct(params.eqMu * 100, 1)} composto atteso, volatilità ${fmtPct(params.eqSd * 100, 0)}, code grasse, TER 0,15%, 26% sulle plusvalenze quando si vende, bollo 0,2%. Inflazione: media ${fmtPct(params.inflMean * 100, 1)}, deviazione ${fmtPct(params.inflSd * 100, 1)}, persistenza 0,6.${params.stress === 'crollo' ? ' Stress: borsa −35% e −10% nei primi due anni interi.' : params.stress === 'stagflazione' ? ' Stress: inflazione 8→5% per cinque anni, borsa ferma.' : ''} Patrimonio in euro di oggi: ETF al netto delle tasse, conto XEON e titoli della scala (flussi ancora da incassare con l'inflazione attesa, scontati al rendimento della scala di oggi). I numeri dipendono dalle ipotesi: servono a confrontare scelte, non a prevedere.`;
+  return panel('Monte Carlo: scala + ETF', `${nTxt(mc.n)} percorsi di inflazione e borsa`, kpis,
     h('div', { class: 'grid-2' },
       h('div', null, h('h3', { class: 'mc-h', text: 'Probabilità che l\'affitto sia pagato fino a ogni anno' }), survBox),
       h('div', null, h('h3', { class: 'mc-h', text: 'Patrimonio (euro di oggi): mediana e 10%–90%' }), fanBox)),
@@ -301,13 +304,14 @@ function mcPanel(mc, plan) {
 
 /** Linee e fasce semplici in SVG (asse x anni). */
 function lineChart(box, { xs, series = [], bands = [], yMin, yMax, yFmt, label }) {
-  const W = Math.max(280, box.clientWidth || 500), H = 220, M = { l: 48, r: 10, t: 10, b: 22 };
+  const W = Math.max(280, box.clientWidth || 500), H = 220, M = { l: 48, r: 14, t: 10, b: 22 };
   const all = [...series.flatMap(x => x.ys), ...bands.flatMap(x => [...x.lo, ...x.hi])].filter(Number.isFinite);
   // tacche tonde: passo 1, 2 o 5 × 10^k
   const lo0 = yMin ?? Math.min(...all), hi0 = yMax ?? (Math.max(...all) || 1);
   const raw = (hi0 - lo0) / 4 || 1, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = [1, 2, 5, 10].map(k => k * mag).find(v => v >= raw);
   const lo = Math.floor(lo0 / st + 1e-9) * st, hi = Math.ceil(hi0 / st - 1e-9) * st;
   const nT = Math.round((hi - lo) / st);
+  M.l = 10 + Math.max(...Array.from({ length: nT + 1 }, (_, k) => yFmt(lo + st * k).length)) * 7;
   const X = x => M.l + (x - xs[0]) / Math.max(1e-9, xs[xs.length - 1] - xs[0]) * (W - M.l - M.r);
   const Y = y => M.t + (1 - (y - lo) / Math.max(1e-9, hi - lo)) * (H - M.t - M.b);
   const path = (px, py) => px.map((x, i) => `${i ? 'L' : 'M'}${X(x).toFixed(1)},${Y(py[i]).toFixed(1)}`).join('');
@@ -318,7 +322,7 @@ function lineChart(box, { xs, series = [], bands = [], yMin, yMax, yFmt, label }
     el.appendChild(svg('text', { class: 'axt', x: M.l - 6, y: y + 3, 'text-anchor': 'end', text: yFmt(v) }));
   }
   const step = Math.max(1, Math.ceil(xs.length / 6));
-  xs.forEach((x, i) => { if (i % step === 0 && Number.isInteger(x)) el.appendChild(svg('text', { class: 'axt', x: X(x), y: H - 6, 'text-anchor': 'middle', text: String(x) })); });
+  xs.forEach((x, i) => { if ((i % step === 0 || i === xs.length - 1) && Number.isInteger(x) && (i === xs.length - 1 || xs.length - 1 - i >= step / 2)) el.appendChild(svg('text', { class: 'axt', x: X(x), y: H - 6, 'text-anchor': 'middle', text: String(x) })); });
   for (const b of bands) {
     el.appendChild(svg('path', { class: `band ${b.cls}`, d: path(xs, b.hi) + xs.slice().reverse().map(x => `L${X(x).toFixed(1)},${Y(b.lo[xs.indexOf(x)]).toFixed(1)}`).join('') + 'Z' }));
     el.appendChild(svg('path', { class: `ln ${b.cls}`, d: path(xs, b.mid) }));

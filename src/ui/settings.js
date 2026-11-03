@@ -251,9 +251,9 @@ function indexedSections(st) {
   const setM = (fn, structural = true) => set(s => fn(s.indexed.mc), structural);
   const ex = mc.extra || { amount: 0, from: minYear + 15, to: minYear + 20 };
   const mcItems = [
-    sw('mcon', !!mc.on, 'Simula il resto del capitale', 'Monte Carlo su 2.000 percorsi di inflazione e borsa: la scala paga l\'affitto, il resto sta in un ETF azionario globale ad accumulazione (tipo All-World) e si vende solo se il conto non basta o per le spese extra. Qualche secondo di calcolo in più.', v => setM(x => { x.on = v; })),
+    sw('mcon', !!mc.on, 'Simula il resto del capitale', 'Monte Carlo su 2.000 percorsi di inflazione e borsa (1.000 con più di 30 rate): la scala paga l\'affitto, il resto sta in un ETF azionario globale ad accumulazione (tipo All-World) e si vende solo se il conto non basta o per le spese extra; se non basta neanche l\'ETF si vende una parte dei titoli. Qualche secondo di calcolo in più.', v => setM(x => { x.on = v; })),
     ...(mc.on ? [
-      field('Capitale complessivo', moneyInput('mctot', mc.total, '€', v => setM(x => { x.total = v; }, false)), 'Scala + ETF. La parte in ETF è il capitale complessivo meno il costo della scala.'),
+      field('Capitale complessivo', moneyInput('mctot', mc.total, '€', v => setM(x => { x.total = v; }, false)), 'Scala + ETF. La parte in ETF è il capitale complessivo meno il costo della scala' + (a.mode === 'mincost' ? '.' : ' (che in questa modalità è il capitale da investire indicato sopra, o meno).')),
       field('ETF: rendimento composto atteso', pctInput('mcmu', mc.eqMu, v => setM(x => { x.eqMu = v; }), { min: -5, max: 15 }), 'Nominale in euro, prima di costi (TER 0,15%) e tasse. Ogni anno è estratto con code grasse (t di Student, 5 gradi di libertà).'),
       field('ETF: volatilità annua', pctInput('mcsd', mc.eqSd, v => setM(x => { x.eqSd = v; }), { min: 0, max: 50 })),
       field('Inflazione: media e oscillazione', h('div', { class: 'infl3' },
@@ -262,13 +262,13 @@ function indexedSections(st) {
         'Ogni anno l\'inflazione si avvicina alla media (persistenza 0,6), partendo da quella base del primo anno.'),
       field('Prova di stress', seg('mcst', [['none', 'Nessuna'], ['crollo', 'Crollo borsa'], ['stagflazione', 'Stagflazione']], mc.stress || 'none', v => setM(x => { x.stress = v; }), 'Prova di stress'),
         { none: 'Solo i percorsi casuali.', crollo: 'In tutti i percorsi la borsa perde il 35% il primo anno e il 10% il secondo.', stagflazione: 'In tutti i percorsi l\'inflazione è 8, 8, 7, 6, 5% per cinque anni e la borsa non sale.' }[mc.stress || 'none']),
-      sw('mcex', ex.amount > 0, 'Spesa extra', 'Per esempio una badante o una casa di riposo: un importo l\'anno in euro di oggi, che cresce con l\'inflazione, pagato vendendo ETF.', v => setM(x => { x.extra = { ...ex, amount: v ? (ex.amount || 20000) : 0 }; })),
+      sw('mcex', ex.amount > 0, 'Spesa extra', 'Per esempio una badante o una casa di riposo: un importo l\'anno in euro di oggi, che cresce con l\'inflazione, pagato vendendo ETF.', v => setM(x => { const e = x.extra || ex; x.extra = { ...e, amount: v ? 20000 : 0 }; })),
       ...(ex.amount > 0 ? [
-        field('Spesa extra all\'anno (€ di oggi)', moneyInput('mcexa', ex.amount, '€', v => setM(x => { x.extra = { ...ex, amount: v }; }, false))),
+        field('Spesa extra all\'anno (€ di oggi)', moneyInput('mcexa', ex.amount, '€', v => setM(x => { x.extra = { ...(x.extra || ex), amount: v }; }, false))),
         field('Spesa extra: anni', h('div', { class: 'years' },
-          yearStepper('mcexf', ex.from, minYear + 1, 2080, v => setM(x => { x.extra = { ...ex, from: v, to: Math.max(ex.to, v) }; }), 'Primo anno della spesa extra'),
+          yearStepper('mcexf', ex.from, minYear + 1, 2080, v => setM(x => { const e = x.extra || ex; x.extra = { ...e, from: v, to: Math.max(e.to, v) }; }), 'Primo anno della spesa extra'),
           h('span', { class: 'sep', text: 'al' }),
-          yearStepper('mcext', ex.to, minYear + 1, 2080, v => setM(x => { x.extra = { ...ex, to: v, from: Math.min(ex.from, v) }; }), 'Ultimo anno della spesa extra')))] : [])
+          yearStepper('mcext', ex.to, minYear + 1, 2080, v => setM(x => { const e = x.extra || ex; x.extra = { ...e, to: v, from: Math.min(e.from, v) }; }), 'Ultimo anno della spesa extra')))] : [])
     ] : [])
   ];
   return [panel('Affitto da pagare', 'passività indicizzata', liab), panel('Inflazione e scenari', null, scen), panel('Vincoli della scala', null, cons),

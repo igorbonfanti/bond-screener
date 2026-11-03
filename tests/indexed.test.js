@@ -169,3 +169,18 @@ test('Monte Carlo: stesso seme stessi risultati; più capitale non peggiora; il 
   assert.equal(det.mix.pAll, 1);
   assert.equal(monteCarlo(ds, plan, INFL, plan.totalCost - 1000).error != null, true, 'capitale minore della scala: errore');
 });
+
+test('Monte Carlo: senza ETF la scala vende titoli invece di fallire per pochi euro', async () => {
+  const { monteCarlo } = await import('../src/core/montecarlo.js');
+  const ds = load(), highs = await solver();
+  const { bonds } = applyBasket(ds, { maxPrice: null, includeInflation: true });
+  const plan = planIndexed(ds, bonds, CFG, INFL, highs);
+  const r = monteCarlo(ds, plan, INFL, plan.totalCost, { n: 300 });
+  // qui la scala copre solo lo scenario base (2%) e i percorsi hanno in media più inflazione: quando il conto non basta
+  // si vendono titoli della scala (prima di questa regola il percorso falliva anche per pochi euro)
+  assert.ok(r.mix.bondSaleShare > 0, 'alcuni percorsi vendono titoli');
+  assert.ok(r.mix.soldShare === 0, 'senza ETF non si vende ETF');
+  // il patrimonio all'inizio è vicino al capitale (titoli valutati senza conoscere l'inflazione futura del percorso)
+  const w0 = r.mix.wealth[0];
+  assert.ok(w0.p90 - w0.p10 < 0.08 * plan.totalCost, `fascia iniziale ${w0.p10}–${w0.p90}`);
+});
